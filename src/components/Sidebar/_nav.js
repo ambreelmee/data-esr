@@ -5,11 +5,11 @@ export default {
       url: '/accueil',
       badge: {
         variant: 'info',
-      }
+      },
     },
     {
       name: 'Référentiels',
-      children : [
+      children: [
         {
           name: 'BCE',
           url: '/referentiel/bce',
@@ -21,8 +21,8 @@ export default {
         {
           name: 'SIRET',
           url: '/referentiel/siret',
-        }
-      ]
+        },
+      ],
     },
     {
       name: 'Importer un nouveau fichier',
@@ -31,6 +31,6 @@ export default {
     {
       name: 'Extraire des données',
       url: '/extract',
-    }
-  ]
+    },
+  ],
 };

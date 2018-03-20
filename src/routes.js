@@ -1,5 +1,5 @@
 const routes = {
   '/': 'Home',
-  '/update': 'Mises à jour'
+  '/update': 'Mises à jour',
 };
 export default routes;

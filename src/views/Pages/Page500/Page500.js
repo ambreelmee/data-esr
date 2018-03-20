@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Container, Row, Col, Button, Input, InputGroup, InputGroupAddon, InputGroupText} from 'reactstrap';
+import React, { Component } from 'react';
+import { Container, Row, Col, Button, Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 
 class Page500 extends Component {
   render() {
@@ -16,7 +16,7 @@ class Page500 extends Component {
               <InputGroup className="input-prepend">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
-                    <i className="fa fa-search"></i>
+                    <i className="fa fa-search" />
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input size="16" type="text" placeholder="What are you looking for?" />

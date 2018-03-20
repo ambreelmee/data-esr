@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Container, Row, Col, Card, CardBody, CardFooter, Button, Input, InputGroup, InputGroupAddon, InputGroupText} from 'reactstrap';
+import React, { Component } from 'react';
+import { Container, Row, Col, Card, CardBody, Button, Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 
 class Register extends Component {
   render() {
@@ -15,45 +15,35 @@ class Register extends Component {
                   <InputGroup className="mb-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
-                        <i className="icon-user"></i>
+                        <i className="icon-user" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="text" placeholder="Username"/>
+                    <Input type="text" placeholder="Username" />
                   </InputGroup>
                   <InputGroup className="mb-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>@</InputGroupText>
                     </InputGroupAddon>
-                    <Input type="text" placeholder="Email"/>
+                    <Input type="text" placeholder="Email" />
                   </InputGroup>
                   <InputGroup className="mb-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
-                        <i className="icon-lock"></i>
+                        <i className="icon-lock" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="password" placeholder="Password"/>
+                    <Input type="password" placeholder="Password" />
                   </InputGroup>
                   <InputGroup className="mb-4">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
-                        <i className="icon-lock"></i>
+                        <i className="icon-lock" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="password" placeholder="Repeat password"/>
+                    <Input type="password" placeholder="Repeat password" />
                   </InputGroup>
                   <Button color="success" block>Create Account</Button>
                 </CardBody>
-                <CardFooter className="p-4">
-                  <Row>
-                    <Col xs="12" sm="6">
-                      <Button className="btn-facebook" block><span>facebook</span></Button>
-                    </Col>
-                    <Col xs="12" sm="6">
-                      <Button className="btn-twitter" block><span>twitter</span></Button>
-                    </Col>
-                  </Row>
-                </CardFooter>
               </Card>
             </Col>
           </Row>

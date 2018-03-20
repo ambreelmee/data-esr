@@ -2,28 +2,15 @@ import React, { Component } from 'react';
 import {
   Row,
   Col,
-  Button,
-  ButtonDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Card,
   CardHeader,
-  CardFooter,
   CardBody,
-  Collapse,
-  Form,
   FormGroup,
-  FormText,
   Label,
   Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText
 } from 'reactstrap';
 
 class FormPerso extends Component {
-
   render() {
     return (
       <div className="animated fadeIn">
@@ -36,7 +23,7 @@ class FormPerso extends Component {
               <Col xs="12">
                 <FormGroup>
                   <Label htmlFor="name">Name</Label>
-                  <Input type="text" id="name" placeholder="Enter your name" required/>
+                  <Input type="text" id="name" placeholder="Enter your name" required />
                 </FormGroup>
               </Col>
             </Row>
@@ -44,7 +31,7 @@ class FormPerso extends Component {
               <Col xs="12">
                 <FormGroup>
                   <Label htmlFor="ccnumber">Credit Card Number</Label>
-                  <Input type="text" id="ccnumber" placeholder="0000 0000 0000 0000" required/>
+                  <Input type="text" id="ccnumber" placeholder="0000 0000 0000 0000" required />
                 </FormGroup>
               </Col>
             </Row>
@@ -88,14 +75,14 @@ class FormPerso extends Component {
               <Col xs="4">
                 <FormGroup>
                   <Label htmlFor="cvv">CVV/CVC</Label>
-                  <Input type="text" id="cvv" placeholder="123" required/>
+                  <Input type="text" id="cvv" placeholder="123" required />
                 </FormGroup>
               </Col>
             </Row>
           </CardBody>
         </Card>
       </div>
-    )
+    );
   }
 }
 

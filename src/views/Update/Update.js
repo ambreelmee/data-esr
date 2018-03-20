@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+
 // import NewEntity from './NewEntity.js'
-import {Row, Col, Card, CardHeader, CardBody, Alert} from 'reactstrap';
+import { Row, Col, Card, CardBody, Alert } from 'reactstrap';
 
 
 class Update extends Component {
@@ -10,21 +11,19 @@ class Update extends Component {
     this.state = {
       hits: [],
       isLoading: false,
-      error: null,
     };
   }
 
-  componentDidMount() {
-    this.setState({ isLoading: true })
+  componentWillMount() {
+    this.setState({ isLoading: true });
     fetch('https://hn.algolia.com/api/v1/search?query=')
-    .then(response => response.json())
-    .then( data => {
-      this.setState({
-        hits: data.hits,
-        isLoading: false
-      })
-    })
-    .catch(error => this.setState({ error, isLoading: false }));
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          hits: data.hits,
+          isLoading: false,
+        });
+      });
   }
 
   render() {
@@ -42,11 +41,10 @@ class Update extends Component {
               <CardBody>
                 <Alert color="info">
                   <div>
-                    {hits.map(hit =>
+                    {hits.map(hit => (
                       <div key={hit.objectID}>
                         <a href={hit.url}>{hit.title}</a>
-                      </div>
-                    )}
+                      </div>))}
                   </div>
                 </Alert>
               </CardBody>
@@ -54,7 +52,7 @@ class Update extends Component {
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 
