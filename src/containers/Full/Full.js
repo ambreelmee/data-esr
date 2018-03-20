@@ -6,6 +6,7 @@ import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 
 import Update from '../../views/Update/';
+import Register from '../../views/Pages/Register';
 
 class Full extends Component {
   render() {
@@ -17,8 +18,8 @@ class Full extends Component {
           <main className="main">
             <Container fluid>
               <Switch>
-                <Route path="/update" name="Mises à jour" component={Update} />
-                <Redirect from="/" to="/update" />
+                <Route path="/register" name="Register" component={Register} />
+                <Redirect from="/" to="/register" />
               </Switch>
             </Container>
           </main>
