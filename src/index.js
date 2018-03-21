@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch } from 'react-router-dom';
-import PrivateRoute from './PrivateRoute';
 
 // Styles
 // Import Flag Icons Set
@@ -15,8 +14,9 @@ import '../scss/style.scss';
 // Temp fix for reactstrap
 import '../scss/core/_dropdown-menu-right.scss';
 
-// Containers
+import PrivateRoute from './PrivateRoute';
 import Full from './containers/Full/';
+import Login from './views/Pages/Login';
 import Register from './views/Pages/Register';
 
 ReactDOM.render(
@@ -24,7 +24,8 @@ ReactDOM.render(
     <HashRouter>
       <Switch>
         <PrivateRoute exact path="/" name="Home" component={Full} />
-        <Route path="/register" name="Register" component={Register} />
+        <Route exact path="/login" name="Login" component={Login} />
+        <Route exact path="/register" name="Register" component={Register} />
       </Switch>
     </HashRouter>
   ), document.getElementById('root'),

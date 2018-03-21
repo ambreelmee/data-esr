@@ -9,9 +9,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     render={props => (
       fakeAuth.isAuthenticated === true
         ? <Component {...props} />
-        : <Redirect to="/register" />
+        : <Redirect to="/login" />
   )}
   />
 );
+
 
 export default PrivateRoute;
