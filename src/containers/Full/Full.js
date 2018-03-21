@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 
 import Update from '../../views/Update/';
-import Register from '../../views/Pages/Register';
 
 class Full extends Component {
   render() {
@@ -17,10 +15,7 @@ class Full extends Component {
           <Sidebar {...this.props} />
           <main className="main">
             <Container fluid>
-              <Switch>
-                <Route path="/register" name="Register" component={Register} />
-                <Redirect from="/" to="/register" />
-              </Switch>
+              <Update />
             </Container>
           </main>
         </div>

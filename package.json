@@ -48,7 +48,7 @@
     "build": "webpack -p --progress --env.prod",
     "clean": "rimraf ./build",
     "test": "jest",
-    "lint": "./node_modules/.bin/eslint src/views/Pages/"
+    "lint": "./node_modules/.bin/eslint src/"
   },
   "engines": {
     "node": ">= 8.9.4",

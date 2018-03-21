@@ -3,6 +3,8 @@ import {
   Container, Row, Col, Card, CardBody, Button, Input, InputGroup,
   InputGroupAddon, InputGroupText,
 } from 'reactstrap';
+import { Redirect } from 'react-router-dom';
+import fakeAuth from '../../../authentication';
 
 class Register extends Component {
   constructor(props) {
@@ -12,15 +14,30 @@ class Register extends Component {
       email: '',
       password: '',
       repeatPassword: '',
+      redirectToHome: false,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.register = this.register.bind(this);
+  }
+
+  register() {
+    fakeAuth.authenticate(() => {
+      this.setState({ redirectToHome: true });
+    });
   }
 
   handleChange(event) {
     this.setState({ [event.target.id]: event.target.value });
   }
 
+
   render() {
+    if (this.state.redirectToHome === true) {
+      return (
+        <Redirect to="/" />
+      );
+    }
+
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -84,7 +101,12 @@ class Register extends Component {
                       placeholder="Repeat password"
                     />
                   </InputGroup>
-                  <Button color="success" block>Create Account</Button>
+                  <Button
+                    color="success"
+                    onClick={this.register}
+                  >
+                    Create Account
+                  </Button>
                 </CardBody>
               </Card>
             </Col>
