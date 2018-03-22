@@ -16,10 +16,13 @@ class Register extends Component {
       password: { value: '', isValid: true, message: '' },
       repeatPassword: { value: '', isValid: true, message: '' },
       redirectToHome: false,
+      formValidationMessage: ''
     };
     this.onChange = this.onChange.bind(this);
+    this.usernameIsValid = this.usernameIsValid.bind(this);
     this.emailIsValid = this.emailIsValid.bind(this);
     this.passwordIsValid = this.passwordIsValid.bind(this);
+    this.repeatPasswordIsValid = this.repeatPasswordIsValid.bind(this);
     this.register = this.register.bind(this);
   }
 
@@ -32,7 +35,7 @@ class Register extends Component {
 
   register(event) {
     event.preventDefault();
-    this.resetValidationStates();
+    // this.resetValidationStates();
     if (this.formIsValid()) {
       fakeAuth.authenticate(() => {
         this.setState({ redirectToHome: true });
@@ -40,11 +43,37 @@ class Register extends Component {
     }
   }
 
+  formIsValid() {
+    for (var field in this.state) {
+      if (field.hasOwnProperty('isValid') && !field.isValid || !field.value) {
+        this.setState({ formValidationMessage: 'formulaire incorrect' });
+        return false;
+      }
+    }
+    this.setState({ formValidationMessage: '' });
+    return true;
+  }
+
+  usernameIsValid() {
+    let state = this.state;
+    if (state.username.value === 'Ambre') {
+      state.username.isValid = false;
+      state.username.message = "Ce nom d'utilisateur est déjà pris";
+      this.setState(state);
+
+      return false;
+    }
+    state.username.isValid = true;
+    state.username.message = '';
+    this.setState(state);
+    return true;
+  }
+
   emailIsValid() {
     let state = this.state;
     if (!validator.isEmail(state.email.value)) {
       state.email.isValid = false;
-      state.email.message = 'Not a valid email address';
+      state.email.message = 'Veuillez entrer une adresse email valide';
       this.setState(state);
 
       return false;
@@ -57,9 +86,24 @@ class Register extends Component {
 
   passwordIsValid() {
     let state = this.state;
+    if (state.password.value.length < 6) {
+      state.password.isValid = false;
+      state.password.message = 'Le mot de passe doit comporter au moins 6 caractères';
+      this.setState(state);
+
+      return false;
+    }
+    state.password.isValid = true;
+    state.password.message = '';
+    this.setState(state);
+    return true;
+  }
+
+  repeatPasswordIsValid() {
+    let state = this.state;
     if (state.password.value !== state.repeatPassword.value) {
       state.repeatPassword.isValid = false;
-      state.repeatPassword.message = 'Not the same password';
+      state.repeatPassword.message = 'Veuillez entrer le même mot de passe';
       this.setState(state);
 
       return false;
@@ -95,9 +139,9 @@ class Register extends Component {
             <Col md="6">
               <Card className="mx-4">
                 <CardBody className="p-4">
-                  <h1>Register</h1>
-                  <p className="text-muted">Create your account</p>
-                  <InputGroup className="mb-3">
+                  <h1>Inscription</h1>
+                  <p className="text-muted">Créez votre compte personnel</p>
+                  <InputGroup className="mt-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="icon-user" />
@@ -108,10 +152,13 @@ class Register extends Component {
                       type="text"
                       value={this.state.username.value}
                       onChange={this.onChange}
-                      placeholder="Username"
+                      onBlur={this.usernameIsValid}
+                      placeholder="Nom d'utilisateur"
+                      className={this.state.username.isValid ? '' : 'is-invalid'}
                     />
                   </InputGroup>
-                  <InputGroup className="mb-3">
+                  <p className="text-danger">{this.state.username.message}</p>
+                  <InputGroup className="mt-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>@</InputGroupText>
                     </InputGroupAddon>
@@ -125,8 +172,8 @@ class Register extends Component {
                       className={this.state.email.isValid ? '' : 'is-invalid'}
                     />
                   </InputGroup>
-                  <p>{this.state.email.message}</p>
-                  <InputGroup className="mb-3">
+                  <p className="text-danger">{this.state.email.message}</p>
+                  <InputGroup className="mt-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="icon-lock" />
@@ -137,11 +184,13 @@ class Register extends Component {
                       type="password"
                       value={this.state.password.value}
                       onChange={this.onChange}
-                      placeholder="Password"
+                      onBlur={this.passwordIsValid}
+                      placeholder="Mot de passe"
+                      className={this.state.password.isValid ? '' : 'is-invalid'}
                     />
                   </InputGroup>
-                  <div>{this.state.repeatPassword.message}</div>
-                  <InputGroup className="mb-4">
+                  <p className="text-danger">{this.state.password.message}</p>
+                  <InputGroup className="mt-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="icon-lock" />
@@ -152,17 +201,21 @@ class Register extends Component {
                       type="password"
                       value={this.state.repeatPassword.value}
                       onChange={this.onChange}
-                      onBlur={this.passwordIsValid}
-                      placeholder="Repeat password"
+                      onBlur={this.repeatPasswordIsValid}
+                      placeholder="Confirmer mot de passe"
                       className={this.state.repeatPassword.isValid ? '' : 'is-invalid'}
                     />
                   </InputGroup>
-                  <Button
-                    color="success"
-                    onClick={this.register}
-                  >
-                    Create Account
-                  </Button>
+                  <p className="text-danger">{this.state.repeatPassword.message}</p>
+                  <div className="mt-3 d-flex justify-content-end">
+                  <div className="p-2 text-danger">{this.state.formValidationMessage}</div>
+                    <Button
+                      color="success"
+                      onClick={this.register}
+                    >
+                      S&#39;inscrire
+                    </Button>
+                  </div>
                 </CardBody>
               </Card>
             </Col>
