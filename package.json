@@ -40,7 +40,8 @@
     "react-router-dom": "4.2.2",
     "react-transition-group": "2.2.1",
     "reactstrap": "^5.0.0-beta.3",
-    "simple-line-icons": "2.4.1"
+    "simple-line-icons": "2.4.1",
+    "validator": "^9.4.1"
   },
   "scripts": {
     "dev": "webpack -d --progress --watch --profile --json > compilation-stats.json --env.dev",
@@ -48,11 +49,12 @@
     "build": "webpack -p --progress --env.prod",
     "clean": "rimraf ./build",
     "test": "jest",
-    "lint": "./node_modules/.bin/eslint src/views/Pages/"
+    "lint": "./node_modules/.bin/eslint src/"
   },
   "engines": {
     "node": ">= 8.9.4",
     "npm": ">= 5.6.0"
   },
-  "homepage": "https://ambreelmee.github.io/data-esr/"
+  "homepage": "https://ambreelmee.github.io/data-esr/",
+  "license": "MIT"
 }

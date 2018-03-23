@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
@@ -16,10 +15,7 @@ class Full extends Component {
           <Sidebar {...this.props} />
           <main className="main">
             <Container fluid>
-              <Switch>
-                <Route path="/update" name="Mises à jour" component={Update} />
-                <Redirect from="/" to="/update" />
-              </Switch>
+              <Update />
             </Container>
           </main>
         </div>
