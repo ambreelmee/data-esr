@@ -55,5 +55,6 @@
     "node": ">= 8.9.4",
     "npm": ">= 5.6.0"
   },
-  "homepage": "https://ambreelmee.github.io/data-esr/"
+  "homepage": "https://ambreelmee.github.io/data-esr/",
+  "license": "MIT"
 }
