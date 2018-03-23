@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import btoa from 'btoa';
 
 // import NewEntity from './NewEntity.js'
 import { Button, Row, Col, Card, CardBody, Alert } from 'reactstrap';
@@ -23,7 +24,12 @@ class Update extends Component {
     this.setState({ isLoading: true });
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const targetUrl = 'https://esr-backend.herokuapp.com/api/institutions';
-    fetch(proxyUrl + targetUrl)
+    fetch(proxyUrl + targetUrl, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Basic ${btoa(`${localStorage.getItem('token')}:`)}`,
+      }),
+    })
       .then(response => response.json())
       .then((data) => {
         this.setState({
