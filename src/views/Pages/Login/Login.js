@@ -21,7 +21,8 @@ class Login extends Component {
     this.redirectToRegister = this.redirectToRegister.bind(this);
   }
 
-  login() {
+  login(event) {
+    event.preventDefault();
     fakeAuth.authenticate(() => {
       this.setState({ redirectToHome: true });
     });
