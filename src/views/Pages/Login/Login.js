@@ -4,7 +4,8 @@ import {
   InputGroupAddon, InputGroupText,
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
-import fakeAuth from '../../../authentication';
+import btoa from 'btoa';
+import Auth from '../../../authentication';
 
 
 class Login extends Component {
@@ -15,16 +16,36 @@ class Login extends Component {
       password: '',
       redirectToHome: false,
       redirectToRegister: false,
+      errorMessage: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.login = this.login.bind(this);
     this.redirectToRegister = this.redirectToRegister.bind(this);
   }
 
-  login() {
-    fakeAuth.authenticate(() => {
-      this.setState({ redirectToHome: true });
-    });
+  login(event) {
+    event.preventDefault();
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const targetUrl = 'https://esr-backend.herokuapp.com/api/token';
+    fetch(proxyUrl + targetUrl, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Basic ${btoa(`${this.state.username}:${this.state.password}`)}`,
+      }),
+    })
+      .then(res => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.error) {
+          this.setState({ errorMessage: data.message });
+        } else {
+          localStorage.setItem('token', data.token);
+          Auth.authenticate(() => {
+            this.setState({ redirectToHome: true });
+            this.setState({ errorMessage: '' });
+          });
+        }
+      });
   }
 
   redirectToRegister() {
@@ -86,6 +107,7 @@ class Login extends Component {
                     </InputGroup>
                     <Row>
                       <Col xs="6">
+                        <p className="text-danger">{this.state.errorMessage}</p>
                         <Button
                           color="primary"
                           className="px-2"
