@@ -16,9 +16,10 @@ class Register extends Component {
       password: { value: '', isValid: true, message: '' },
       repeatPassword: { value: '', isValid: true, message: '' },
       redirectToHome: false,
-      formValidationMessage: ''
+      formValidationMessage: '',
     };
     this.onChange = this.onChange.bind(this);
+    this.formIsValid = this.formIsValid.bind(this);
     this.usernameIsValid = this.usernameIsValid.bind(this);
     this.emailIsValid = this.emailIsValid.bind(this);
     this.passwordIsValid = this.passwordIsValid.bind(this);
@@ -45,7 +46,7 @@ class Register extends Component {
 
   formIsValid() {
     for (var field in this.state) {
-      if (field.hasOwnProperty('isValid') && !field.isValid || !field.value) {
+      if (this.state[field].hasOwnProperty('isValid') && (!this.state[field].isValid || !this.state[field].value)) {
         this.setState({ formValidationMessage: 'formulaire incorrect' });
         return false;
       }
