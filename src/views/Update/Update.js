@@ -22,9 +22,7 @@ class Update extends Component {
 
   getInstitution() {
     this.setState({ isLoading: true });
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const targetUrl = 'https://esr-backend.herokuapp.com/api/institutions';
-    fetch(proxyUrl + targetUrl, {
+    fetch(`${process.env.PROXY_URL + process.env.API_URL}institutions`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Basic ${btoa(`${localStorage.getItem('token')}:`)}`,
@@ -42,21 +40,21 @@ class Update extends Component {
   postInstitution(event) {
     event.preventDefault();
     const institution = {
-      id_esr: '139',
-      name: 'EcoleImaginaire5',
+      id_esr: '140',
+      name: 'EcoleImaginaire6',
       date_start: '12/01/2018',
       date_end: '01/01/2020',
     };
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const targetUrl = 'https://esr-backend.herokuapp.com/api/institutions';
-    fetch(proxyUrl + targetUrl, {
+    fetch(`${process.env.PROXY_URL + process.env.API_URL}institutions`, {
       method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${btoa(`${localStorage.getItem('token')}:`)}`,
+      }),
       body: JSON.stringify(institution),
     })
       .then(res => res.json())
       .then((data) => {
-        console.log(data);
         this.setState({
           institutions: this.state.institutions.concat([data]),
         });

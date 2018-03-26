@@ -16,7 +16,7 @@ class Login extends Component {
       password: '',
       redirectToHome: false,
       redirectToRegister: false,
-      errorMessage: ''
+      errorMessage: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.login = this.login.bind(this);
@@ -25,9 +25,7 @@ class Login extends Component {
 
   login(event) {
     event.preventDefault();
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const targetUrl = 'https://esr-backend.herokuapp.com/api/token';
-    fetch(proxyUrl + targetUrl, {
+    fetch(`${process.env.PROXY_URL + process.env.API_URL}token`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Basic ${btoa(`${this.state.username}:${this.state.password}`)}`,
@@ -35,7 +33,6 @@ class Login extends Component {
     })
       .then(res => res.json())
       .then((data) => {
-        console.log(data);
         if (data.error) {
           this.setState({ errorMessage: data.message });
         } else {
