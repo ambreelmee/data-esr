@@ -23,7 +23,7 @@ ReactDOM.render(
   (
     <HashRouter>
       <Switch>
-        <PrivateRoute exact path="/" name="Home" component={Full} />
+        <PrivateRoute path="/" name="Home" component={Full} />
         <Route exact path="/login" name="Login" component={Login} />
         <Route exact path="/register" name="Register" component={Register} />
       </Switch>
