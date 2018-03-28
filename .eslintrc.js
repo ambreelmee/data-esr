@@ -16,5 +16,6 @@ module.exports = {
       "react/prefer-stateless-function": [
         1, { "ignorePureComponents": false }],
       "max-len": [1, 120, 2, {ignoreComments: true}],
+      "import/no-named-as-default": 0,
     },
 };
