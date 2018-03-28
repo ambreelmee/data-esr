@@ -17,13 +17,23 @@ class Login extends Component {
       redirectToRegister: false,
       errorMessage: '',
     };
-    this.handleChange = this.handleChange.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.login = this.login.bind(this);
     this.redirectToRegister = this.redirectToRegister.bind(this);
   }
 
-  login(event) {
-    event.preventDefault();
+  onKeyPress(event) {
+    if (event.key === 'Enter') {
+      this.login();
+    }
+  }
+
+  onChange(event) {
+    this.setState({ [event.target.id]: event.target.value });
+  }
+
+  login() {
     fetch(`${process.env.PROXY_URL + process.env.API_URL}token`, {
       method: 'GET',
       headers: new Headers({
@@ -47,10 +57,6 @@ class Login extends Component {
 
   redirectToRegister() {
     this.setState({ redirectToRegister: true });
-  }
-
-  handleChange(event) {
-    this.setState({ [event.target.id]: event.target.value });
   }
 
   render() {
@@ -84,7 +90,7 @@ class Login extends Component {
                         id="username"
                         type="text"
                         value={this.state.username}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         placeholder="Identifiant"
                       />
                     </InputGroup>
@@ -98,8 +104,9 @@ class Login extends Component {
                         id="password"
                         type="password"
                         value={this.state.password}
-                        onChange={this.handleChange}
+                        onChange={this.onChange}
                         placeholder="Mot de passe"
+                        onKeyPress={this.onKeyPress}
                       />
                     </InputGroup>
                     <Row>
@@ -109,6 +116,7 @@ class Login extends Component {
                           color="primary"
                           className="px-2"
                           onClick={this.login}
+                          onKeyPress={this.onKeyPress}
                         >
                           Se connecter
                         </Button>
