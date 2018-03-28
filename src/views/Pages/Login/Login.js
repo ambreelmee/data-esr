@@ -5,7 +5,6 @@ import {
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import btoa from 'btoa';
-import Auth from '../../../authentication';
 
 
 class Login extends Component {
@@ -37,9 +36,10 @@ class Login extends Component {
           this.setState({ errorMessage: data.message });
         } else {
           localStorage.setItem('token', data.token);
-          Auth.authenticate(() => {
-            this.setState({ redirectToHome: true });
-            this.setState({ errorMessage: '' });
+          localStorage.setItem('setupTime', new Date().getTime());
+          this.setState({
+            redirectToHome: true,
+            errorMessage: '',
           });
         }
       });

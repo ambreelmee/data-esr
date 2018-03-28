@@ -4,7 +4,7 @@ import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 
-import Update from '../../views/Update/';
+import InstitutionsContainer from '../../views/Institutions/InstitutionsContainer';
 
 class Full extends Component {
   render() {
@@ -15,7 +15,7 @@ class Full extends Component {
           <Sidebar {...this.props} />
           <main className="main">
             <Container fluid>
-              <Update />
+              <InstitutionsContainer />
             </Container>
           </main>
         </div>
