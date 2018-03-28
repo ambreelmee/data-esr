@@ -20,6 +20,7 @@ class Full extends Component {
               <Switch>
                 <PrivateRoute path="/referentiel" name="Référentiels" component={Update} />
                 <PrivateRoute path="/database" name="Database" component={InstitutionsContainer} />
+                <Redirect from="/" to="/referentiel" />
               </Switch>
             </Container>
           </main>
