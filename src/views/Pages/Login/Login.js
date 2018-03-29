@@ -4,7 +4,8 @@ import {
   InputGroupAddon, InputGroupText,
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
-import btoa from 'btoa';
+
+import LoginLoadingButton from './LoginLoadingButton';
 
 
 class Login extends Component {
@@ -13,58 +14,22 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
-      redirectToHome: false,
       redirectToRegister: false,
-      errorMessage: '',
     };
-    this.onKeyPress = this.onKeyPress.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.login = this.login.bind(this);
     this.redirectToRegister = this.redirectToRegister.bind(this);
-  }
-
-  onKeyPress(event) {
-    if (event.key === 'Enter') {
-      this.login();
-    }
   }
 
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
   }
 
-  login() {
-    fetch(`${process.env.PROXY_URL + process.env.API_URL}token`, {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: `Basic ${btoa(`${this.state.username}:${this.state.password}`)}`,
-      }),
-    })
-      .then(res => res.json())
-      .then((data) => {
-        if (data.error) {
-          this.setState({ errorMessage: data.message });
-        } else {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('setupTime', new Date().getTime());
-          this.setState({
-            redirectToHome: true,
-            errorMessage: '',
-          });
-        }
-      });
-  }
 
   redirectToRegister() {
     this.setState({ redirectToRegister: true });
   }
 
   render() {
-    if (this.state.redirectToHome === true) {
-      return (
-        <Redirect to="/" />
-      );
-    }
     if (this.state.redirectToRegister === true) {
       return (
         <Redirect to="/register" />
@@ -106,21 +71,15 @@ class Login extends Component {
                         value={this.state.password}
                         onChange={this.onChange}
                         placeholder="Mot de passe"
-                        onKeyPress={this.onKeyPress}
                       />
                     </InputGroup>
                     <Row>
-                      <Col xs="6">
-                        <p className="text-danger">{this.state.errorMessage}</p>
-                        <Button
-                          color="primary"
-                          className="px-2"
-                          onClick={this.login}
-                          onKeyPress={this.onKeyPress}
-                        >
-                          Se connecter
-                        </Button>
-                      </Col>
+                      <LoginLoadingButton
+                        username={this.state.username}
+                        password={this.state.password}
+                        color="primary"
+                        className="px-2"
+                      />
                       <Col xs="6" className="text-right">
                         <Button color="link" className="px-0">Mot de passe oublié ?</Button>
                       </Col>

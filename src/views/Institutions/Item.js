@@ -26,9 +26,7 @@ class Item extends Component {
     })
       .then(res => res.json())
       .then(() => {
-        this.setState({
-          isDeleted: true,
-        });
+        this.props.get_institution();
       });
   }
 
@@ -39,9 +37,6 @@ class Item extends Component {
   }
 
   render() {
-    if (this.state.isDeleted) {
-      return '';
-    }
     return (
       <tr>
         <td>{this.props.id_esr}</td>
