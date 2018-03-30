@@ -7,28 +7,27 @@ import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
 import Update from '../../views/Update/Update';
 import InstitutionsContainer from '../../views/Institutions/InstitutionsContainer';
+import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
 
-class Full extends Component {
-  render() {
-    return (
-      <div className="app">
-        <Header />
-        <div className="app-body">
-          <Sidebar {...this.props} />
-          <main className="main">
-            <Container fluid>
-              <Switch>
-                <PrivateRoute path="/referentiel" name="Référentiels" component={Update} />
-                <PrivateRoute path="/database" name="Database" component={InstitutionsContainer} />
-                <Redirect from="/" to="/referentiel" />
-              </Switch>
-            </Container>
-          </main>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-}
+const Full = props => (
+  <div className="app">
+    <Header />
+    <div className="app-body">
+      <Sidebar {...props} />
+      <main className="main">
+        <Container fluid>
+          <Switch>
+            <PrivateRoute path="/etablissements" name="Etablissements" component={EtablissementContainer} />
+            <PrivateRoute path="/dashboard" name="Dashboard" component={Update} />
+            <PrivateRoute path="/referentiel" name="Référentiels" component={Update} />
+            <PrivateRoute path="/database" name="Database" component={InstitutionsContainer} />
+            <Redirect from="/" to="/etablissements" />
+          </Switch>
+        </Container>
+      </main>
+    </div>
+    <Footer />
+  </div>
+);
 
 export default Full;

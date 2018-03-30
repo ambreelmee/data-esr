@@ -1,5 +1,13 @@
 export default {
   items: [{
+    name: 'Dashboard',
+    url: '/dashboard',
+  },
+  {
+    name: 'Etablissements',
+    url: '/etablissements',
+  },
+  {
     name: 'Mise à jour des référentiels',
     children: [
       {

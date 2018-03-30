@@ -36,6 +36,7 @@
     "expired-storage": "^1.0.2",
     "flag-icon-css": "2.9.0",
     "font-awesome": "4.7.0",
+    "google-maps-react": "^1.1.11",
     "history": "4.7.2",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
