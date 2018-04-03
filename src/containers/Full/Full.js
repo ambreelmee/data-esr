@@ -8,6 +8,7 @@ import PrivateRoute from '../../PrivateRoute';
 import Update from '../../views/Update/Update';
 import InstitutionsContainer from '../../views/Institutions/InstitutionsContainer';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
+import Dashboard from '../../views/Dashboard/Dashboard';
 
 const Full = props => (
   <div className="app">
@@ -18,7 +19,7 @@ const Full = props => (
         <Container fluid>
           <Switch>
             <PrivateRoute path="/etablissements" name="Etablissements" component={EtablissementContainer} />
-            <PrivateRoute path="/dashboard" name="Dashboard" component={Update} />
+            <PrivateRoute path="/dashboard" name="Dashboard" component={Dashboard} />
             <PrivateRoute path="/referentiel" name="Référentiels" component={Update} />
             <PrivateRoute path="/database" name="Database" component={InstitutionsContainer} />
             <Redirect from="/" to="/etablissements" />

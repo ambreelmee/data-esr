@@ -6,7 +6,6 @@ import {
   Popover, PopoverHeader, PopoverBody,
 } from 'reactstrap';
 
-import MapContainer from './MapContainer';
 
 class Dashboard extends Component {
   constructor(props) {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import PropTypes from 'prop-types';
 
@@ -11,21 +12,22 @@ export class MapContainer extends Component {
       showingInfoWindowNewMarker: false,
       savedMarker: {},
       newMarker: {},
-      selectedPlace: {},
       showNewMarker: false,
       newMarkerPosition: {},
-      newFormattedAddress: '',
+      selectedAddress: '',
+      selectedLat: '',
+      selectedLng: '',
+      errorMessage: '',
     };
 
     this.onNewMarkerClick = this.onNewMarkerClick.bind(this);
-    this.getFormattedAdress = this.getFormattedAdress.bind(this);
+    this.getNewAddress = this.getNewAddress.bind(this);
     this.onMarkerClick = this.onMarkerClick.bind(this);
     this.onMapClicked = this.onMapClicked.bind(this);
   }
 
   onMarkerClick(props, marker) {
     this.setState({
-      selectedPlace: props,
       savedMarker: marker,
       showingInfoWindow: !this.state.showingInfoWindow,
     });
@@ -33,7 +35,6 @@ export class MapContainer extends Component {
 
   onNewMarkerClick(props, marker) {
     this.setState({
-      selectedPlace: props,
       newMarker: marker,
       showingInfoWindowNewMarker: !this.state.showingInfoWindowNewMarker,
     });
@@ -51,78 +52,112 @@ export class MapContainer extends Component {
         newMarker: marker,
         showNewMarker: true,
         newMarkerPosition: e.latLng,
+        selectedLat: e.latLng.lat(),
+        selectedLng: e.latLng.lng(),
       });
     }
   }
 
-  getFormattedAdress() {
+  getNewAddress() {
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ latLng: this.state.newMarkerPosition }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK && results[0]) {
-        console.log(results[0].formatted_address)
         this.setState({
-          newFormattedAddress: results[0].formatted_address,
+          selectedAddress: results[0].formatted_address,
         });
       }
     });
   }
 
-  render() {
-    const style = {
-      width: '100vw',
-      height: '100vh',
+  UpdatePosition() {
+    const position = {
+      lat: this.state.selectedLat,
+      lng: this.state.selectedLng,
     };
+    fetch(`${process.env.PROXY_URL + process.env.API_URL}institutions`, {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${btoa(`${localStorage.getItem('token')}:`)}`,
+      }),
+      body: JSON.stringify(position),
+    })
+      .then(res => res.json())
+      .then(() => {
+        this.props.getAddress();
+      })
+      .catch((error) => {
+        this.setState({
+          errorMessage: error,
+        });
+      });
+  }
+
+  render() {
     if (this.state.showNewMarker) {
-      this.getFormattedAdress();
+      this.getNewAddress();
     }
+    const initialPosition = {
+      lat: this.props.savedAddress.lat,
+      lng: this.props.savedAddress.lng,
+    };
+    const zipAndCity = `${this.props.savedAddress.zip_code} ,${this.props.savedAddress.city}`;
 
     return (
-      <div style={style}>
+      <div>
         <Map
           google={this.props.google}
-          initialCenter={{
-           lat: 48.849607,
-           lng: 2.343567,
-         }}
-          zoom={15}
+          initialCenter={initialPosition}
+          zoom={17}
           onClick={this.onMapClicked}
+          containerStyle={{ width: '100%', height: '400px', position: 'relative' }}
         >
           <Marker
             onClick={this.onMarkerClick}
             title="Cliquer pour afficher l'adresse"
-            name="Université de la Sorbonne"
-            adresse="La Sorbonne, 1 Rue Victor Cousin, 75005 Paris, France"
-            position={{ lat: 48.849607, lng: 2.343567 }}
+            position={initialPosition}
           />
-          {this.state.showNewMarker ?
-            <Marker
-              onClick={this.onNewMarkerClick}
-              title="Cliquer pour afficher l'adresse"
-              adresse={this.state.newFormattedAddress}
-              name="Université de la Sorbonne"
-              position={this.state.newMarkerPosition}
-            />
-            : <div />
-          }
           <InfoWindow
             marker={this.state.savedMarker}
             visible={this.state.showingInfoWindow}
           >
             <div>
-              <h4>{this.state.selectedPlace.name}</h4>
-              <p>{this.state.selectedPlace.adresse}</p>
+              <p>{this.props.savedAddress.address1}
+                {this.props.savedAddress.address2 ? <br /> : <span />}
+                {this.props.savedAddress.address2}<br />
+                {zipAndCity}<br />
+                {this.props.savedAddress.country}
+              </p>
             </div>
           </InfoWindow>
+          {this.state.showNewMarker ?
+            <Marker
+              onClick={this.onNewMarkerClick}
+              title="Cliquer pour afficher l'adresse"
+              position={this.state.newMarkerPosition}
+              icon={{
+              url: 'http://com.cartodb.users-assets.production.s3.amazonaws.com/simpleicon/map43.svg',
+              anchor: new google.maps.Point(16,32),
+              scaledSize: new google.maps.Size(32,32)
+              }}
+            />
+            : <div />
+          }
           <InfoWindow
             marker={this.state.newMarker}
             visible={this.state.showingInfoWindowNewMarker}
           >
             <div>
-              <h4>{this.state.selectedPlace.name}</h4>
-              <p>{this.state.selectedPlace.adresse}</p>
+              {this.state.selectedAddress.split(',')[0]} <br />
+              {this.state.selectedAddress.split(',')[1]} <br />
+              {this.state.selectedAddress.split(',')[2]} <br />
             </div>
           </InfoWindow>
         </Map>
+        <div>{this.state.errorMessage}</div >
+        {this.state.showNewMarker ?
+          <Button className="m-1 float-right" color="secondary"> Corriger les coordonnées gps </Button> :
+          <div />}
       </div>
     );
   }
@@ -131,12 +166,15 @@ export class MapContainer extends Component {
 MapContainer.propTypes = {
   savedAddress: PropTypes.shape({
     business_name: PropTypes.string.isRequired,
-    adresse1: PropTypes.string.isRequired,
-    adresse2: PropTypes.string.isRequired,
+    address1: PropTypes.string.isRequired,
+    address2: PropTypes.string.isRequired,
     zip_code: PropTypes.string.isRequired,
     city: PropTypes.string.isRequired,
     country: PropTypes.string.isRequired,
-  }).isRequired
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+  }).isRequired,
+  getAddress: PropTypes.func.isRequired,
 };
 
 export default GoogleApiWrapper({
