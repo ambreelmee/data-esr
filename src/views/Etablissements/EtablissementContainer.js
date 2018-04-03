@@ -33,7 +33,6 @@ class EtablissementContainer extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log('jesuisla')
         this.setState({
           institution: data.institution,
           isLoading: false,
@@ -50,7 +49,6 @@ class EtablissementContainer extends Component {
       return <p>Loading...</p>;
     }
     const currentAddress = this.getCurrentAddress()[0]
-    console.log(currentAddress)
     const zipAndCity = `${currentAddress.zip_code}, ${currentAddress.city}`;
     return (
       <div className="animated fadeIn">

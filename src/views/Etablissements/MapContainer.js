@@ -3,6 +3,7 @@ import { Button } from 'reactstrap';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import PropTypes from 'prop-types';
 
+import UpdatePositionButton from './UpdatePositionButton';
 
 export class MapContainer extends Component {
   constructor(props) {
@@ -20,11 +21,11 @@ export class MapContainer extends Component {
       errorMessage: '',
     };
 
+    this.hideNewMarker = this.hideNewMarker.bind(this);
     this.getNewAddress = this.getNewAddress.bind(this);
     this.onNewMarkerClick = this.onNewMarkerClick.bind(this);
     this.onMarkerClick = this.onMarkerClick.bind(this);
     this.onMapClicked = this.onMapClicked.bind(this);
-    this.UpdatePosition = this.UpdatePosition.bind(this);
   }
 
   onMarkerClick(props, marker) {
@@ -70,34 +71,10 @@ export class MapContainer extends Component {
     });
   }
 
-  UpdatePosition() {
-    const position = {
-      latitude: this.state.selectedLat,
-      longitude: this.state.selectedLng,
-    };
-    fetch(
-      `${process.env.PROXY_URL + process.env.API_URL_STAGING}institutions/1/addresses/${this.props.currentAddress.id}`,
-      {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-        body: JSON.stringify({ address: position }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.props.getAddress();
-        this.setState({
-          showNewMarker: false,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          errorMessage: error,
-        });
-      });
+  hideNewMarker() {
+    this.setState({
+      showNewMarker: false
+    });
   }
 
   render() {
@@ -161,15 +138,14 @@ export class MapContainer extends Component {
             </div>
           </InfoWindow>
         </Map>
-        <div>{this.state.errorMessage}</div >
         {this.state.showNewMarker ?
-          <Button
-            className="m-1 float-right"
-            color="secondary"
-            onClick={this.UpdatePosition}
-          >
-            Corriger les coordonnées gps
-          </Button> :
+          <UpdatePositionButton
+            id={this.props.currentAddress.id}
+            selectedLat={this.state.selectedLat}
+            selectedLng={this.state.selectedLng}
+            getAddress={this.props.getAddress}
+            hideNewMarker={this.hideNewMarker}
+          /> :
           <div />}
       </div>
     );
