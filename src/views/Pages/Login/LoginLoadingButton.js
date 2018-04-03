@@ -17,28 +17,24 @@ class LoginLoadingButton extends Component {
 
   login() {
     this.setState({ isLoading: true });
-    fetch(`${process.env.PROXY_URL + process.env.API_URL}token`, {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: `Basic ${btoa(`${this.props.username}:${this.props.password}`)}`,
-      }),
-    })
+    fetch(
+      `${process.env.API_URL}auth/login?email=${this.props.username}&password=${this.props.password}`,
+      { method: 'POST' },
+    )
       .then(res => res.json())
       .then((data) => {
-        if (data.error) {
-          this.setState({
-            errorMessage: data.message,
-            isLoading: false,
-          });
-        } else {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('setupTime', new Date().getTime());
-          this.setState({
-            redirectToHome: true,
-            errorMessage: '',
-            isLoading: false,
-          });
-        }
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('setupTime', new Date().getTime());
+        this.setState({
+          redirectToHome: true,
+          errorMessage: '',
+          isLoading: false,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          errorMessage: error.user_authentication,
+        });
       });
   }
 

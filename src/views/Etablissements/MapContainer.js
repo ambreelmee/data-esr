@@ -20,10 +20,11 @@ export class MapContainer extends Component {
       errorMessage: '',
     };
 
-    this.onNewMarkerClick = this.onNewMarkerClick.bind(this);
     this.getNewAddress = this.getNewAddress.bind(this);
+    this.onNewMarkerClick = this.onNewMarkerClick.bind(this);
     this.onMarkerClick = this.onMarkerClick.bind(this);
     this.onMapClicked = this.onMapClicked.bind(this);
+    this.UpdatePosition = this.UpdatePosition.bind(this);
   }
 
   onMarkerClick(props, marker) {
@@ -71,20 +72,26 @@ export class MapContainer extends Component {
 
   UpdatePosition() {
     const position = {
-      lat: this.state.selectedLat,
-      lng: this.state.selectedLng,
+      latitude: this.state.selectedLat,
+      longitude: this.state.selectedLng,
     };
-    fetch(`${process.env.PROXY_URL + process.env.API_URL}institutions`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${btoa(`${localStorage.getItem('token')}:`)}`,
-      }),
-      body: JSON.stringify(position),
-    })
+    fetch(
+      `${process.env.PROXY_URL + process.env.API_URL_STAGING}institutions/1/addresses/${this.props.currentAddress.id}`,
+      {
+        method: 'PUT',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')})`,
+        }),
+        body: JSON.stringify({ address: position }),
+      },
+    )
       .then(res => res.json())
       .then(() => {
         this.props.getAddress();
+        this.setState({
+          showNewMarker: false,
+        });
       })
       .catch((error) => {
         this.setState({
@@ -98,10 +105,10 @@ export class MapContainer extends Component {
       this.getNewAddress();
     }
     const initialPosition = {
-      lat: this.props.savedAddress.lat,
-      lng: this.props.savedAddress.lng,
+      lat: this.props.currentAddress.latitude,
+      lng: this.props.currentAddress.longitude,
     };
-    const zipAndCity = `${this.props.savedAddress.zip_code} ,${this.props.savedAddress.city}`;
+    const zipAndCity = `${this.props.currentAddress.zip_code} ,${this.props.currentAddress.city}`;
 
     return (
       <div>
@@ -122,11 +129,11 @@ export class MapContainer extends Component {
             visible={this.state.showingInfoWindow}
           >
             <div>
-              <p>{this.props.savedAddress.address1}
-                {this.props.savedAddress.address2 ? <br /> : <span />}
-                {this.props.savedAddress.address2}<br />
+              <p>{this.props.currentAddress.address_1}
+                {this.props.currentAddress.address_2 ? <br /> : <span />}
+                {this.props.currentAddress.address_2}<br />
                 {zipAndCity}<br />
-                {this.props.savedAddress.country}
+                {this.props.currentAddress.country}
               </p>
             </div>
           </InfoWindow>
@@ -156,7 +163,13 @@ export class MapContainer extends Component {
         </Map>
         <div>{this.state.errorMessage}</div >
         {this.state.showNewMarker ?
-          <Button className="m-1 float-right" color="secondary"> Corriger les coordonnées gps </Button> :
+          <Button
+            className="m-1 float-right"
+            color="secondary"
+            onClick={this.UpdatePosition}
+          >
+            Corriger les coordonnées gps
+          </Button> :
           <div />}
       </div>
     );
@@ -164,15 +177,20 @@ export class MapContainer extends Component {
 }
 
 MapContainer.propTypes = {
-  savedAddress: PropTypes.shape({
+  currentAddress: PropTypes.shape({
+    address_1: PropTypes.string.isRequired,
+    address_2: PropTypes.string,
     business_name: PropTypes.string.isRequired,
-    address1: PropTypes.string.isRequired,
-    address2: PropTypes.string.isRequired,
-    zip_code: PropTypes.string.isRequired,
     city: PropTypes.string.isRequired,
     country: PropTypes.string.isRequired,
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
+    date_end: PropTypes.string,
+    date_start: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
+    phone: PropTypes.string,
+    status: PropTypes.string.isRequired,
+    zip_code: PropTypes.string.isRequired,
   }).isRequired,
   getAddress: PropTypes.func.isRequired,
 };
