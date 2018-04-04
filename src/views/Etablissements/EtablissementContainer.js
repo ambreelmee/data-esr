@@ -7,6 +7,7 @@ import {
 } from 'reactstrap';
 
 import MapContainer from './MapContainer';
+import AddressModal from './AddressModal';
 
 class EtablissementContainer extends Component {
   constructor(props) {
@@ -17,7 +18,9 @@ class EtablissementContainer extends Component {
       isLoading: false,
       collapse: false,
       displayAdressDropdown: false,
+      modal: false,
     };
+    this.toggleModal = this.toggleModal.bind(this);
     this.renderArchivedAdresses = this.renderArchivedAdresses.bind(this);
     this.getData = this.getData.bind(this);
     this.displayArchivedAddresses = this.displayArchivedAddresses.bind(this);
@@ -56,11 +59,17 @@ class EtablissementContainer extends Component {
     return this.state.institution.addresses.filter(address => address.status === 'archived')
   }
 
+  toggleModal() {
+    this.setState({
+      modal: !this.state.modal,
+    });
+  }
+
   renderArchivedAdresses() {
     const addresses = this.getArchivedAddresses().map( (address) => {
       return (
         <tr>
-          <td>
+          <td key={address.id}>
             {address.business_name}<br />
             {address.address_1}
             {address.address_2 ? <br /> : <span />}
@@ -97,7 +106,26 @@ class EtablissementContainer extends Component {
                       <i className="icon-settings"/>
                     </DropdownToggle>
                     <DropdownMenu>
-                      <DropdownItem><i className="icon-pencil"/>Modifier l&#39;adresse actuelle</DropdownItem>
+                      <DropdownItem onClick={this.toggleModal}>
+                        <i className="icon-pencil"/>
+                        Modifier l&#39;adresse actuelle
+                        {this.state.modal ?
+                          (<AddressModal
+                            getAddress={this.getData}
+                            address_1={currentAddress.address_1}
+                            address_2={currentAddress.address_2}
+                            business_name={currentAddress.business_name}
+                            city={currentAddress.city}
+                            country={currentAddress.country}
+                            date_start={currentAddress.date_start}
+                            date_end={currentAddress.date_end}
+                            id={currentAddress.id}
+                            latitude={currentAddress.latitude}
+                            longitude={currentAddress.longitude}
+                            phone={currentAddress.phone}
+                            zip_code={currentAddress.zip_code}
+                          />) : <div /> }
+                      </DropdownItem>
                       <DropdownItem><i className="icon-plus"/>Ajouter une nouvelle adresse</DropdownItem>
                     </DropdownMenu>
                   </ButtonDropdown>
