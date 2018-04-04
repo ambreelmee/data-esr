@@ -15,7 +15,7 @@ class AddressModal extends Component {
       address_2: this.props.address_2,
       business_name: this.props.business_name,
       city: this.props.city,
-      country: this.props.coutry,
+      country: this.props.country,
       date_start: this.props.date_start,
       date_end: this.props.date_end,
       latitude: this.props.latitude,
@@ -45,18 +45,26 @@ class AddressModal extends Component {
   }
 
   postInstitution() {
-    const institution = {
-      name: this.state.name,
-      date_start: this.state.date_start ? this.state.date_start : null,
-      date_end: this.state.date_end ? this.state.date_end : null,
+    const newAddress = {
+      address_1: this.state.address_1,
+      address_2: this.state.address_2,
+      business_name: this.state.business_name,
+      city: this.state.city,
+      country: this.state.country,
+      date_start: this.state.date_start,
+      date_end: this.state.date_end,
+      latitude: this.state.latitude,
+      longitude: this.state.longitude,
+      phone: this.state.phone,
+      zip_code: this.state.zip_code,
     };
-    fetch(`${process.env.PROXY_URL + process.env.API_URL}institutions`, {
+    fetch(`${process.env.PROXY_URL + process.env.API_URL_STAGING}institutions/1/addresses`, {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
-        Authorization: `Basic ${btoa(`${localStorage.getItem('token')}:`)}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
-      body: JSON.stringify(institution),
+      body: JSON.stringify({"address" : newAddress}),
     })
       .then(res => res.json())
       .then(() => {
@@ -79,7 +87,7 @@ class AddressModal extends Component {
       address_2: this.state.address_2,
       business_name: this.state.business_name,
       city: this.state.city,
-      country: this.state.coutry,
+      country: this.state.country,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
       latitude: this.state.latitude,
@@ -87,7 +95,6 @@ class AddressModal extends Component {
       phone: this.state.phone,
       zip_code: this.state.zip_code,
     };
-    console.log(modifiedAddress)
     fetch(`${process.env.PROXY_URL + process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`, {
       method: 'PUT',
       headers: new Headers({
@@ -98,14 +105,14 @@ class AddressModal extends Component {
     })
       .then(res => res.json())
       .then(() => {
-        this.props.getAddress();
         this.setState({
           modal: !this.state.modal,
         });
+        this.props.getAddress();
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({
-          errorMessage: !this.state.errorMessage,
+          errorMessage: 'formulaire incomplet',
         });
       });
   }
@@ -129,8 +136,8 @@ class AddressModal extends Component {
                   <Input
                     id="business_name"
                     type="text"
-                    value={this.state.business_name}
-                    placeholder={this.props.business_name ? this.props.business_name : 'Nom ou raison sociale'}
+                    value={this.state.business_name ? this.state.business_name : ''}
+                    placeholder={this.state.business_name ? this.state.business_name : 'Nom ou raison sociale'}
                     onChange={this.onChange}
                   />
                 </FormGroup>
@@ -139,8 +146,8 @@ class AddressModal extends Component {
                   <Input
                     id="address_1"
                     type="text"
-                    value={this.state.address_1}
-                    placeholder={this.props.address_1 ? this.props.address_1 : 'Numéro et voie postale'}
+                    value={this.state.address_1 ? this.state.address_1 : ''}
+                    placeholder={this.state.address_1 ? this.state.address_1 : 'Numéro et voie postale'}
                     onChange={this.onChange}
                   />
                 </FormGroup>
@@ -149,8 +156,8 @@ class AddressModal extends Component {
                   <Input
                     id="address_2"
                     type="text"
-                    value={this.state.address_2}
-                    placeholder={this.props.address_2 ? this.props.address_2 : 'Batiment, étage, ...'}
+                    value={this.state.address_2 ? this.state.address_2 : ''}
+                    placeholder={this.state.address_2 ? this.state.address_2 : 'Batiment, étage, ...'}
                     onChange={this.onChange}
                   />
                 </FormGroup>
@@ -161,8 +168,8 @@ class AddressModal extends Component {
                       <Input
                         id="zip_code"
                         type="text"
-                        value={this.state.zip_code}
-                        placeholder={this.props.zip_code ? this.props.zip_code : 'Code postal'}
+                        value={this.state.zip_code ? this.state.zip_code : ''}
+                        placeholder={this.state.zip_code ? this.state.zip_code : 'Code postal'}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -173,8 +180,8 @@ class AddressModal extends Component {
                       <Input
                         id="city"
                         type="text"
-                        value={this.state.city}
-                        placeholder={this.props.city ? this.props.city : 'Ville'}
+                        value={this.state.city ? this.state.city : ''}
+                        placeholder={this.state.city ? this.state.city : 'Ville'}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -187,8 +194,8 @@ class AddressModal extends Component {
                       <Input
                         id="country"
                         type="text"
-                        value={this.state.country}
-                        placeholder={this.props.country ? this.props.country : 'France'}
+                        value={this.state.country ? this.state.country : ''}
+                        placeholder={this.state.country ? this.state.country : 'France'}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -199,8 +206,8 @@ class AddressModal extends Component {
                       <Input
                         id="phone"
                         type="tel"
-                        value={this.state.phone}
-                        placeholder={this.props.phone ? this.props.phone : '06...'}
+                        value={this.state.phone ? this.state.phone : ''}
+                        placeholder={this.state.phone ? this.state.phone : '06...'}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -213,7 +220,7 @@ class AddressModal extends Component {
                       <Input
                         type="date"
                         id="date_start"
-                        value={this.state.date_start}
+                        value={this.state.date_start ? this.state.date_start : ''}
                         placeholder={this.state.date_start ? this.state.date_start : ''}
                         onChange={this.onChange}
                       />
@@ -239,8 +246,8 @@ class AddressModal extends Component {
                       <Input
                         type="number"
                         id="latitude"
-                        value={this.state.latitude}
-                        placeholder={this.state.latitude ? this.state.latitude : ''}
+                        value={this.state.latitude ? this.state.latitude : ''}
+                        placeholder={this.state.latitude ? this.state.latitude : '48.84...'}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -252,7 +259,7 @@ class AddressModal extends Component {
                         type="number"
                         id="longitude"
                         value={this.state.longitude ? this.state.longitude : ''}
-                        placeholder={this.state.longitude ? this.state.longitude : ''}
+                        placeholder={this.state.longitude ? this.state.longitude : '2.34..'}
                         onChange={this.onChange}
                       />
                     </FormGroup>

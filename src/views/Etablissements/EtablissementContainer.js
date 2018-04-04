@@ -18,9 +18,11 @@ class EtablissementContainer extends Component {
       isLoading: false,
       collapse: false,
       displayAdressDropdown: false,
-      modal: false,
+      editModal: false,
+      addModal: false,
     };
-    this.toggleModal = this.toggleModal.bind(this);
+    this.toggleAddModal = this.toggleAddModal.bind(this);
+    this.toggleEditModal = this.toggleEditModal.bind(this);
     this.renderArchivedAdresses = this.renderArchivedAdresses.bind(this);
     this.getData = this.getData.bind(this);
     this.displayArchivedAddresses = this.displayArchivedAddresses.bind(this);
@@ -47,6 +49,8 @@ class EtablissementContainer extends Component {
         this.setState({
           institution: data.institution,
           isLoading: false,
+          editModal: false,
+          addModal: false,
         });
       });
   }
@@ -59,9 +63,15 @@ class EtablissementContainer extends Component {
     return this.state.institution.addresses.filter(address => address.status === 'archived')
   }
 
-  toggleModal() {
+  toggleEditModal() {
     this.setState({
-      modal: !this.state.modal,
+      editModal: !this.state.editModal,
+    });
+  }
+
+  toggleAddModal() {
+    this.setState({
+      addModal: !this.state.addModal,
     });
   }
 
@@ -106,10 +116,10 @@ class EtablissementContainer extends Component {
                       <i className="icon-settings"/>
                     </DropdownToggle>
                     <DropdownMenu>
-                      <DropdownItem onClick={this.toggleModal}>
+                      <DropdownItem onClick={this.toggleEditModal}>
                         <i className="icon-pencil"/>
                         Modifier l&#39;adresse actuelle
-                        {this.state.modal ?
+                        {this.state.editModal ?
                           (<AddressModal
                             getAddress={this.getData}
                             address_1={currentAddress.address_1}
@@ -126,7 +136,14 @@ class EtablissementContainer extends Component {
                             zip_code={currentAddress.zip_code}
                           />) : <div /> }
                       </DropdownItem>
-                      <DropdownItem><i className="icon-plus"/>Ajouter une nouvelle adresse</DropdownItem>
+                      <DropdownItem onClick={this.toggleAddModal}>
+                        <i className="icon-plus"/>
+                        Ajouter une nouvelle adresse
+                        {this.state.addModal ?
+                          (<AddressModal
+                            getAddress={this.getData}
+                          />) : <div /> }
+                      </DropdownItem>
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
