@@ -181,7 +181,6 @@ class EtablissementContainer extends Component {
           </Col>
           <Col md="8" className="pl-0">
             <Card>
-              <div className="m-2 text-center h6">Cliquer sur la carte pour ajuster la position </div>
               <MapContainer currentAddress={currentAddress} getAddress={this.getData} />
             </Card>
           </Col>

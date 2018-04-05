@@ -101,6 +101,10 @@ export class MapContainer extends Component {
               lng: results[0].geometry.location.lng(),
             },
           });
+        } else {
+          this.setState({
+            errorMessage: "Impossible de localiser l'adresse sur la carte",
+          });
         }
       });
     }
@@ -114,7 +118,7 @@ export class MapContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p className="text-center m-2"><em>{this.state.errorMessage}</em></p>;
     }
     if (this.state.showNewMarker) {
       this.getNewAddress()
@@ -123,6 +127,7 @@ export class MapContainer extends Component {
 
     return (
       <div>
+        <div className="m-2 text-center h6">Cliquer sur la carte pour ajuster la position </div>
         <Map
           google={this.props.google}
           initialCenter={this.state.initialPosition}
