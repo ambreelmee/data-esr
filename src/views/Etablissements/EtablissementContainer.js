@@ -77,21 +77,24 @@ class EtablissementContainer extends Component {
   }
 
   renderArchivedAdresses() {
-    const addresses = this.getArchivedAddresses().map((address) => {
-      return (
+    const addresses = this.getArchivedAddresses().map(address =>
+      (
         <tr>
           <td key={address.id}>
+            <Badge color="danger" className="float-right">Archivé</Badge>
             {address.business_name}<br />
             {address.address_1}
             {address.address_2 ? <br /> : <span />}
             {address.address_2}<br />
             {`${address.zip_code}, ${address.city}`}<br />
             {address.country}
-            <Badge color="danger" className="float-right">Archivé</Badge>
+            {address.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{address.phone}
+            {address.date_start ? <span><br /><span className="mr-1">début d&#39;activité :</span></span> : <span />}{address.date_start}
+            {address.date_end ? <span><br /><span className="mr-1">fin d&#39;activité :</span></span> : <span />}{address.date_end}
           </td>
-        </tr>)
-    })
-    return addresses
+        </tr>
+      ));
+    return addresses;
   }
 
   render() {
@@ -152,13 +155,16 @@ class EtablissementContainer extends Component {
                 </ButtonGroup>
               </CardHeader>
               <CardBody>
-              <Badge color="success" className="mt-1 float-right">Active</Badge>
+                <Badge color="success" className="mt-1 float-right">Active</Badge>
                 <h4>{currentAddress.business_name}</h4>
                 {currentAddress.address_1}
                 {currentAddress.address_2 ? <br /> : <span />}
                 {currentAddress.address_2}<br />
                 {zipAndCity}<br />
-                {currentAddress.country}
+                {currentAddress.country}<br />
+                {currentAddress.phone ? <i className="icon-phone pr-1" /> : <span />}{currentAddress.phone}
+                {currentAddress.date_start ? <span className="mr-1">début d&#39;activité :</span> : <span />}{currentAddress.date_start}
+                {currentAddress.date_end ? <span className="mr-1">fin d&#39;activité :</span> : <span />}{currentAddress.date_end}
                 <Button outline className="float-right" color="secondary" size="sm" onClick={this.displayArchivedAddresses}>
                   <i className="icon-eye pr-1" />
                   {this.state.collapse ? 'voir moins' : 'voir plus'}
