@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Badge } from 'reactstrap';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import PropTypes from 'prop-types';
 
@@ -18,7 +18,9 @@ export class MapContainer extends Component {
       selectedAddress: '',
       selectedLat: '',
       selectedLng: '',
-      errorMessage: '',
+      initialPosition: {},
+      isLoading: true,
+      positionMessage: '',
     };
 
     this.hideNewMarker = this.hideNewMarker.bind(this);
@@ -26,6 +28,10 @@ export class MapContainer extends Component {
     this.onNewMarkerClick = this.onNewMarkerClick.bind(this);
     this.onMarkerClick = this.onMarkerClick.bind(this);
     this.onMapClicked = this.onMapClicked.bind(this);
+  }
+
+  componentWillMount() {
+    this.getInitialPosition();
   }
 
   onMarkerClick(props, marker) {
@@ -71,27 +77,55 @@ export class MapContainer extends Component {
     });
   }
 
+  getInitialPosition() {
+    console.log(this.props.currentAddress.latitude)
+    if (this.props.currentAddress.latitude && this.props.currentAddress.longitude) {
+      this.setState({
+        isLoading: false,
+        positionMessage: '',
+        initialPosition: {
+          lat: this.props.currentAddress.latitude,
+          lng: this.props.currentAddress.longitude,
+        },
+      });
+    } else {
+      const geocoder = new google.maps.Geocoder();
+      const formattedAddress = `${this.props.currentAddress.address_1} ${this.props.currentAddress.zip_code} ,${this.props.currentAddress.city}`
+      geocoder.geocode({ address: formattedAddress }, (results, status) => {
+        if (status === 'OK') {
+          this.setState({
+            positionMessage: "Aucune position enregistrée en base pour cette adresse",
+            isLoading: false,
+            initialPosition: {
+              lat: results[0].geometry.location.lat(),
+              lng: results[0].geometry.location.lng(),
+            },
+          });
+        }
+      });
+    }
+  }
+
   hideNewMarker() {
     this.setState({
-      showNewMarker: false
+      showNewMarker: false,
     });
   }
 
   render() {
-    if (this.state.showNewMarker) {
-      this.getNewAddress();
+    if (this.state.isLoading) {
+      return <p>Loading...</p>;
     }
-    const initialPosition = {
-      lat: this.props.currentAddress.latitude,
-      lng: this.props.currentAddress.longitude,
-    };
+    if (this.state.showNewMarker) {
+      this.getNewAddress()
+    }
     const zipAndCity = `${this.props.currentAddress.zip_code} ,${this.props.currentAddress.city}`;
 
     return (
       <div>
         <Map
           google={this.props.google}
-          initialCenter={initialPosition}
+          initialCenter={this.state.initialPosition}
           zoom={17}
           onClick={this.onMapClicked}
           containerStyle={{ width: '100%', height: '400px', position: 'relative' }}
@@ -99,7 +133,7 @@ export class MapContainer extends Component {
           <Marker
             onClick={this.onMarkerClick}
             title="Cliquer pour afficher l'adresse"
-            position={initialPosition}
+            position={this.state.initialPosition}
           />
           <InfoWindow
             marker={this.state.savedMarker}
@@ -138,19 +172,24 @@ export class MapContainer extends Component {
             </div>
           </InfoWindow>
         </Map>
-        {this.state.showNewMarker ?
-          <UpdatePositionButton
-            id={this.props.currentAddress.id}
-            selectedLat={this.state.selectedLat}
-            selectedLng={this.state.selectedLng}
-            getAddress={this.props.getAddress}
-            hideNewMarker={this.hideNewMarker}
-          /> :
+        {this.state.showNewMarker || this.state.positionMessage ?
+          <div>
+            <UpdatePositionButton
+              id={this.props.currentAddress.id}
+              selectedLat={this.state.selectedLat || this.state.initialPosition.lat}
+              selectedLng={this.state.selectedLng || this.state.initialPosition.lng}
+              getAddress={this.props.getAddress}
+              getInitialPosition={this.getInitialPosition}
+              hideNewMarker={this.hideNewMarker}
+            />
+            <Badge color="warning" className="m-3">{this.state.positionMessage}</Badge>
+          </div> :
           <div />}
       </div>
     );
   }
 }
+
 
 MapContainer.propTypes = {
   currentAddress: PropTypes.shape({

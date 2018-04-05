@@ -118,6 +118,7 @@ class AddressModal extends Component {
   }
 
   toggle() {
+    this.props.toggleModal();
     this.setState({
       modal: !this.state.modal,
     });
@@ -293,6 +294,7 @@ AddressModal.propTypes = {
   latitude: PropTypes.number,
   longitude: PropTypes.number,
   phone: PropTypes.string,
+  toggleModal: PropTypes.func.isRequired,
   zip_code: PropTypes.string,
 };
 

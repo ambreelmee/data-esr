@@ -33,11 +33,8 @@ class EtablissementContainer extends Component {
     this.getData();
   }
 
-  displayArchivedAddresses() {
-    this.setState({collapse: !this.state.collapse});
-  }
-
   getData() {
+    this.setState({ isLoading: true });
     fetch(`${process.env.API_URL_STAGING}institutions/1`, {
       method: 'GET',
       headers: new Headers({
@@ -63,6 +60,10 @@ class EtablissementContainer extends Component {
     return this.state.institution.addresses.filter(address => address.status === 'archived')
   }
 
+  displayArchivedAddresses() {
+    this.setState({ collapse: !this.state.collapse });
+  }
+
   toggleEditModal() {
     this.setState({
       editModal: !this.state.editModal,
@@ -76,7 +77,7 @@ class EtablissementContainer extends Component {
   }
 
   renderArchivedAdresses() {
-    const addresses = this.getArchivedAddresses().map( (address) => {
+    const addresses = this.getArchivedAddresses().map((address) => {
       return (
         <tr>
           <td key={address.id}>
@@ -113,15 +114,16 @@ class EtablissementContainer extends Component {
                     toggle={() => { this.setState({ displayAdressDropdown: !this.state.displayAdressDropdown }); }}
                   >
                     <DropdownToggle caret className="p-0" color="light">
-                      <i className="icon-settings"/>
+                      <i className="icon-settings" />
                     </DropdownToggle>
                     <DropdownMenu>
                       <DropdownItem onClick={this.toggleEditModal}>
-                        <i className="icon-pencil"/>
+                        <i className="icon-pencil" />
                         Modifier l&#39;adresse actuelle
                         {this.state.editModal ?
                           (<AddressModal
                             getAddress={this.getData}
+                            toggleModal={this.toggleEditModal}
                             address_1={currentAddress.address_1}
                             address_2={currentAddress.address_2}
                             business_name={currentAddress.business_name}
@@ -137,11 +139,12 @@ class EtablissementContainer extends Component {
                           />) : <div /> }
                       </DropdownItem>
                       <DropdownItem onClick={this.toggleAddModal}>
-                        <i className="icon-plus"/>
+                        <i className="icon-plus" />
                         Ajouter une nouvelle adresse
                         {this.state.addModal ?
                           (<AddressModal
                             getAddress={this.getData}
+                            toggleModal={this.toggleAddModal}
                           />) : <div /> }
                       </DropdownItem>
                     </DropdownMenu>

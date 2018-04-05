@@ -7,7 +7,6 @@ class UpdatePositionButton extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      errorMessage: '',
     };
     this.UpdatePosition = this.UpdatePosition.bind(this);
   }
@@ -33,20 +32,13 @@ class UpdatePositionButton extends Component {
       .then(() => {
         this.setState({
           isLoading: false,
-          errorMessage: '',
         });
-        this.props.hideNewMarker();
         this.props.getAddress();
-      })
-      .catch((error) => {
-        this.setState({
-          errorMessage: error,
-        });
       });
   }
 
   render() {
-    const { isLoading, errorMessage } = this.state;
+    const { isLoading } = this.state;
     return (
       <div>
         <Button
@@ -70,7 +62,6 @@ class UpdatePositionButton extends Component {
 UpdatePositionButton.propTypes = {
   id: PropTypes.number.isRequired,
   getAddress: PropTypes.func.isRequired,
-  hideNewMarker: PropTypes.func.isRequired,
   selectedLat: PropTypes.number.isRequired,
   selectedLng: PropTypes.number.isRequired,
 };
