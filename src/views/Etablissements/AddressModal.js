@@ -18,8 +18,6 @@ class AddressModal extends Component {
       country: this.props.country,
       date_start: this.props.date_start,
       date_end: this.props.date_end,
-      latitude: this.props.latitude,
-      longitude: this.props.longitude,
       phone: this.props.phone,
       zip_code: this.props.zip_code,
       modal: true,
@@ -53,8 +51,6 @@ class AddressModal extends Component {
       country: this.state.country,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
-      latitude: this.state.latitude,
-      longitude: this.state.longitude,
       phone: this.state.phone,
       zip_code: this.state.zip_code,
     };
@@ -64,7 +60,7 @@ class AddressModal extends Component {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
-      body: JSON.stringify({"address" : newAddress}),
+      body: JSON.stringify({ address: newAddress }),
     })
       .then(res => res.json())
       .then(() => {
@@ -90,8 +86,6 @@ class AddressModal extends Component {
       country: this.state.country,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
-      latitude: this.state.latitude,
-      longitude: this.state.longitude,
       phone: this.state.phone,
       zip_code: this.state.zip_code,
     };
@@ -240,33 +234,8 @@ class AddressModal extends Component {
                     </FormGroup>
                   </Col>
                 </Row>
-                <Row>
-                  <Col>
-                    <FormGroup>
-                      <Label>Latitude</Label>
-                      <Input
-                        type="number"
-                        id="latitude"
-                        value={this.state.latitude ? this.state.latitude : ''}
-                        placeholder={this.state.latitude ? this.state.latitude : '48.84...'}
-                        onChange={this.onChange}
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col>
-                    <FormGroup>
-                      <Label>Longitude</Label>
-                      <Input
-                        type="number"
-                        id="longitude"
-                        value={this.state.longitude ? this.state.longitude : ''}
-                        placeholder={this.state.longitude ? this.state.longitude : '2.34..'}
-                        onChange={this.onChange}
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
               </Form>
+              <p>Vous pouvez ajouter ou modifier la géolocalisation directement depuis la carte</p>
             </CardBody>
           </Card>
         </ModalBody>
@@ -291,8 +260,6 @@ AddressModal.propTypes = {
   date_start: PropTypes.string,
   date_end: PropTypes.string,
   getAddress: PropTypes.func.isRequired,
-  latitude: PropTypes.number,
-  longitude: PropTypes.number,
   phone: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
   zip_code: PropTypes.string,
@@ -307,8 +274,6 @@ AddressModal.defaultProps = {
   date_start: null,
   date_end: null,
   id: null,
-  latitude: null,
-  longitude: null,
   phone: null,
   zip_code: null,
 };
