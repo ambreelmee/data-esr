@@ -5,6 +5,8 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+import AddressModalButton from './AddressModalButton'
+
 
 class AddressModal extends Component {
   constructor(props) {
@@ -24,8 +26,6 @@ class AddressModal extends Component {
       errorMessage: '',
     };
     this.triggerAction = this.triggerAction.bind(this);
-    this.modifyCurrentAddress = this.modifyCurrentAddress.bind(this);
-    this.postInstitution = this.postInstitution.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
   }
@@ -40,6 +40,14 @@ class AddressModal extends Component {
     } else {
       this.postInstitution();
     }
+  }
+
+  toggle() {
+    this.props.toggleModal();
+    this.setState({
+      modal: !this.state.modal,
+      errorMessage: '',
+    });
   }
 
   postInstitution() {
@@ -63,17 +71,15 @@ class AddressModal extends Component {
       body: JSON.stringify({ address: newAddress }),
     })
       .then(res => res.json())
-      .then(() => {
-        this.setState({
-          errorMessage: '',
-          modal: !this.state.modal,
-        });
-        this.props.getAddress();
-      })
-      .catch(() => {
-        this.setState({
-          errorMessage: 'Formulaire incomplet',
-        });
+      .then((data) => {
+        if (data === 'Record not found') {
+          this.setState({
+            errorMessage: 'Formulaire est vide ou incomplet',
+          });
+        } else {
+          this.toggle();
+          this.props.getAddress();
+        }
       });
   }
 
@@ -99,30 +105,24 @@ class AddressModal extends Component {
     })
       .then(res => res.json())
       .then(() => {
-        this.setState({
-          modal: !this.state.modal,
-        });
+        this.toggle();
         this.props.getAddress();
       })
       .catch(() => {
         this.setState({
-          errorMessage: 'formulaire incomplet',
+          errorMessage: 'erreur',
         });
       });
-  }
-
-  toggle() {
-    this.props.toggleModal();
-    this.setState({
-      modal: !this.state.modal,
-    });
   }
 
   render() {
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
-        <ModalHeader toggle={this.toggle}>{this.props.id ? "Modifier l'adresse actuelle" : 'Ajouter une adresse'}</ModalHeader>
+        <ModalHeader toggle={this.toggle}>
+          {this.props.id ? "Modifier l'adresse actuelle" : 'Ajouter une adresse'}
+        </ModalHeader>
         <ModalBody>
+          Les champs colorés sont obligatoires
           <Card>
             <CardBody>
               <Form className="form-horizontal">
@@ -136,11 +136,13 @@ class AddressModal extends Component {
                     onChange={this.onChange}
                   />
                 </FormGroup>
-                <FormGroup>
+                <FormGroup className="was-validated">
                   <Label>Champ adresse 1</Label>
                   <Input
                     id="address_1"
                     type="text"
+                    className="form-control-warning"
+                    required
                     value={this.state.address_1 ? this.state.address_1 : ''}
                     placeholder={this.state.address_1 ? this.state.address_1 : 'Numéro et voie postale'}
                     onChange={this.onChange}
@@ -158,11 +160,13 @@ class AddressModal extends Component {
                 </FormGroup>
                 <Row md="5">
                   <Col>
-                    <FormGroup>
+                    <FormGroup className="was-validated">
                       <Label>Code Postal</Label>
                       <Input
                         id="zip_code"
                         type="text"
+                        className="form-control-warning"
+                        required
                         value={this.state.zip_code ? this.state.zip_code : ''}
                         placeholder={this.state.zip_code ? this.state.zip_code : 'Code postal'}
                         onChange={this.onChange}
@@ -170,11 +174,13 @@ class AddressModal extends Component {
                     </FormGroup>
                   </Col>
                   <Col md="7">
-                    <FormGroup>
+                    <FormGroup className="was-validated">
                       <Label>Ville</Label>
                       <Input
                         id="city"
                         type="text"
+                        className="form-control-warning"
+                        required
                         value={this.state.city ? this.state.city : ''}
                         placeholder={this.state.city ? this.state.city : 'Ville'}
                         onChange={this.onChange}
@@ -184,11 +190,13 @@ class AddressModal extends Component {
                 </Row>
                 <Row>
                   <Col md="5">
-                    <FormGroup>
+                    <FormGroup className="was-validated">
                       <Label>Pays</Label>
                       <Input
                         id="country"
                         type="text"
+                        className="form-control-warning"
+                        required
                         value={this.state.country ? this.state.country : ''}
                         placeholder={this.state.country ? this.state.country : 'France'}
                         onChange={this.onChange}
@@ -240,8 +248,11 @@ class AddressModal extends Component {
           </Card>
         </ModalBody>
         <ModalFooter>
-          <p className="text-danger">{this.state.errorMessage}</p>
-          <Button color="primary" onClick={this.triggerAction}>{this.props.id ? "Modifier l'" : 'Ajouter une '}adresse</Button>
+          <p className="mt-2 text-danger">{this.state.errorMessage}</p>
+          <AddressModalButton
+            triggerAction={this.triggerAction}
+            id={this.props.id}
+          />
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
       </Modal>

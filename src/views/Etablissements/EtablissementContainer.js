@@ -106,7 +106,7 @@ class EtablissementContainer extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col md="4" className="pr-0">
+          <Col md="4">
             <Card className="mb-0">
               <CardHeader>
                 Adresse de l&#39;établissement
@@ -175,7 +175,7 @@ class EtablissementContainer extends Component {
               isOpen={this.state.collapse}
             >
               <Card>
-                <CardBody className="py-0">
+                <CardBody className="pt-0">
                   <table className="table">
                     <tbody>
                       {this.renderArchivedAdresses()}
@@ -190,9 +190,6 @@ class EtablissementContainer extends Component {
               <MapContainer currentAddress={currentAddress} getAddress={this.getData} />
             </Card>
           </Col>
-        </Row>
-        <Row>
-          another Row
         </Row>
       </div>
     );
