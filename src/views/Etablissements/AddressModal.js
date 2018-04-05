@@ -54,7 +54,7 @@ class AddressModal extends Component {
       phone: this.state.phone,
       zip_code: this.state.zip_code,
     };
-    fetch(`${process.env.PROXY_URL + process.env.API_URL_STAGING}institutions/1/addresses`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/1/addresses`, {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ class AddressModal extends Component {
       phone: this.state.phone,
       zip_code: this.state.zip_code,
     };
-    fetch(`${process.env.PROXY_URL + process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`, {
       method: 'PUT',
       headers: new Headers({
         'Content-Type': 'application/json',

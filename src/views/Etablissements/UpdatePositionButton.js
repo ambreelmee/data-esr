@@ -18,7 +18,7 @@ class UpdatePositionButton extends Component {
       longitude: this.props.selectedLng,
     };
     fetch(
-      `${process.env.PROXY_URL + process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`,
+      `${process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`,
       {
         method: 'PUT',
         headers: new Headers({
