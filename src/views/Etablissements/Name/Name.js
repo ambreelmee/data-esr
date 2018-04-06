@@ -3,7 +3,7 @@ import { Badge, Button, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 
-class Address extends Component {
+class Name extends Component {
   constructor(props) {
     super(props);
 
@@ -12,13 +12,13 @@ class Address extends Component {
       isLoading: false,
     };
     this.toggleToolTip = this.toggleToolTip.bind(this);
-    this.deleteAddress = this.deleteAddress.bind(this);
+    this.deleteName = this.deleteName.bind(this);
   }
 
-  deleteAddress() {
+  deleteName() {
     this.setState({ isLoading: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`,
+      `${process.env.API_URL_STAGING}institutions/1/institution_names/${this.props.id}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -33,7 +33,7 @@ class Address extends Component {
         this.setState({
           isLoading: false,
         });
-        this.props.getAddresses();
+        this.props.getNames();
       });
   }
 
@@ -52,13 +52,9 @@ class Address extends Component {
         >
           {this.props.status}
         </Badge>
-        {this.props.business_name}{this.props.business_name ? <br /> : <span />}
-        {this.props.address_1}
-        {this.props.address_2 ? <br /> : <span />}{this.props.address_2}<br />
-        {`${this.props.zip_code}, ${this.props.city} ${this.props.country}`}
-        {this.props.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{this.props.phone}
+        <h1 className="text-center">{`${this.props.initials} - ${this.props.text}`}</h1>
         {this.props.date_start ?
-          <span><br /><span className="mr-1">depuis :</span></span> :
+          <span className="mr-1">depuis:</span> :
           <span />}{this.props.date_start}
         {this.props.date_end ?
           <span><br /><span className="mr-1">jusqu&#39;à :</span></span> :
@@ -72,7 +68,7 @@ class Address extends Component {
             color="danger"
             size="sm"
             disabled={this.state.isLoading}
-            onClick={this.deleteAddress}
+            onClick={this.deleteName}
           >
             {this.state.isLoading ?
               <i className="fa fa-spinner fa-spin " /> :
@@ -92,28 +88,20 @@ class Address extends Component {
   }
 }
 
-Address.propTypes = {
-  address_1: PropTypes.string.isRequired,
-  address_2: PropTypes.string,
-  business_name: PropTypes.string,
-  city: PropTypes.string.isRequired,
-  country: PropTypes.string.isRequired,
+Name.propTypes = {
+  initials: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
-  getAddresses: PropTypes.func,
+  getNames: PropTypes.func,
   id: PropTypes.number.isRequired,
-  phone: PropTypes.string,
   status: PropTypes.string.isRequired,
-  zip_code: PropTypes.string.isRequired,
 };
 
-Address.defaultProps = {
-  address_2: null,
-  business_name: null,
+Name.defaultProps = {
   date_start: null,
   date_end: null,
-  getAddresses: null,
-  phone: null,
+  getNames: null,
 };
 
-export default Address;
+export default Name;

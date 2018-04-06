@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'reactstrap';
 
 import AddressContainer from './Address/AddressContainer';
+import NameContainer from './Name/NameContainer';
 
 class EtablissementContainer extends Component {
   constructor(props) {
@@ -42,6 +42,7 @@ class EtablissementContainer extends Component {
     }
     return (
       <div className="animated fadeIn">
+        <NameContainer etablissement_id={1} />
         <AddressContainer etablissement_id={1} />
       </div>
     );
