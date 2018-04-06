@@ -6,7 +6,7 @@ import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
 import Update from '../../views/Update/Update';
-import InstitutionsContainer from '../../views/Institutions/InstitutionsContainer';
+import SearchPage from '../../views/Etablissements/SearchPage';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
 import Dashboard from '../../views/Dashboard/Dashboard';
 
@@ -18,10 +18,10 @@ const Full = props => (
       <main className="main">
         <Container fluid>
           <Switch>
-            <PrivateRoute path="/etablissements" name="Etablissements" component={EtablissementContainer} />
+            <PrivateRoute path="/etablissements" name="Etablissements" component={SearchPage} />
             <PrivateRoute path="/dashboard" name="Dashboard" component={Dashboard} />
             <PrivateRoute path="/referentiel" name="Référentiels" component={Update} />
-            <PrivateRoute path="/database" name="Database" component={InstitutionsContainer} />
+            <PrivateRoute path="/database" name="Database" component={EtablissementContainer} />
             <Redirect from="/" to="/etablissements" />
           </Switch>
         </Container>
