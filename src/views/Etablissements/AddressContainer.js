@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
-  Badge, Button, ButtonGroup, ButtonDropdown, Collapse, DropdownToggle, DropdownMenu,
-  DropdownItem, Row, Col, Card, CardHeader, CardFooter, CardBody, Label, Input,
-  Modal, ModalBody, ModalHeader, ModalFooter,
-  Popover, PopoverHeader, PopoverBody,
+  Button, ButtonGroup, ButtonDropdown, Collapse, DropdownToggle, DropdownMenu,
+  DropdownItem, Row, Col, Card, CardHeader, CardBody, Tooltip,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import MapContainer from './MapContainer';
 import AddressModal from './AddressModal';
+import Address from './Address';
+
 
 class AddressContainer extends Component {
   constructor(props) {
@@ -19,23 +19,21 @@ class AddressContainer extends Component {
       displayAddressDropdown: false,
       editModal: false,
       addModal: false,
+      tooltip: false,
     };
     this.displayArchivedAddresses = this.displayArchivedAddresses.bind(this);
     this.displayAddressDropdown = this.displayAddressDropdown.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
+    this.toggleToolTip = this.toggleToolTip.bind(this);
   }
 
-  displayArchivedAddresses() {
-    this.setState({
-      collapse: !this.state.collapse
-    });
+  getCurrentAddress() {
+    return this.props.addresses.filter(address => address.status === 'active');
   }
 
-  displayAddressDropdown() {
-    this.setState({
-      displayAddressDropdown: !this.state.displayAddressDropdown
-    });
+  getArchivedAddresses() {
+    return this.props.addresses.filter(address => address.status === 'archived');
   }
 
   toggleEditModal() {
@@ -50,52 +48,49 @@ class AddressContainer extends Component {
     });
   }
 
-  getCurrentAddress() {
-    return this.props.addresses.filter(address => address.status === 'active');
+  toggleToolTip() {
+    this.setState({
+      tooltip: !this.state.tooltip,
+    });
   }
 
-  getArchivedAddresses() {
-    return this.props.addresses.filter(address => address.status === 'archived')
+  displayAddressDropdown() {
+    this.setState({
+      displayAddressDropdown: !this.state.displayAddressDropdown,
+    });
   }
 
-
-  renderAddress(address) {
-    return (
-      <div>
-        <Badge
-          color={address.status === 'active' ? "success" : "danger"}
-          className="float-right"
-        >
-          {address.status}
-        </Badge>
-        {address.business_name}<br />
-        {address.address_1}
-        {address.address_2 ? <br /> : <span />}
-        {address.address_2}<br />
-        {`${address.zip_code}, ${address.city}`}<br />
-        {address.country}
-        {address.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{address.phone}
-        {address.date_start ? <span><br /><span className="mr-1">début d&#39;activité :</span></span> : <span />}{address.date_start}
-        {address.date_end ? <span><br /><span className="mr-1">fin d&#39;activité :</span></span> : <span />}{address.date_end}
-      </div>
-    )
+  displayArchivedAddresses() {
+    this.setState({
+      collapse: !this.state.collapse,
+    });
   }
 
   renderArchivedAddresses() {
-    const addresses = this.getArchivedAddresses().map(address =>
+    return this.getArchivedAddresses().map(address =>
       (
         <tr>
           <td key={address.id}>
-            {this.renderAddress(address)}
+            <Address
+              address_1={address.address_1}
+              address_2={address.address_2}
+              business_name={address.business_name}
+              city={address.city}
+              country={address.country}
+              date_start={address.date_start}
+              date_end={address.date_end}
+              id={address.id}
+              phone={address.phone}
+              status={address.status}
+              zip_code={address.zip_code}
+            />
           </td>
         </tr>
       ));
-    return addresses;
   }
 
   render() {
-    const currentAddress = this.getCurrentAddress()[0]
-    const zipAndCity = `${currentAddress.zip_code}, ${currentAddress.city}`;
+    const currentAddress = this.getCurrentAddress()[0];
     return (
       <Row>
         <Col md="4">
@@ -127,8 +122,6 @@ class AddressContainer extends Component {
                           date_start={currentAddress.date_start}
                           date_end={currentAddress.date_end}
                           id={currentAddress.id}
-                          latitude={currentAddress.latitude}
-                          longitude={currentAddress.longitude}
                           phone={currentAddress.phone}
                           zip_code={currentAddress.zip_code}
                         />) : <div /> }
@@ -147,18 +140,38 @@ class AddressContainer extends Component {
               </ButtonGroup>
             </CardHeader>
             <CardBody>
-            {this.renderAddress(currentAddress)}
-              <Button outline className="float-right" color="secondary" size="sm" onClick={this.displayArchivedAddresses}>
-                <i className="icon-eye pr-1" />
-                {this.state.collapse ? 'voir moins' : 'voir plus'}
+              <Address
+                address_1={currentAddress.address_1}
+                address_2={currentAddress.address_2}
+                business_name={currentAddress.business_name}
+                city={currentAddress.city}
+                country={currentAddress.country}
+                date_start={currentAddress.date_start}
+                date_end={currentAddress.date_end}
+                phone={currentAddress.phone}
+                status={currentAddress.status}
+                zip_code={currentAddress.zip_code}
+              />
+              <Button
+                outline
+                id="voir-plus"
+                className="float-right"
+                color="secondary"
+                size="sm"
+                onClick={this.displayArchivedAddresses}
+              >
+                <i className="icon-eye" />
               </Button>
+              <Tooltip placement="bottom" isOpen={this.state.tooltip} target="voir-plus" toggle={this.toggleToolTip}>
+                {this.state.collapse ? 'voir moins' : 'voir plus'}
+              </Tooltip>
             </CardBody>
           </Card>
           <Collapse
             isOpen={this.state.collapse}
           >
             <Card>
-              <CardBody className="pt-0">
+              <CardBody className="p-0">
                 <table className="table">
                   <tbody>
                     {this.renderArchivedAddresses()}
