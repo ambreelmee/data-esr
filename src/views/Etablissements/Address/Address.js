@@ -9,8 +9,32 @@ class Address extends Component {
 
     this.state = {
       tooltip: false,
+      isLoading: false,
     };
     this.toggleToolTip = this.toggleToolTip.bind(this);
+    this.deleteAddress = this.deleteAddress.bind(this);
+  }
+
+  deleteAddress() {
+    this.setState({ isLoading: true });
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`,
+      {
+        method: 'DELETE',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')})`,
+        }),
+        body: JSON.stringify({ address: { id: this.props.id } }),
+      },
+    )
+      .then(res => res.json())
+      .then(() => {
+        this.setState({
+          isLoading: false,
+        });
+        this.props.getAddresses();
+      });
   }
 
   toggleToolTip() {
@@ -31,8 +55,7 @@ class Address extends Component {
         {this.props.business_name}{this.props.business_name ? <br /> : <span />}
         {this.props.address_1}
         {this.props.address_2 ? <br /> : <span />}{this.props.address_2}<br />
-        {`${this.props.zip_code}, ${this.props.city}`}<br />
-        {this.props.country}
+        {`${this.props.zip_code}, ${this.props.city} ${this.props.country}`}
         {this.props.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{this.props.phone}
         {this.props.date_start ?
           <span><br /><span className="mr-1">début d&#39;activité :</span></span> :
@@ -48,8 +71,12 @@ class Address extends Component {
             className="float-right"
             color="danger"
             size="sm"
+            disabled={this.state.isLoading}
+            onClick={this.deleteAddress}
           >
-            <i className="icon-close" />
+            {this.state.isLoading ?
+              <i className="fa fa-spinner fa-spin " /> :
+              <i className="icon-close" />}
           </Button>
           <Tooltip
             placement="bottom"
@@ -57,7 +84,7 @@ class Address extends Component {
             target={`button-${this.props.id}`}
             toggle={this.toggleToolTip}
           >
-            Supprimer
+            {this.state.isLoading ? 'Suppression...' : 'Supprimer'}
           </Tooltip>
         </span>}
       </div>
@@ -73,6 +100,7 @@ Address.propTypes = {
   country: PropTypes.string.isRequired,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
+  getAddresses: PropTypes.func,
   id: PropTypes.number.isRequired,
   phone: PropTypes.string,
   status: PropTypes.string.isRequired,
@@ -84,6 +112,7 @@ Address.defaultProps = {
   business_name: null,
   date_start: null,
   date_end: null,
+  getAddresses: null,
   phone: null,
 };
 

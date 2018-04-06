@@ -15,25 +15,50 @@ class AddressContainer extends Component {
     super(props);
 
     this.state = {
+      addresses: {},
       collapse: false,
       displayAddressDropdown: false,
       editModal: false,
       addModal: false,
       tooltip: false,
+      isLoading: false,
     };
     this.displayArchivedAddresses = this.displayArchivedAddresses.bind(this);
+    this.getAddresses = this.getAddresses.bind(this);
     this.displayAddressDropdown = this.displayAddressDropdown.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleToolTip = this.toggleToolTip.bind(this);
   }
 
+  componentWillMount() {
+    this.getAddresses();
+  }
+
+
+  getAddresses() {
+    this.setState({ isLoading: true });
+    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          addresses: data,
+          isLoading: false,
+        });
+      });
+  }
+
   getCurrentAddress() {
-    return this.props.addresses.filter(address => address.status === 'active');
+    return this.state.addresses.filter(address => address.status === 'active');
   }
 
   getArchivedAddresses() {
-    return this.props.addresses.filter(address => address.status === 'archived');
+    return this.state.addresses.filter(address => address.status === 'archived');
   }
 
   toggleEditModal() {
@@ -80,6 +105,7 @@ class AddressContainer extends Component {
               date_start={address.date_start}
               date_end={address.date_end}
               id={address.id}
+              getAddresses={this.getAddresses}
               phone={address.phone}
               status={address.status}
               zip_code={address.zip_code}
@@ -90,6 +116,9 @@ class AddressContainer extends Component {
   }
 
   render() {
+    if (this.state.isLoading) {
+      return <p>Loading...</p>;
+    }
     const currentAddress = this.getCurrentAddress()[0];
     return (
       <Row>
@@ -112,7 +141,7 @@ class AddressContainer extends Component {
                       Modifier l&#39;adresse actuelle
                       {this.state.editModal ?
                         (<AddressModal
-                          getAddress={this.props.getAddress}
+                          getAddresses={this.getAddresses}
                           toggleModal={this.toggleEditModal}
                           address_1={currentAddress.address_1}
                           address_2={currentAddress.address_2}
@@ -131,7 +160,7 @@ class AddressContainer extends Component {
                       Ajouter une nouvelle adresse
                       {this.state.addModal ?
                         (<AddressModal
-                          getAddress={this.props.getAddress}
+                          getAddresses={this.getAddresses}
                           toggleModal={this.toggleAddModal}
                         />) : <div /> }
                     </DropdownItem>
@@ -152,19 +181,27 @@ class AddressContainer extends Component {
                 status={currentAddress.status}
                 zip_code={currentAddress.zip_code}
               />
-              <Button
-                outline
-                id="voir-plus"
-                className="float-right"
-                color="secondary"
-                size="sm"
-                onClick={this.displayArchivedAddresses}
-              >
-                <i className="icon-eye" />
-              </Button>
-              <Tooltip placement="bottom" isOpen={this.state.tooltip} target="voir-plus" toggle={this.toggleToolTip}>
-                {this.state.collapse ? 'voir moins' : 'voir plus'}
-              </Tooltip>
+              {this.getArchivedAddresses().length > 0 ?
+                <span>
+                  <Button
+                    outline
+                    id="voir-plus"
+                    className="float-right"
+                    color="secondary"
+                    size="sm"
+                    onClick={this.displayArchivedAddresses}
+                  >
+                    <i className="icon-eye" />
+                  </Button>
+                  <Tooltip
+                    placement="bottom"
+                    isOpen={this.state.tooltip}
+                    target="voir-plus"
+                    toggle={this.toggleToolTip}
+                  >
+                    {this.state.collapse ? 'voir moins' : 'voir plus'}
+                  </Tooltip>
+                </span> : <span />}
             </CardBody>
           </Card>
           <Collapse
@@ -183,7 +220,7 @@ class AddressContainer extends Component {
         </Col>
         <Col md="8" className="pl-0">
           <Card>
-            <MapContainer currentAddress={currentAddress} getAddress={this.props.getAddress} />
+            <MapContainer currentAddress={currentAddress} getAddresses={this.getAddresses} />
           </Card>
         </Col>
       </Row>
@@ -192,8 +229,7 @@ class AddressContainer extends Component {
 }
 
 AddressContainer.propTypes = {
-  addresses: PropTypes.array.isRequired,
-  getAddress: PropTypes.func.isRequired,
-}
+  etablissement_id: PropTypes.number.isRequired,
+};
 
 export default AddressContainer;

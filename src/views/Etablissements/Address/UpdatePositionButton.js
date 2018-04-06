@@ -33,7 +33,7 @@ class UpdatePositionButton extends Component {
         this.setState({
           isLoading: false,
         });
-        this.props.getAddress();
+        this.props.getAddresses();
       });
   }
 
@@ -61,7 +61,7 @@ class UpdatePositionButton extends Component {
 
 UpdatePositionButton.propTypes = {
   id: PropTypes.number.isRequired,
-  getAddress: PropTypes.func.isRequired,
+  getAddresses: PropTypes.func.isRequired,
   selectedLat: PropTypes.number.isRequired,
   selectedLng: PropTypes.number.isRequired,
 };

@@ -78,7 +78,7 @@ class AddressModal extends Component {
           });
         } else {
           this.toggle();
-          this.props.getAddress();
+          this.props.getAddresses();
         }
       });
   }
@@ -106,7 +106,7 @@ class AddressModal extends Component {
       .then(res => res.json())
       .then(() => {
         this.toggle();
-        this.props.getAddress();
+        this.props.getAddresses();
       })
       .catch(() => {
         this.setState({
@@ -270,7 +270,7 @@ AddressModal.propTypes = {
   country: PropTypes.string,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
-  getAddress: PropTypes.func.isRequired,
+  getAddresses: PropTypes.func.isRequired,
   phone: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
   zip_code: PropTypes.string,

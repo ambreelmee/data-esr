@@ -78,7 +78,6 @@ export class MapContainer extends Component {
   }
 
   getInitialPosition() {
-    console.log(this.props.currentAddress.latitude)
     if (this.props.currentAddress.latitude && this.props.currentAddress.longitude) {
       this.setState({
         isLoading: false,
@@ -94,7 +93,7 @@ export class MapContainer extends Component {
       geocoder.geocode({ address: formattedAddress }, (results, status) => {
         if (status === 'OK') {
           this.setState({
-            positionMessage: "Aucune position enregistrée en base pour cette adresse",
+            positionMessage: 'Aucune position enregistrée en base pour cette adresse',
             isLoading: false,
             initialPosition: {
               lat: results[0].geometry.location.lat(),
@@ -121,7 +120,7 @@ export class MapContainer extends Component {
       return <p className="text-center m-2"><em>{this.state.errorMessage}</em></p>;
     }
     if (this.state.showNewMarker) {
-      this.getNewAddress()
+      this.getNewAddress();
     }
     const zipAndCity = `${this.props.currentAddress.zip_code} ,${this.props.currentAddress.city}`;
 
@@ -183,7 +182,7 @@ export class MapContainer extends Component {
               id={this.props.currentAddress.id}
               selectedLat={this.state.selectedLat || this.state.initialPosition.lat}
               selectedLng={this.state.selectedLng || this.state.initialPosition.lng}
-              getAddress={this.props.getAddress}
+              getAddresses={this.props.getAddresses}
               getInitialPosition={this.getInitialPosition}
               hideNewMarker={this.hideNewMarker}
             />
@@ -212,7 +211,7 @@ MapContainer.propTypes = {
     status: PropTypes.string.isRequired,
     zip_code: PropTypes.string.isRequired,
   }).isRequired,
-  getAddress: PropTypes.func.isRequired,
+  getAddresses: PropTypes.func.isRequired,
 };
 
 export default GoogleApiWrapper({
