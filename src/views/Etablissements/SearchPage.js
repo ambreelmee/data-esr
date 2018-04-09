@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import {
-  Badge, Button, FormGroup, Form, InputGroup, InputGroupAddon,
-  Row, Col, Card, CardBody, Input,
+  Button, FormGroup, Form, InputGroup, InputGroupAddon,
+  Row, Col, Input,
 } from 'reactstrap';
+import debounce from 'lodash/debounce';
+
+import { getActiveEntity, getFormattedAddress } from './methods';
+import SearchPageEtablissement from './SearchPageEtablissement';
+
 
 class SearchPage extends Component {
   constructor(props) {
@@ -11,8 +16,11 @@ class SearchPage extends Component {
     this.state = {
       institutions: {},
       isLoading: false,
+      searchEntry: '',
     };
-    this.getData = this.getData.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.resetSearch = this.resetSearch.bind(this);
+    this.getData = debounce(this.getData, 1000);
   }
 
   componentWillMount() {
@@ -20,10 +28,18 @@ class SearchPage extends Component {
     this.getData();
   }
 
+
+  onChange(event) {
+    event.preventDefault();
+    this.setState({ [event.target.id]: event.target.value });
+    this.getData();
+  }
+
   getData() {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions`, {
-      method: 'GET',
+    const params = encodeURI(this.state.searchEntry);
+    fetch(`${process.env.API_URL_STAGING}institutions/search?q=${params}`, {
+      method: 'POST',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
@@ -31,10 +47,30 @@ class SearchPage extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({
-          institutions: data.institution,
+          institutions: data,
           isLoading: false,
         });
       });
+  }
+
+  resetSearch() {
+    this.setState({ searchEntry: '' });
+    this.getData();
+  }
+
+  renderInstitutionsCards() {
+    return this.state.institutions.map(institution => (
+      <Col md="4" key={institution.id}>
+        <SearchPageEtablissement
+          address={getActiveEntity(institution.addresses) ?
+            getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
+          date_start={institution.date_start}
+          date_end={institution.date_end}
+          id={institution.id}
+          name={getActiveEntity(institution.names).text}
+        />
+      </Col>
+    ));
   }
 
   render() {
@@ -47,41 +83,36 @@ class SearchPage extends Component {
           <FormGroup row className="w-75">
             <Col md="12">
               <InputGroup>
-                <Input type="text" placeholder="Rechercher un établissement..." />
-                <InputGroupAddon>
-                  <Button type="button" color="primary"><i className="fa fa-search" /> Rechercher</Button>
+                <InputGroupAddon addonType="prepend">
+                  <Button type="button" color="primary" onClick={this.getData}>
+                    <i className="fa fa-search" /> Rechercher
+                  </Button>
+                </InputGroupAddon>
+                <Input
+                  id="searchEntry"
+                  type="text"
+                  placeholder="Rechercher un établissement..."
+                  value={this.state.searchEntry}
+                  onChange={this.onChange}
+                  autoFocus
+                  onFocus={(e) => {
+                    const val = e.target.value;
+                    e.target.value = '';
+                    e.target.value = val;
+                  }}
+                />
+                <InputGroupAddon addonType="append">
+                  {this.state.searchEntry ?
+                    <Button type="button" color="secondary" onClick={this.resetSearch}>
+                      <i className="fa fa-remove" />
+                    </Button> : <div />}
                 </InputGroupAddon>
               </InputGroup>
             </Col>
           </FormGroup>
         </Form>
         <Row>
-          <Col md="4">
-            <Card className="card-accent-primary">
-              <CardBody>
-                <div>
-                  <Badge color="success" className="float-right">
-                    Actif
-                  </Badge>
-                  <h4>CentraleSupelec</h4>
-                  <Badge color="primary" pill>Etablissement d enseignment supérieur</Badge><br />
-                  <em> campus de Gif </em><br />
-                   5 rue Joliot Curie, 91190 Gif sur Yvette <br />
-                  <Button
-                    outline
-                    id="searchpage-1"
-                    className="float-right"
-                    color="primary"
-                    size="sm"
-                  >
-                    <i className="icon-eye mr-1" />
-                   Afficher
-                  </Button>
-                   depuis le 18/10/2015
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
+          {this.renderInstitutionsCards()}
         </Row>
       </div>
     );

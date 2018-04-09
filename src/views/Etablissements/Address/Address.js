@@ -11,8 +11,8 @@ class Address extends Component {
       tooltip: false,
       isLoading: false,
     };
-    this.toggleToolTip = this.toggleToolTip.bind(this);
     this.deleteAddress = this.deleteAddress.bind(this);
+    this.toggleToolTip = this.toggleToolTip.bind(this);
   }
 
   deleteAddress() {
@@ -61,7 +61,7 @@ class Address extends Component {
           <span><br /><span className="mr-1">depuis :</span></span> :
           <span />}{this.props.date_start}
         {this.props.date_end ?
-          <span><br /><span className="mr-1">jusqu&#39;à :</span></span> :
+          <span><br /><span className="mr-1">jusqu&#39;au :</span></span> :
           <span />}{this.props.date_end}
         {this.props.status === 'active' ? <span /> :
         <span>

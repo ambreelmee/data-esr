@@ -18,10 +18,10 @@ const Full = props => (
       <main className="main">
         <Container fluid>
           <Switch>
-            <PrivateRoute path="/etablissements" name="Etablissements" component={SearchPage} />
-            <PrivateRoute path="/dashboard" name="Dashboard" component={Dashboard} />
-            <PrivateRoute path="/referentiel" name="Référentiels" component={Update} />
-            <PrivateRoute path="/database" name="Database" component={EtablissementContainer} />
+            <PrivateRoute exact path="/etablissements"component={SearchPage} />
+            <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
+            <PrivateRoute path="/dashboard" component={Dashboard} />
+            <PrivateRoute path="/referentiel" component={Update} />
             <Redirect from="/" to="/etablissements" />
           </Switch>
         </Container>

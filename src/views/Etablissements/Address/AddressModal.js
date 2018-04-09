@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
-  Button, Card, CardBody, CardHeader, Col, Form, FormGroup,
+  Button, Card, CardBody, Col, Form, FormGroup,
   Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import AddressModalButton from './AddressModalButton'
+import AddressModalButton from './AddressModalButton';
 
 
 class AddressModal extends Component {

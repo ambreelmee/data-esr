@@ -52,12 +52,12 @@ class Name extends Component {
         >
           {this.props.status}
         </Badge>
-        <h1 className="text-center">{`${this.props.initials} - ${this.props.text}`}</h1>
+        <h2 className="text-center">{`${this.props.initials} - ${this.props.text}`}</h2>
         {this.props.date_start ?
           <span className="mr-1">depuis:</span> :
           <span />}{this.props.date_start}
         {this.props.date_end ?
-          <span><br /><span className="mr-1">jusqu&#39;à :</span></span> :
+          <span><br /><span className="mr-1">jusqu&#39;au :</span></span> :
           <span />}{this.props.date_end}
         {this.props.status === 'active' ? <span /> :
         <span>

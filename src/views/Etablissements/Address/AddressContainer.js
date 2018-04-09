@@ -5,6 +5,8 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+import { getActiveEntity, getArchivedEntities } from './../methods';
+
 import MapContainer from './MapContainer';
 import AddressModal from './AddressModal';
 import Address from './Address';
@@ -17,15 +19,15 @@ class AddressContainer extends Component {
     this.state = {
       addresses: {},
       collapse: false,
-      displayAddressDropdown: false,
+      displayDropdown: false,
       editModal: false,
       addModal: false,
       tooltip: false,
       isLoading: false,
     };
-    this.displayArchivedAddresses = this.displayArchivedAddresses.bind(this);
     this.getAddresses = this.getAddresses.bind(this);
-    this.displayAddressDropdown = this.displayAddressDropdown.bind(this);
+    this.displayArchivedEntities = this.displayArchivedEntities.bind(this);
+    this.displayDropdown = this.displayDropdown.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleToolTip = this.toggleToolTip.bind(this);
@@ -53,14 +55,6 @@ class AddressContainer extends Component {
       });
   }
 
-  getCurrentAddress() {
-    return this.state.addresses.filter(address => address.status === 'active');
-  }
-
-  getArchivedAddresses() {
-    return this.state.addresses.filter(address => address.status === 'archived');
-  }
-
   toggleEditModal() {
     this.setState({
       editModal: !this.state.editModal,
@@ -79,22 +73,22 @@ class AddressContainer extends Component {
     });
   }
 
-  displayAddressDropdown() {
+  displayDropdown() {
     this.setState({
-      displayAddressDropdown: !this.state.displayAddressDropdown,
+      displayDropdown: !this.state.displayDropdown,
     });
   }
 
-  displayArchivedAddresses() {
+  displayArchivedEntities() {
     this.setState({
       collapse: !this.state.collapse,
     });
   }
 
-  renderArchivedAddresses() {
-    return this.getArchivedAddresses().map(address =>
+  renderArchivedEntities() {
+    return getArchivedEntities(this.state.addresses).map(address =>
       (
-        <tr>
+        <tr key={address.id}>
           <td key={address.id}>
             <Address
               address_1={address.address_1}
@@ -119,7 +113,7 @@ class AddressContainer extends Component {
     if (this.state.isLoading) {
       return <p>Loading...</p>;
     }
-    const currentAddress = this.getCurrentAddress()[0];
+    const currentAddress = getActiveEntity(this.state.addresses);
     return (
       <Row>
         <Col md="4">
@@ -129,32 +123,33 @@ class AddressContainer extends Component {
               <ButtonGroup className="float-right">
                 <ButtonDropdown
                   id="adressDropdown"
-                  isOpen={this.state.displayAddressDropdown}
-                  toggle={this.displayAddressDropdown}
+                  isOpen={this.state.displayDropdown}
+                  toggle={this.displayDropdown}
                 >
                   <DropdownToggle caret className="p-0" color="light">
                     <i className="icon-settings" />
                   </DropdownToggle>
                   <DropdownMenu>
-                    <DropdownItem onClick={this.toggleEditModal}>
-                      <i className="icon-pencil" />
-                      Modifier l&#39;adresse actuelle
-                      {this.state.editModal ?
-                        (<AddressModal
-                          getAddresses={this.getAddresses}
-                          toggleModal={this.toggleEditModal}
-                          address_1={currentAddress.address_1}
-                          address_2={currentAddress.address_2}
-                          business_name={currentAddress.business_name}
-                          city={currentAddress.city}
-                          country={currentAddress.country}
-                          date_start={currentAddress.date_start}
-                          date_end={currentAddress.date_end}
-                          id={currentAddress.id}
-                          phone={currentAddress.phone}
-                          zip_code={currentAddress.zip_code}
-                        />) : <div /> }
-                    </DropdownItem>
+                    {currentAddress ?
+                      <DropdownItem onClick={this.toggleEditModal}>
+                        <i className="icon-pencil" />
+                        Modifier l&#39;adresse actuelle
+                        {this.state.editModal ?
+                          (<AddressModal
+                            getAddresses={this.getAddresses}
+                            toggleModal={this.toggleEditModal}
+                            address_1={currentAddress.address_1}
+                            address_2={currentAddress.address_2}
+                            business_name={currentAddress.business_name}
+                            city={currentAddress.city}
+                            country={currentAddress.country}
+                            date_start={currentAddress.date_start}
+                            date_end={currentAddress.date_end}
+                            id={currentAddress.id}
+                            phone={currentAddress.phone}
+                            zip_code={currentAddress.zip_code}
+                          />) : <div /> }
+                      </DropdownItem> : <div />}
                     <DropdownItem onClick={this.toggleAddModal}>
                       <i className="icon-plus" />
                       Ajouter une nouvelle adresse
@@ -168,41 +163,43 @@ class AddressContainer extends Component {
                 </ButtonDropdown>
               </ButtonGroup>
             </CardHeader>
-            <CardBody>
-              <Address
-                address_1={currentAddress.address_1}
-                address_2={currentAddress.address_2}
-                business_name={currentAddress.business_name}
-                city={currentAddress.city}
-                country={currentAddress.country}
-                date_start={currentAddress.date_start}
-                date_end={currentAddress.date_end}
-                phone={currentAddress.phone}
-                status={currentAddress.status}
-                zip_code={currentAddress.zip_code}
-              />
-              {this.getArchivedAddresses().length > 0 ?
-                <span>
-                  <Button
-                    outline
-                    id="voir-plus"
-                    className="float-right"
-                    color="secondary"
-                    size="sm"
-                    onClick={this.displayArchivedAddresses}
-                  >
-                    <i className="icon-eye" />
-                  </Button>
-                  <Tooltip
-                    placement="bottom"
-                    isOpen={this.state.tooltip}
-                    target="voir-plus"
-                    toggle={this.toggleToolTip}
-                  >
-                    {this.state.collapse ? 'voir moins' : 'voir plus'}
-                  </Tooltip>
-                </span> : <span />}
-            </CardBody>
+            {currentAddress ?
+              <CardBody>
+                <Address
+                  address_1={currentAddress.address_1}
+                  address_2={currentAddress.address_2}
+                  business_name={currentAddress.business_name}
+                  city={currentAddress.city}
+                  country={currentAddress.country}
+                  date_start={currentAddress.date_start}
+                  date_end={currentAddress.date_end}
+                  id={currentAddress.id}
+                  phone={currentAddress.phone}
+                  status={currentAddress.status}
+                  zip_code={currentAddress.zip_code}
+                />
+                {getArchivedEntities(this.state.addresses).length > 0 ?
+                  <span>
+                    <Button
+                      outline
+                      id="voir-plus"
+                      className="float-right"
+                      color="secondary"
+                      size="sm"
+                      onClick={this.displayArchivedEntities}
+                    >
+                      <i className="icon-eye" />
+                    </Button>
+                    <Tooltip
+                      placement="bottom"
+                      isOpen={this.state.tooltip}
+                      target="voir-plus"
+                      toggle={this.toggleToolTip}
+                    >
+                      {this.state.collapse ? 'voir moins' : 'voir plus'}
+                    </Tooltip>
+                  </span> : <span />}
+              </CardBody> : <CardBody><em>Aucune adresse enregistrée actuellement...</em></CardBody>}
           </Card>
           <Collapse
             isOpen={this.state.collapse}
@@ -211,7 +208,7 @@ class AddressContainer extends Component {
               <CardBody className="p-0">
                 <table className="table">
                   <tbody>
-                    {this.renderArchivedAddresses()}
+                    {this.renderArchivedEntities()}
                   </tbody>
                 </table>
               </CardBody>
@@ -220,7 +217,9 @@ class AddressContainer extends Component {
         </Col>
         <Col md="8" className="pl-0">
           <Card>
-            <MapContainer currentAddress={currentAddress} getAddresses={this.getAddresses} />
+            {currentAddress ?
+              <MapContainer currentAddress={currentAddress} getAddresses={this.getAddresses} /> :
+              <div />}
           </Card>
         </Col>
       </Row>
