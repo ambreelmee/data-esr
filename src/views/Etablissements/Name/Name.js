@@ -18,7 +18,7 @@ class Name extends Component {
   deleteName() {
     this.setState({ isLoading: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/1/institution_names/${this.props.id}`,
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names/${this.props.id}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -93,14 +93,16 @@ Name.propTypes = {
   text: PropTypes.string.isRequired,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
-  getNames: PropTypes.func,
   id: PropTypes.number.isRequired,
+  etablissement_id: PropTypes.number,
+  getNames: PropTypes.func,
   status: PropTypes.string.isRequired,
 };
 
 Name.defaultProps = {
   date_start: null,
   date_end: null,
+  etablissement_id: null,
   getNames: null,
 };
 

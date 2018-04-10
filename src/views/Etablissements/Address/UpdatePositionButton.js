@@ -18,7 +18,7 @@ class UpdatePositionButton extends Component {
       longitude: this.props.selectedLng,
     };
     fetch(
-      `${process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`,
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses/${this.props.id}`,
       {
         method: 'PUT',
         headers: new Headers({
@@ -60,6 +60,7 @@ class UpdatePositionButton extends Component {
 }
 
 UpdatePositionButton.propTypes = {
+  etablissement_id: PropTypes.number.isRequired,
   id: PropTypes.number.isRequired,
   getAddresses: PropTypes.func.isRequired,
   selectedLat: PropTypes.number.isRequired,

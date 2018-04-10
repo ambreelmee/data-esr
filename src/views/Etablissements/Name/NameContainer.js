@@ -78,8 +78,8 @@ class NameContainer extends Component {
   }
 
   displayArchivedEntities() {
-    collapse: !this.state.collapse,
     this.setState({
+      collapse: !this.state.collapse,
     });
   }
 
@@ -93,6 +93,7 @@ class NameContainer extends Component {
               date_end={name.date_end}
               id={name.id}
               initials={name.initials}
+              etablissement_id={this.props.etablissement_id}
               getNames={this.getNames}
               status={name.status}
               text={name.text}
@@ -132,6 +133,7 @@ class NameContainer extends Component {
                           date_end={currentName.date_end}
                           id={currentName.id}
                           initials={currentName.initials}
+                          etablissement_id={this.props.etablissement_id}
                           getNames={this.getNames}
                           toggleModal={this.toggleEditModal}
                           text={currentName.text}
@@ -142,6 +144,7 @@ class NameContainer extends Component {
                     Ajouter un nouveau nom
                     {this.state.addModal ?
                       (<NameModal
+                        etablissement_id={this.props.etablissement_id}
                         getNames={this.getNames}
                         toggleModal={this.toggleAddModal}
                       />) : <div /> }

@@ -179,6 +179,7 @@ export class MapContainer extends Component {
         {this.state.showNewMarker || this.state.positionMessage ?
           <div>
             <UpdatePositionButton
+              etablissement_id={this.props.etablissement_id}
               id={this.props.currentAddress.id}
               selectedLat={this.state.selectedLat || this.state.initialPosition.lat}
               selectedLng={this.state.selectedLng || this.state.initialPosition.lng}
@@ -196,6 +197,7 @@ export class MapContainer extends Component {
 
 
 MapContainer.propTypes = {
+  etablissement_id: PropTypes.number.isRequired,
   currentAddress: PropTypes.shape({
     address_1: PropTypes.string.isRequired,
     address_2: PropTypes.string,

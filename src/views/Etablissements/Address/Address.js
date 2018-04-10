@@ -18,7 +18,7 @@ class Address extends Component {
   deleteAddress() {
     this.setState({ isLoading: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`,
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses/${this.props.id}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -102,6 +102,7 @@ Address.propTypes = {
   date_end: PropTypes.string,
   getAddresses: PropTypes.func,
   id: PropTypes.number.isRequired,
+  etablissement_id: PropTypes.number,
   phone: PropTypes.string,
   status: PropTypes.string.isRequired,
   zip_code: PropTypes.string.isRequired,
@@ -112,6 +113,7 @@ Address.defaultProps = {
   business_name: null,
   date_start: null,
   date_end: null,
+  etablissement_id: null,
   getAddresses: null,
   phone: null,
 };

@@ -62,7 +62,7 @@ class AddressModal extends Component {
       phone: this.state.phone,
       zip_code: this.state.zip_code,
     };
-    fetch(`${process.env.API_URL_STAGING}institutions/1/addresses`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses`, {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ class AddressModal extends Component {
       phone: this.state.phone,
       zip_code: this.state.zip_code,
     };
-    fetch(`${process.env.API_URL_STAGING}institutions/1/addresses/${this.props.id}`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses/${this.props.id}`, {
       method: 'PUT',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -270,6 +270,7 @@ AddressModal.propTypes = {
   country: PropTypes.string,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
+  etablissement_id: PropTypes.number.isRequired,
   getAddresses: PropTypes.func.isRequired,
   phone: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,

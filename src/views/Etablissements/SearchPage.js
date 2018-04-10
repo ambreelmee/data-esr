@@ -74,9 +74,6 @@ class SearchPage extends Component {
   }
 
   render() {
-    if (this.state.isLoading) {
-      return <p>Loading...</p>;
-    }
     return (
       <div>
         <Form className="m-5 form-inline justify-content-center">
@@ -111,9 +108,14 @@ class SearchPage extends Component {
             </Col>
           </FormGroup>
         </Form>
-        <Row>
-          {this.renderInstitutionsCards()}
-        </Row>
+        {this.state.isLoading ?
+          <div>
+            <i className="fa fa-spinner fa-spin " />
+            <span className="mx-1"> Chargement </span>
+          </div> :
+          <Row>
+            {this.renderInstitutionsCards()}
+          </Row>}
       </div>
     );
   }

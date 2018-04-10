@@ -52,7 +52,7 @@ class NameModal extends Component {
       date_start: this.state.date_start,
       date_end: this.state.date_end,
     };
-    fetch(`${process.env.API_URL_STAGING}institutions/1/institution_names`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names`, {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -82,14 +82,17 @@ class NameModal extends Component {
       date_start: this.state.date_start,
       date_end: this.state.date_end,
     };
-    fetch(`${process.env.API_URL_STAGING}institutions/1/institution_names/${this.props.id}`, {
-      method: 'PUT',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-      body: JSON.stringify({ institution_name: modifiedName }),
-    })
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names/${this.props.id}`,
+      {
+        method: 'PUT',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }),
+        body: JSON.stringify({ institution_name: modifiedName }),
+      },
+    )
       .then(res => res.json())
       .then(() => {
         this.toggle();
@@ -195,6 +198,7 @@ NameModal.propTypes = {
   initials: PropTypes.string,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
+  etablissement_id: PropTypes.number.isRequired,
   getNames: PropTypes.func.isRequired,
   text: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,

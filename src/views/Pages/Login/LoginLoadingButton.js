@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
-import btoa from 'btoa';
 import PropTypes from 'prop-types';
 
 class LoginLoadingButton extends Component {

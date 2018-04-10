@@ -99,6 +99,7 @@ class AddressContainer extends Component {
               date_start={address.date_start}
               date_end={address.date_end}
               id={address.id}
+              etablissement_id={this.props.etablissement_id}
               getAddresses={this.getAddresses}
               phone={address.phone}
               status={address.status}
@@ -145,6 +146,7 @@ class AddressContainer extends Component {
                             country={currentAddress.country}
                             date_start={currentAddress.date_start}
                             date_end={currentAddress.date_end}
+                            etablissement_id={this.props.etablissement_id}
                             id={currentAddress.id}
                             phone={currentAddress.phone}
                             zip_code={currentAddress.zip_code}
@@ -155,6 +157,7 @@ class AddressContainer extends Component {
                       Ajouter une nouvelle adresse
                       {this.state.addModal ?
                         (<AddressModal
+                          etablissement_id={this.props.etablissement_id}
                           getAddresses={this.getAddresses}
                           toggleModal={this.toggleAddModal}
                         />) : <div /> }
@@ -218,7 +221,11 @@ class AddressContainer extends Component {
         <Col md="8" className="pl-0">
           <Card>
             {currentAddress ?
-              <MapContainer currentAddress={currentAddress} getAddresses={this.getAddresses} /> :
+              <MapContainer
+                currentAddress={currentAddress}
+                getAddresses={this.getAddresses}
+                etablissement_id={this.props.etablissement_id}
+              /> :
               <div />}
           </Card>
         </Col>

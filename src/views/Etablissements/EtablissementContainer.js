@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Col, Row } from 'reactstrap';
+import { Button } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 
 import AddressContainer from './Address/AddressContainer';
+import LinkContainer from './Link/LinkContainer';
 import NameContainer from './Name/NameContainer';
 
 class EtablissementContainer extends Component {
@@ -10,7 +11,6 @@ class EtablissementContainer extends Component {
     super(props);
 
     this.state = {
-      isLoading: false,
       redirectToSearchPage: false,
     };
     this.goToSearchPage = this.goToSearchPage.bind(this);
@@ -39,6 +39,7 @@ class EtablissementContainer extends Component {
         </Button>
         <NameContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
         <AddressContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
+        <LinkContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
       </div>
     );
   }
