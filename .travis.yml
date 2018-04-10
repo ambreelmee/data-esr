@@ -1,17 +1,19 @@
 language: node_js
 node_js:
-  - "stable"
+- stable
 cache:
   directories:
   - node_modules
 script:
-  - npm test
-  - npm run build
-  # - npm run lint //to activate once existing files have been linted
+- npm test
+- npm run build
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $github_token
+  github_token: "$github_token"
   local_dir: build
   on:
     branch: master
+env:
+  matrix:
+    secure: oD/43WS94YmBTlQxm8ndAh6kEFbUoFbDPPRlWu7+fZ0jaHs6imEQWjbaPijtdq4Xf48Bx6vI/pmDoFgXYdIYg87RzxlO5euOwQOjUkC7SHqv7KsQtSICFtD12M5G8hnEo9tjO86CCUZlHfHKBNv+8lhM123L38tilDnXbxNwrLsRcY76lPEgPwRh2s9qmGASsHfSziAOe/U8kQ78R99vgE85gh2T79xgYFKlsG69HiSlXhUL2/mQOjj9nWOJAJ3nn2ZCmFF5wJF9Ie+X6ydXmMWKpnsyog2XC1+biQB5R3x9jOCCOC2wh6kXK/xGylFcnkQT7j8QljmIPkeTpq8pmpj0/mjM/i714VcAniwg9kRY3hDyd8ACdtM2L4o2xO9gtDJRHLiFdaLKW5u/EBiXV+VnQxhSIYMWUxQM+MfRqVmdOSlS7ngkyFGdc9UHr3WnaaUNzDNmDDE5C0O5FBKIG0z5q2N50WaEb79KXpi8tQU6v9ybcV4DOUxERp9VY0/cuGhUuKf2XPS769tTU9MjHhmDBDLf13Ap2Jgv3uksDcYgJ+Bof1dALFBgoO6/j3U6Jan6WFowCN/bo/xuJMa2i559iwmIuWtejHIX/+o7hpcrJ/EXc0OlukqpHTx0aUQq/qtSg0IG/20zOxCUQEMCINYCTmGDM5Rg/QqxDWmB0Lg=

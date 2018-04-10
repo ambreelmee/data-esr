@@ -13,13 +13,7 @@ class EtablissementContainer extends Component {
       isLoading: false,
       redirectToSearchPage: false,
     };
-    this.getData = this.getData.bind(this);
     this.goToSearchPage = this.goToSearchPage.bind(this);
-  }
-
-  componentWillMount() {
-    this.setState({ isLoading: true });
-    this.getData();
   }
 
 
@@ -30,9 +24,6 @@ class EtablissementContainer extends Component {
   }
 
   render() {
-    if (this.state.isLoading) {
-      return <p>Loading...</p>;
-    }
     if (this.state.redirectToSearchPage) {
       return <Redirect to="/etablissements" />;
     }
