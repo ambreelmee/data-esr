@@ -3,6 +3,7 @@ import {
   Button, Card, CardBody, Col, Form, FormGroup,
   Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
 } from 'reactstrap';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 
@@ -31,8 +32,10 @@ class NameModal extends Component {
   triggerAction() {
     if (this.props.id) {
       this.modifyCurrentName();
-    } else {
+    } else if (this.props.etablissement_id) {
       this.addNewName();
+    } else {
+      this.createInstitution();
     }
   }
 
@@ -51,6 +54,7 @@ class NameModal extends Component {
       text: this.state.text,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
+      redirectToNewInstitutionId: null,
     };
     fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names`, {
       method: 'POST',
@@ -70,6 +74,35 @@ class NameModal extends Component {
         } else {
           this.toggle();
           this.props.getNames();
+        }
+      });
+  }
+
+  createInstitution() {
+    this.setState({ isLoading: true });
+    const newInstitution = {
+      initials: this.state.initials,
+      name: this.state.text,
+      date_start: this.state.date_start,
+      date_end: this.state.date_end,
+    };
+    fetch(`${process.env.API_URL_STAGING}institutions/`, {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+      body: JSON.stringify({ institution: newInstitution }),
+    })
+      .then(res => res.json())
+      .then((data) => {
+        if (data === 'Record not found') {
+          this.setState({
+            errorMessage: 'Formulaire vide ou incomplet',
+            isLoading: false,
+          });
+        } else {
+          this.setState({ redirectToNewInstitutionId: data.institution.id });
         }
       });
   }
@@ -102,6 +135,9 @@ class NameModal extends Component {
   }
 
   render() {
+    if (this.state.redirectToNewInstitutionId) {
+      return <Redirect to={`/etablissements/${this.state.redirectToNewInstitutionId}`} />
+    }
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
@@ -183,7 +219,7 @@ class NameModal extends Component {
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Modification </span>
               </div> : <div />}
-            {this.props.id ? 'Modifier le ' : 'Ajouter un '}nom
+            {this.props.id ? 'Modifier le nom' : this.props.etablissement_id ? 'Ajouter un nom' : 'Créer un établissement'}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
@@ -198,8 +234,8 @@ NameModal.propTypes = {
   initials: PropTypes.string,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
-  etablissement_id: PropTypes.number.isRequired,
-  getNames: PropTypes.func.isRequired,
+  etablissement_id: PropTypes.number,
+  getNames: PropTypes.func,
   text: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
 };
@@ -209,6 +245,8 @@ NameModal.defaultProps = {
   initials: null,
   date_start: null,
   date_end: null,
+  etablissement_id: null,
+  getNames: null,
   text: null,
 };
 

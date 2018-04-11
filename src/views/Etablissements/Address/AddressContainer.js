@@ -202,7 +202,14 @@ class AddressContainer extends Component {
                       {this.state.collapse ? 'voir moins' : 'voir plus'}
                     </Tooltip>
                   </span> : <span />}
-              </CardBody> : <CardBody><em>Aucune adresse enregistrée actuellement...</em></CardBody>}
+              </CardBody> :
+              <CardBody>
+                <em>Aucune adresse enregistrée actuellement...</em>
+                <Button color="primary" onClick={this.toggleAddModal}>
+                  <i className="fa fa-plus mr-1" />
+                  Ajouter une addresse
+                </Button>
+              </CardBody>}
           </Card>
           <Collapse
             isOpen={this.state.collapse}

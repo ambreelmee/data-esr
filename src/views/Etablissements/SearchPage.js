@@ -3,10 +3,12 @@ import {
   Button, FormGroup, Form, InputGroup, InputGroupAddon,
   Row, Col, Input,
 } from 'reactstrap';
+import { Redirect } from 'react-router-dom';
 import debounce from 'lodash/debounce';
 
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
+import NameModal from './Name/NameModal';
 
 
 class SearchPage extends Component {
@@ -17,9 +19,12 @@ class SearchPage extends Component {
       institutions: {},
       isLoading: false,
       searchEntry: '',
+      redirectToNewInstitution : false,
     };
+    this.toggleModal = this.toggleModal.bind(this);
     this.onChange = this.onChange.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
+    this.redirectToNewInstitution = this.redirectToNewInstitution.bind(this);
     this.getData = debounce(this.getData, 1000);
   }
 
@@ -33,6 +38,12 @@ class SearchPage extends Component {
     event.preventDefault();
     this.setState({ [event.target.id]: event.target.value });
     this.getData();
+  }
+
+  toggleModal() {
+    this.setState({
+      odal: !this.state.modal,
+    });
   }
 
   getData() {
@@ -53,6 +64,10 @@ class SearchPage extends Component {
       });
   }
 
+  redirectToNewInstitution() {
+    this.setState({ redirectToNewInstitution: true });
+  }
+
   resetSearch() {
     this.setState({ searchEntry: '' });
     this.getData();
@@ -60,7 +75,7 @@ class SearchPage extends Component {
 
   renderInstitutionsCards() {
     return this.state.institutions.map(institution => (
-      <Col xs="12" md="4" key={institution.id}>
+      <Col xs="12" md="6" lg="4" key={institution.id}>
         <SearchPageEtablissement
           address={getActiveEntity(institution.addresses) ?
             getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
@@ -74,6 +89,9 @@ class SearchPage extends Component {
   }
 
   render() {
+    if (this.state.redirectToNewInstitution) {
+      return <NameModal toggleModal={this.toggleModal} />
+    }
     return (
       <div>
         <Row className="py-5">
@@ -114,6 +132,16 @@ class SearchPage extends Component {
                 </InputGroup>
               </FormGroup>
             </Form>
+          </Col>
+          <Col xs="12" md="4">
+            <Button
+              type="button"
+              color="primary"
+              className="col-xs-1"
+              onClick={this.redirectToNewInstitution}
+            >
+              <i className="fa fa-plus" /> Ajouter un établissement
+            </Button>
           </Col>
         </Row>
         {this.state.isLoading ?

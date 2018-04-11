@@ -104,10 +104,10 @@ class LinkModal extends Component {
         <ModalBody>
           <Form className="form-horizontal">
             <FormGroup row>
-              <Col md="4" className="text-center">
+              <Col xs="4" className="text-center">
                 <Label className="my-1">{this.props.category}</Label>
               </Col>
-              <Col md="8">
+              <Col sx="8">
                 <Input
                   id="content"
                   type="text"

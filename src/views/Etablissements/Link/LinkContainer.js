@@ -98,7 +98,7 @@ class LinkContainer extends Component {
     }
     return (
       <div>
-        <Row>
+        <Row className ="my-2">
           {this.renderItems()}
           <ButtonGroup className="ml-4">
             <ButtonDropdown
