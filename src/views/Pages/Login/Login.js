@@ -39,7 +39,7 @@ class Login extends Component {
       <div className="app flex-row align-items-center">
         <Container>
           <Row className="justify-content-center">
-            <Col md="8">
+            <Col md="5">
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
@@ -84,23 +84,6 @@ class Login extends Component {
                         <Button color="link" className="px-0">Mot de passe oublié ?</Button>
                       </Col>
                     </Row>
-                  </CardBody>
-                </Card>
-                <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: `${44}%` }}>
-                  <CardBody className="text-center">
-                    <div>
-                      <h2>Inscription</h2>
-                      <p>Si vous n&#39;avez pas encore de compte, inscrivez-vous en cliquant sur le bouton ci-dessous
-                      </p>
-                      <Button
-                        color="primary"
-                        className="mt-3"
-                        active
-                        onClick={this.redirectToRegister}
-                      >
-                      S&#39;inscrire !
-                      </Button>
-                    </div>
                   </CardBody>
                 </Card>
               </CardGroup>
