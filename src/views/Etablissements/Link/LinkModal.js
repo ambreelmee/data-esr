@@ -77,7 +77,7 @@ class LinkModal extends Component {
       content: this.state.content,
     };
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/links/${this.props.id}`,
+      `${process.env.API_URL_STAGING}/links/${this.props.id}`,
       {
         method: 'PUT',
         headers: new Headers({

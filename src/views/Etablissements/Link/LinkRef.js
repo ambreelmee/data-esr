@@ -23,7 +23,7 @@ class LinkRef extends Component {
   deleteLink() {
     this.setState({ isLoading: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/links/${this.props.id}`,
+      `${process.env.API_URL_STAGING}/links/${this.props.id}`,
       {
         method: 'DELETE',
         headers: new Headers({
