@@ -60,7 +60,7 @@ class SearchPage extends Component {
 
   renderInstitutionsCards() {
     return this.state.institutions.map(institution => (
-      <Col md="4" key={institution.id}>
+      <Col xs="12" md="4" key={institution.id}>
         <SearchPageEtablissement
           address={getActiveEntity(institution.addresses) ?
             getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
@@ -76,38 +76,46 @@ class SearchPage extends Component {
   render() {
     return (
       <div>
-        <Form className="m-5 form-inline justify-content-center">
-          <FormGroup row className="w-75">
-            <Col md="12">
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <Button type="button" color="primary" onClick={this.getData}>
-                    <i className="fa fa-search" /> Rechercher
-                  </Button>
-                </InputGroupAddon>
-                <Input
-                  id="searchEntry"
-                  type="text"
-                  placeholder="Rechercher un établissement..."
-                  value={this.state.searchEntry}
-                  onChange={this.onChange}
-                  autoFocus
-                  onFocus={(e) => {
-                    const val = e.target.value;
-                    e.target.value = '';
-                    e.target.value = val;
-                  }}
-                />
-                <InputGroupAddon addonType="append">
-                  {this.state.searchEntry ?
-                    <Button type="button" color="secondary" onClick={this.resetSearch}>
-                      <i className="fa fa-remove" />
-                    </Button> : <div />}
-                </InputGroupAddon>
-              </InputGroup>
-            </Col>
-          </FormGroup>
-        </Form>
+        <Row className="py-5">
+          <Col md="6" className="mx-auto">
+            <Form>
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <Button
+                      type="button"
+                      color="primary"
+                      onClick={this.getData}
+                      className="col-xs-1"
+                    >
+                      <i className="fa fa-search" />
+                    </Button>
+                  </InputGroupAddon>
+                  <Input
+                    id="searchEntry"
+                    className="col-xs-11"
+                    type="text"
+                    placeholder="Rechercher un établissement..."
+                    value={this.state.searchEntry}
+                    onChange={this.onChange}
+                    autoFocus
+                    onFocus={(e) => {
+                      const val = e.target.value;
+                      e.target.value = '';
+                      e.target.value = val;
+                    }}
+                  />
+                  <InputGroupAddon addonType="append">
+                    {this.state.searchEntry ?
+                      <Button type="button" color="secondary" onClick={this.resetSearch}>
+                        <i className="fa fa-remove" />
+                      </Button> : <div />}
+                  </InputGroupAddon>
+                </InputGroup>
+              </FormGroup>
+            </Form>
+          </Col>
+        </Row>
         {this.state.isLoading ?
           <div>
             <i className="fa fa-spinner fa-spin " />
