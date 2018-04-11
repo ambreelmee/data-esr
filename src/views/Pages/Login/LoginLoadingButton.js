@@ -12,6 +12,13 @@ class LoginLoadingButton extends Component {
       redirectToHome: false,
     };
     this.login = this.login.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+  }
+
+  onKeyPress(event) {
+    if (event.key === 'Enter') {
+      this.login();
+    }
   }
 
   login() {
@@ -51,6 +58,7 @@ class LoginLoadingButton extends Component {
           className="px-2"
           disabled={isLoading}
           onClick={!isLoading ? this.login : null}
+          onKeyPress={this.onKeyPress}
         >
           {isLoading ?
             <div>
