@@ -110,7 +110,7 @@ class NameContainer extends Component {
     const currentName = getActiveEntity(this.state.names);
     return (
       <div>
-        <Card className="mb-0">
+        <Card className="mb-0 mt-2">
           <CardHeader>
             Nom de l&#39;établissement
             <ButtonGroup className="float-right">

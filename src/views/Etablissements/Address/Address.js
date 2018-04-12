@@ -66,7 +66,7 @@ class Address extends Component {
         {this.props.status === 'active' ? <span /> :
         <span>
           <Button
-            id={`button-${this.props.id}`}
+            id={`button-address-${this.props.id}`}
             outline
             className="float-right"
             color="danger"
@@ -76,12 +76,12 @@ class Address extends Component {
           >
             {this.state.isLoading ?
               <i className="fa fa-spinner fa-spin " /> :
-              <i className="icon-close" />}
+              <i className="fa fa-close" />}
           </Button>
           <Tooltip
             placement="bottom"
             isOpen={this.state.tooltip}
-            target={`button-${this.props.id}`}
+            target={`button-address-${this.props.id}`}
             toggle={this.toggleToolTip}
           >
             {this.state.isLoading ? 'Suppression...' : 'Supprimer'}

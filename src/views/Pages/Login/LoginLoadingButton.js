@@ -29,13 +29,20 @@ class LoginLoadingButton extends Component {
     )
       .then(res => res.json())
       .then((data) => {
-        localStorage.setItem('token', data.access_token);
-        localStorage.setItem('setupTime', new Date().getTime());
-        this.setState({
-          redirectToHome: true,
-          errorMessage: '',
-          isLoading: false,
-        });
+        if (data.access_token) {
+          localStorage.setItem('token', data.access_token);
+          localStorage.setItem('setupTime', new Date().getTime());
+          this.setState({
+            redirectToHome: true,
+            errorMessage: '',
+            isLoading: false,
+          });
+        } else {
+          this.setState({
+            errorMessage: 'identifiant ou mot de passe invalide',
+            isLoading: false,
+          });
+        }
       })
       .catch((error) => {
         this.setState({

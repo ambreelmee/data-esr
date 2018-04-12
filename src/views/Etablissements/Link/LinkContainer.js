@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
-import { ButtonGroup, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
+import { Card, CardBody, CardHeader, ButtonGroup, ButtonDropdown, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import LinkRef from './LinkRef';
 import LinkDropdown from './LinkDropdown';
 
+const icons = [
+  { class: 'fa fa-youtube', category: 'Page Youtube' },
+  { class: 'fa fa-facebook', category: 'Page facebook' },
+  { class: 'fa fa-wikipedia-w', category: 'Page Wikipedia' },
+  { class: 'fa fa-twitter', category: 'Twitter' },
+  { class: 'fa fa-tumblr', category: 'Tumbler' },
+  { class: 'fa fa-linkedin', category: 'Linkedin' },
+  { class: 'fa fa-at', category: 'Site internet' },
+];
+
+const getCategoryClass = category => (icons.find(item => item.category === category)).class;
 
 class LinkContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      addModal: false,
       categoryLinks: [],
       displayDropdown: false,
       isLoading: false,
@@ -26,8 +36,9 @@ class LinkContainer extends Component {
     this.getCategoryLinks();
   }
 
+
   getCategoryLinks() {
-    fetch(`${process.env.API_URL_STAGING}category_links`, {
+    fetch(`${process.env.API_URL_STAGING}link_categories`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -43,7 +54,7 @@ class LinkContainer extends Component {
 
   getLinks() {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/links`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -52,8 +63,9 @@ class LinkContainer extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({
-          links: data.institution.links,
+          links: data,
           isLoading: false,
+          displayDropdown: false,
         });
       });
   }
@@ -71,6 +83,7 @@ class LinkContainer extends Component {
         key={category.id}
         categoryId={category.id}
         category={category.title}
+        className={getCategoryClass(category.title)}
         etablissement_id={this.props.etablissement_id}
         getLinks={this.getLinks}
       />
@@ -85,7 +98,7 @@ class LinkContainer extends Component {
           content={link.content}
           category={link.category}
           categoryId={(this.state.categoryLinks.find(category => category.title === link.category)).id}
-          etablissement_id={this.props.etablissement_id}
+          className={getCategoryClass(link.category)}
           id={link.id}
           getLinks={this.getLinks}
         />
@@ -97,26 +110,32 @@ class LinkContainer extends Component {
       return <p>Loading...</p>;
     }
     return (
-      <div>
-        <Row className ="my-2">
-          {this.renderItems()}
-          <ButtonGroup className="ml-4">
-            <ButtonDropdown
-              id="linkDropdown"
-              isOpen={this.state.displayDropdown}
-              toggle={this.displayDropdown}
-            >
-              <DropdownToggle caret color="primary" id="source" size="lg">
-                <i className="fa fa-plus mr-1" />
-                Ajouter un lien
-              </DropdownToggle>
-              <DropdownMenu>
-                {this.renderDropDownItems()}
-              </DropdownMenu>
-            </ButtonDropdown>
-          </ButtonGroup>
-        </Row>
-      </div>
+      <Row className="my-2">
+        <Card className="mt-2">
+          <CardHeader>
+            Présence sur le web
+          </CardHeader>
+          <CardBody>
+            {this.renderItems()}
+            {this.state.links.length === 0 ? <em>Aucun lien enregistré actuellement...<br /></em> : <div />}
+            <ButtonGroup className="float-right">
+              <ButtonDropdown
+                id="linkDropdown"
+                isOpen={this.state.displayDropdown}
+                toggle={this.displayDropdown}
+              >
+                <DropdownToggle caret color="primary" id="source">
+                  <i className="fa fa-plus mr-1" />
+                  Ajouter un lien
+                </DropdownToggle>
+                <DropdownMenu>
+                  {this.renderDropDownItems()}
+                </DropdownMenu>
+              </ButtonDropdown>
+            </ButtonGroup>
+          </CardBody>
+        </Card>
+      </Row>
     );
   }
 }

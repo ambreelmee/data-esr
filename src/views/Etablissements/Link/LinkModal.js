@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Button, Card, CardBody, Col, Form, FormGroup,
-  Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
+  Button, InputGroup, InputGroupAddon, InputGroupText,
+  Input, Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
@@ -11,26 +11,18 @@ class LinkModal extends Component {
     super(props);
 
     this.state = {
-      content: this.props.content,
+      content: '',
       modal: true,
       errorMessage: '',
       isLoading: false,
     };
-    this.triggerAction = this.triggerAction.bind(this);
+    this.addNewLink = this.addNewLink.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
-  }
-
-  triggerAction() {
-    if (this.props.id) {
-      this.modifyCurrentLink();
-    } else {
-      this.addNewLink();
-    }
   }
 
   toggle() {
@@ -44,7 +36,7 @@ class LinkModal extends Component {
   addNewLink() {
     this.setState({ isLoading: true });
     const newLink = {
-      category_link_id: this.props.categoryId,
+      link_category_id: this.props.categoryId,
       content: this.state.content,
     };
     fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/links`, {
@@ -70,54 +62,28 @@ class LinkModal extends Component {
       });
   }
 
-  modifyCurrentLink() {
-    this.setState({ isLoading: true });
-    const modifiedLink = {
-      category_link_id: this.props.categoryId,
-      content: this.state.content,
-    };
-    fetch(
-      `${process.env.API_URL_STAGING}/links/${this.props.id}`,
-      {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }),
-        body: JSON.stringify({ link: modifiedLink }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.toggle();
-        this.setState({ isLoading: false });
-        this.props.getLinks();
-      });
-  }
 
   render() {
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          {this.props.id ? 'Modifier le lien' : 'Ajouter un lien'}
+          Ajouter un lien
         </ModalHeader>
         <ModalBody>
-          <Form className="form-horizontal">
-            <FormGroup row>
-              <Col xs="4" className="text-center">
-                <Label className="my-1">{this.props.category}</Label>
-              </Col>
-              <Col sx="8">
-                <Input
-                  id="content"
-                  type="text"
-                  value={this.state.content ? this.state.content : ''}
-                  placeholder={this.state.content ? this.state.content : 'URL de la page...'}
-                  onChange={this.onChange}
-                />
-              </Col>
-            </FormGroup>
-          </Form>
+          <InputGroup className="mb-3">
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText id={`category-${this.props.categoryId}`}>
+                <i className={this.props.className ? this.props.className : 'fa fa-at'} />
+              </InputGroupText>
+            </InputGroupAddon>
+            <Input
+              id="content"
+              type="text"
+              value={this.state.content}
+              onChange={this.onChange}
+              placeholder={this.props.category}
+            />
+          </InputGroup>
         </ModalBody>
         <ModalFooter>
           <p className="mt-2 text-danger">{this.state.errorMessage}</p>
@@ -125,14 +91,14 @@ class LinkModal extends Component {
             className="m-1 float-right"
             color="primary"
             disabled={this.state.isLoading}
-            onClick={!this.state.isLoading ? this.triggerAction : null}
+            onClick={!this.state.isLoading ? this.addNewLink : null}
           >
             {this.state.isLoading ?
               <div>
                 <i className="fa fa-spinner fa-spin " />
-                <span className="mx-1"> Modification </span>
+                <span className="mx-1"> Ajout </span>
               </div> : <div />}
-            {this.props.id ? 'Modifier le ' : 'Ajouter un '}lien
+            Ajouter un lien
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
@@ -143,19 +109,15 @@ class LinkModal extends Component {
 }
 
 LinkModal.propTypes = {
-  id: PropTypes.number,
-  content: PropTypes.string,
-  category: PropTypes.string,
+  category: PropTypes.string.isRequired,
   categoryId: PropTypes.number.isRequired,
+  className: PropTypes.string.isRequired,
   etablissement_id: PropTypes.number.isRequired,
   getLinks: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
 LinkModal.defaultProps = {
-  id: null,
-  content: null,
-  category: null,
 };
 
 export default LinkModal;

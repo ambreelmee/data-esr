@@ -3,7 +3,6 @@ import {
   Button, FormGroup, Form, InputGroup, InputGroupAddon,
   Row, Col, Input,
 } from 'reactstrap';
-import { Redirect } from 'react-router-dom';
 import debounce from 'lodash/debounce';
 
 import { getActiveEntity, getFormattedAddress } from './methods';
@@ -19,7 +18,7 @@ class SearchPage extends Component {
       institutions: {},
       isLoading: false,
       searchEntry: '',
-      redirectToNewInstitution : false,
+      redirectToNewInstitution: false,
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -40,12 +39,6 @@ class SearchPage extends Component {
     this.getData();
   }
 
-  toggleModal() {
-    this.setState({
-      odal: !this.state.modal,
-    });
-  }
-
   getData() {
     this.setState({ isLoading: true });
     const params = encodeURI(this.state.searchEntry);
@@ -62,6 +55,12 @@ class SearchPage extends Component {
           isLoading: false,
         });
       });
+  }
+
+  toggleModal() {
+    this.setState({
+      modal: !this.state.modal,
+    });
   }
 
   redirectToNewInstitution() {
@@ -90,7 +89,7 @@ class SearchPage extends Component {
 
   render() {
     if (this.state.redirectToNewInstitution) {
-      return <NameModal toggleModal={this.toggleModal} />
+      return <NameModal toggleModal={this.toggleModal} />;
     }
     return (
       <div>

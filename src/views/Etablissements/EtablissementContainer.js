@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Col, Row } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 
 import AddressContainer from './Address/AddressContainer';
-import LinkContainer from './Link/LinkContainer';
 import NameContainer from './Name/NameContainer';
 
 class EtablissementContainer extends Component {
@@ -29,17 +28,33 @@ class EtablissementContainer extends Component {
     }
     return (
       <div className="animated fadeIn">
-        <Button
-          color="primary"
-          className="m-3"
-          size="lg"
-          onClick={this.goToSearchPage}
-        >
-        Retour
-        </Button>
-        <NameContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
-        <AddressContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
-        <LinkContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
+        <Row>
+          <Col md="9">
+            <Row>
+              <Col md="2">
+                <Row>
+                  <Button
+                    color="primary"
+                    className="m-3"
+                    size="lg"
+                    onClick={this.goToSearchPage}
+                  >
+                  Retour
+                  </Button>
+                </Row>
+              </Col>
+              <Col md="10">
+                <NameContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
+              </Col>
+            </Row>
+            <AddressContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
+          </Col>
+          <Col md="3">
+            <Row>
+              ici apparaitront les rattachements
+            </Row>
+          </Col>
+        </Row>
       </div>
     );
   }

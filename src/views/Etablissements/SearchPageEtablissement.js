@@ -22,7 +22,7 @@ class SearchPageEtablissement extends Component {
 
   render() {
     if (this.state.displayInstitutionPage) {
-      return <Redirect to={`etablissements/${this.props.id}`} />;
+      return <Redirect to={`/etablissements/${this.props.id}`} />;
     }
     return (
       <Card className={!this.props.date_end ? 'card-accent-primary' : 'card-accent-danger'}>

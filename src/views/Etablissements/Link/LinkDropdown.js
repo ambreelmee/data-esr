@@ -30,6 +30,7 @@ class LinkDropdown extends Component {
           <LinkModal
             categoryId={this.props.categoryId}
             category={this.props.category}
+            className={this.props.className}
             etablissement_id={this.props.etablissement_id}
             getLinks={this.props.getLinks}
             toggleModal={this.toggleModal}
@@ -42,6 +43,7 @@ class LinkDropdown extends Component {
 LinkDropdown.propTypes = {
   category: PropTypes.string.isRequired,
   categoryId: PropTypes.number.isRequired,
+  className: PropTypes.string.isRequired,
   etablissement_id: PropTypes.number.isRequired,
   getLinks: PropTypes.func.isRequired,
 };
