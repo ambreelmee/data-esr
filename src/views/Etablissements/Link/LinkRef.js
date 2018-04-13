@@ -136,7 +136,7 @@ class LinkRef extends Component {
               href={this.props.content.substring(0, 4) === 'http' ? this.props.content : `//${this.props.content}`}
               target="blank"
             >
-              <i className={this.props.className ? this.props.className : 'fa fa-at'} />
+              <i className={this.props.className || 'fa fa-at'} />
             </a>
           </InputGroupText>
           <Tooltip
@@ -240,12 +240,13 @@ LinkRef.propTypes = {
   content: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   categoryId: PropTypes.number.isRequired,
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   id: PropTypes.number.isRequired,
   getLinks: PropTypes.func,
 };
 
 LinkRef.defaultProps = {
+  className: null,
   getLinks: null,
 };
 

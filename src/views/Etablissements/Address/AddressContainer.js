@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 
 import { getActiveEntity, getArchivedEntities } from './../methods';
 
+import CodeContainer from './../Code/CodeContainer';
 import LinkContainer from './../Link/LinkContainer';
 import MapContainer from './MapContainer';
 import AddressModal from './AddressModal';
@@ -128,6 +129,7 @@ class AddressContainer extends Component {
               /> :
               <div />}
           </Card>
+          <CodeContainer etablissement_id={this.props.etablissement_id} />
         </Col>
         <Col md="5">
           <Row>
@@ -198,18 +200,18 @@ class AddressContainer extends Component {
                     <span>
                       <Button
                         outline
-                        id="voir-plus"
+                        id="address-voir-plus"
                         className="float-right"
                         color="secondary"
                         size="sm"
                         onClick={this.displayArchivedEntities}
                       >
-                        <i className="icon-eye" />
+                        <i className="icon-eye mr-1" /> Voir plus
                       </Button>
                       <Tooltip
                         placement="bottom"
                         isOpen={this.state.tooltip}
-                        target="voir-plus"
+                        target="address-voir-plus"
                         toggle={this.toggleToolTip}
                       >
                         {this.state.collapse ? 'voir moins' : 'voir plus'}

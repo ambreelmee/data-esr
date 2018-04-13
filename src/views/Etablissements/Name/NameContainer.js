@@ -168,18 +168,18 @@ class NameContainer extends Component {
                 <span>
                   <Button
                     outline
-                    id="voir-plus"
+                    id="name-voir-plus"
                     className="float-right"
                     color="secondary"
                     size="sm"
                     onClick={this.displayArchivedEntities}
                   >
-                    <i className="icon-eye" />
+                    <i className="icon-eye mr-1" /> Voir plus
                   </Button>
                   <Tooltip
                     placement="bottom"
                     isOpen={this.state.tooltip}
-                    target="voir-plus"
+                    target="name-voir-plus"
                     toggle={this.toggleToolTip}
                   >
                     {this.state.collapse ? 'voir moins' : 'voir plus'}

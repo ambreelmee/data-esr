@@ -23,6 +23,7 @@ class EtablissementContainer extends Component {
   }
 
   render() {
+    const etablissementId = parseInt(this.props.match.params.number, 10);
     if (this.state.redirectToSearchPage) {
       return <Redirect to="/etablissements" />;
     }
@@ -44,10 +45,10 @@ class EtablissementContainer extends Component {
                 </Row>
               </Col>
               <Col md="10">
-                <NameContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
+                <NameContainer etablissement_id={etablissementId} />
               </Col>
             </Row>
-            <AddressContainer etablissement_id={parseInt(this.props.match.params.number, 10)} />
+            <AddressContainer etablissement_id={etablissementId} />
           </Col>
           <Col md="3">
             <Row>
