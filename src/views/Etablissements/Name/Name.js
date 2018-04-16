@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Badge, Button, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 
 class Name extends Component {
@@ -54,11 +55,11 @@ class Name extends Component {
         </Badge>
         <h2 className="text-center">{`${this.props.initials} - ${this.props.text}`}</h2>
         {this.props.date_start ?
-          <span className="mr-1">depuis:</span> :
-          <span />}{this.props.date_start}
+          <span className="mr-1">depuis le: {moment(this.props.date_start).format('LL')}</span> :
+          <span />}
         {this.props.date_end ?
-          <span><br /><span className="mr-1">jusqu&#39;au :</span></span> :
-          <span />}{this.props.date_end}
+          <span><br /><span className="mr-1">jusqu&#39;au: {moment(this.props.date_end).format('LL')}</span></span> :
+          <span />}
         {this.props.status === 'active' ? <span /> :
         <span>
           <Button

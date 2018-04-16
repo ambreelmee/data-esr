@@ -34,7 +34,6 @@ class SearchPage extends Component {
 
 
   onChange(event) {
-    console.log(event.target);
     event.preventDefault();
     this.setState({ [event.target.id]: event.target.value });
     this.getData();

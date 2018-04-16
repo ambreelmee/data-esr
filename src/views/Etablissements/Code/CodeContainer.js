@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import { Card, CardBody, CardHeader, ButtonGroup, ButtonDropdown, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
+import map from 'lodash/map';
 
 import Code from './Code';
 import CodeDropdown from './CodeDropdown';
 
 const addons = [
-  { link: 'https://www.wikidata.org/entity/', category: 'Wikidata', color: 'info' },
-  { link: 'https://www.grid.ac/institutes/', category: 'Grid', color: 'primary' },
-  { link: 'http://isni.org/isni/', category: 'Isni', color: 'info' },
-  { link: '', category: 'UAI', color: 'warning' },
-  { link: '', category: 'Siret', color: 'success' },
-  { link: '', category: 'Eter', color: 'danger' },
+  { link: 'https://www.wikidata.org/entity', category: 'Wikidata' },
+  { link: 'https://www.grid.ac/institutes', category: 'GRID' },
+  { link: 'http://isni.org/isni', category: 'Isni' },
 ];
 
 const getAddons = category => addons.find(item => item.category === category);
@@ -22,8 +20,9 @@ class CodeContainer extends Component {
 
     this.state = {
       categoryCodes: [],
+      codesByCategory: {},
       displayDropdown: false,
-      emptyCategories:[],
+      categoriesWithoutCode: [],
       isLoading: false,
       codes: {},
     };
@@ -44,11 +43,11 @@ class CodeContainer extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        const emptyCategories = data.filter(category =>
-          !this.state.codes.some(code => category.title === code.category));
+        const categoriesWithoutCode = data.filter(category =>
+          !Object.keys(this.state.codesByCategory).includes(category.title));
         this.setState({
           categoryCodes: data,
-          emptyCategories,
+          categoriesWithoutCode,
           isLoading: false,
         });
       });
@@ -64,9 +63,18 @@ class CodeContainer extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        const codesByCategory = {};
+        data.institution.codes.map((code) => {
+          if (!codesByCategory[code.category]) {
+            codesByCategory[code.category] = [];
+          }
+          codesByCategory[code.category].push(code);
+          return codesByCategory;
+        });
         this.setState({
           codes: data.institution.codes,
           displayDropdown: false,
+          codesByCategory
         });
         this.getCategoryCodes();
       });
@@ -81,7 +89,7 @@ class CodeContainer extends Component {
 
 
   renderDropDownItems() {
-    return this.state.emptyCategories.map(category => (
+    return this.state.categoriesWithoutCode.map(category => (
       <CodeDropdown
         key={category.id}
         categoryId={category.id}
@@ -93,21 +101,41 @@ class CodeContainer extends Component {
   }
 
   renderItems() {
-    return this.state.codes.map(code =>
-      (
+    return map(this.state.codesByCategory, ((codes) => {
+      const activeCode = codes.find(code => code.status === 1);
+      if (activeCode) {
+        return (
+          <Code
+            key={activeCode.id}
+            addons={getAddons(activeCode.category)}
+            content={activeCode.content}
+            category={activeCode.category}
+            categoryId={(this.state.categoryCodes.find(category => category.title === activeCode.category)).id}
+            date_end={activeCode.date_end}
+            date_start={activeCode.date_start}
+            etablissement_id={this.props.etablissement_id}
+            id={activeCode.id}
+            getCodes={this.getCodes}
+            history={codes}
+            status={activeCode.status}
+          />);
+      }
+      return (
         <Code
-          key={code.id}
-          addons={getAddons(code.category)}
-          content={code.content}
-          category={code.category}
-          categoryId={(this.state.categoryCodes.find(category => category.title === code.category)).id}
-          date_end={code.date_end}
-          date_start={code.date_start}
+          key={codes[0].id}
+          addons={getAddons(codes[0].category)}
+          content={codes[0].content}
+          category={codes[0].category}
+          categoryId={(this.state.categoryCodes.find(category => category.title === codes[0].category)).id}
+          date_end={codes[0].date_end}
+          date_start={codes[0].date_start}
           etablissement_id={this.props.etablissement_id}
-          id={code.id}
+          id={codes[0].id}
           getCodes={this.getCodes}
-        />
-      ));
+          status={codes[0].status}
+          history={codes}
+        />);
+    }));
   }
 
   render() {
@@ -124,7 +152,7 @@ class CodeContainer extends Component {
             {this.renderItems()}
           </Row>
           {this.state.codes.length === 0 ? <em>Aucun code enregistré actuellement...<br /></em> : <div />}
-          {this.state.emptyCategories.length > 0 ?
+          {this.state.categoriesWithoutCode.length > 0 ?
             <ButtonGroup className="float-right">
               <ButtonDropdown
                 id="codeDropdown"
@@ -133,7 +161,7 @@ class CodeContainer extends Component {
               >
                 <DropdownToggle caret color="primary" id="source-code">
                   <i className="fa fa-plus mr-1" />
-                  Ajouter un lien
+                  Ajouter un code
                 </DropdownToggle>
                 <DropdownMenu>
                   {this.renderDropDownItems()}

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
-  Card, CardBody, CardHeader, Button, Tooltip, Modal, DropdownToggle,
-  ModalHeader, ModalBody, ModalFooter, ButtonGroup, ButtonDropdown,
-  DropdownMenu, DropdownItem, Col,
+  Badge, Button, ButtonDropdown, ButtonGroup, Card, CardBody, CardHeader, Col, DropdownToggle,
+  DropdownItem, DropdownMenu, Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import CodeAddModal from './CodeAddModal';
 import CodeEditModal from './CodeEditModal';
+import CodeHistoryModal from './CodeHistoryModal';
 
 class Code extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Code extends Component {
       deleteModal: false,
       displaySettingDropdown: false,
       editModal: false,
+      historyModal: false,
       isDeleting: false,
     };
     this.displaySettingDropdown = this.displaySettingDropdown.bind(this);
@@ -26,6 +28,7 @@ class Code extends Component {
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+    this.toggleHistoryModal = this.toggleHistoryModal.bind(this);
   }
 
   onChange(event) {
@@ -57,6 +60,12 @@ class Code extends Component {
       });
   }
 
+  toggleHistoryModal() {
+    this.setState({
+      historyModal: !this.state.historyModal,
+    });
+  }
+
   toggleDeleteModal() {
     this.setState({
       deleteModal: !this.state.deleteModal,
@@ -85,7 +94,7 @@ class Code extends Component {
   render() {
     return (
       <Col md="6" xs="12">
-        <Card className={`text-white bg-${this.props.addons ? this.props.addons.color : 'primary'} text-center`}>
+        <Card className="text-white bg-info text-center">
           <CardHeader className="pb-0">
             <h5 className="mb-0">
               {this.props.category.toUpperCase()}
@@ -130,8 +139,17 @@ class Code extends Component {
                     }
                     <DropdownItem onClick={this.toggleHistoryModal}>
                       <i className="fa fa-eye text-info" />
-                        Voir l historique
+                        Voir l&#39;historique
                     </DropdownItem>
+                    {this.state.historyModal ?
+                      <CodeHistoryModal
+                        category={this.props.category}
+                        categoryId={this.props.categoryId}
+                        deleteCode={this.deleteCode}
+                        getCodes={this.props.getCodes}
+                        history={this.props.history}
+                        toggleModal={this.toggleHistoryModal}
+                      /> : <div />}
                     <DropdownItem onClick={this.toggleDeleteModal}>
                       <i className="fa fa-close text-danger" />
                         Supprimer le code {this.props.category.toLowerCase()}
@@ -166,14 +184,20 @@ class Code extends Component {
               </ButtonGroup>
             </h5>
           </CardHeader>
-          <CardBody>
-            <h4 className="mb-0">
-              <a href={this.props.addons ? this.props.addons.link : '#'} className="text-light">
-                {this.props.content}
-              </a>
+          <CardBody className="pt-0 px-0">
+            {this.props.status ?
+              <Badge color="success" className="float-right mt-1 mr-1">Actif</Badge> :
+              <Badge color="danger" className="float-right mt-1 mr-1">Archivé</Badge>}
+            <h4 className="mb-0 mt-4 mx-2">
+              {this.props.addons && this.props.addons.link ?
+                <a href={`${this.props.addons.link}/${this.props.content}`} className="text-light" target="blank">
+                  {this.props.content}
+                </a> : <div>{this.props.content}</div>}
             </h4>
-            {this.props.date_start ? <div>depuis le {this.props.date_start}<br /></div> : <div />}
-            {this.props.date_end ? `jusqu'au ${this.props.date_end}` : ''}
+            {this.props.date_start ?
+              <div className="mx-1">depuis le {moment(this.props.date_start).format('LL')}<br /></div> : <div />}
+            {this.props.date_end ?
+              <div className="mx-1">jusqu&#39;au {moment(this.props.date_end).format('LL')}</div> : <div />}
           </CardBody>
         </Card>
       </Col>
@@ -189,8 +213,10 @@ Code.propTypes = {
   date_end: PropTypes.string,
   date_start: PropTypes.string,
   etablissement_id: PropTypes.number.isRequired,
-  id: PropTypes.number.isRequired,
   getCodes: PropTypes.func,
+  history: PropTypes.array,
+  id: PropTypes.number.isRequired,
+  status: PropTypes.number.isRequired,
 };
 
 Code.defaultProps = {
@@ -198,6 +224,7 @@ Code.defaultProps = {
   date_end: null,
   date_start: null,
   getCodes: null,
+  history: [],
 };
 
 export default Code;
