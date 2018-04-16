@@ -34,6 +34,7 @@ class SearchPage extends Component {
 
 
   onChange(event) {
+    console.log(event.target);
     event.preventDefault();
     this.setState({ [event.target.id]: event.target.value });
     this.getData();
@@ -102,10 +103,12 @@ class SearchPage extends Component {
                     <Button
                       type="button"
                       color="primary"
-                      onClick={this.getData}
+                      onClick={this.onChange}
                       className="col-xs-1"
                     >
-                      <i className="fa fa-search" />
+                      {this.state.isLoading ?
+                        <i className="fa fa-spinner fa-spin" /> :
+                        <i className="fa fa-search" />}
                     </Button>
                   </InputGroupAddon>
                   <Input
