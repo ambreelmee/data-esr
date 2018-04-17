@@ -1,11 +1,11 @@
 export default {
   items: [{
-    name: 'Dashboard',
-    url: '/dashboard',
-  },
-  {
     name: 'Etablissements',
     url: '/etablissements',
+  },
+  {
+    name: 'Catégories',
+    url: '/categories',
   },
   {
     name: 'Mise à jour des référentiels',

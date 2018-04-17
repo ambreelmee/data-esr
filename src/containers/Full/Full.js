@@ -8,7 +8,7 @@ import PrivateRoute from '../../PrivateRoute';
 import Update from '../../views/Update/Update';
 import SearchPage from '../../views/Etablissements/SearchPage';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
-import Dashboard from '../../views/Dashboard/Dashboard';
+import CategoryContainer from '../../views/Category/CategoryContainer';
 
 const Full = props => (
   <div className="app">
@@ -20,7 +20,7 @@ const Full = props => (
           <Switch>
             <PrivateRoute exact path="/etablissements"component={SearchPage} />
             <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
-            <PrivateRoute path="/dashboard" component={Dashboard} />
+            <PrivateRoute path="/categories" component={CategoryContainer} />
             <PrivateRoute path="/referentiel" component={Update} />
             <Redirect from="/" to="/etablissements" />
           </Switch>
