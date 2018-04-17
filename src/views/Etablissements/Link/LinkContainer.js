@@ -30,6 +30,7 @@ class LinkContainer extends Component {
     };
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getLinks = this.getLinks.bind(this);
+    this.getCategoryLinks = this.getCategoryLinks.bind(this);
   }
 
   componentWillMount() {

@@ -201,7 +201,7 @@ MapContainer.propTypes = {
   currentAddress: PropTypes.shape({
     address_1: PropTypes.string.isRequired,
     address_2: PropTypes.string,
-    business_name: PropTypes.string.isRequired,
+    business_name: PropTypes.string,
     city: PropTypes.string.isRequired,
     country: PropTypes.string.isRequired,
     date_end: PropTypes.string,

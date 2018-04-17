@@ -194,10 +194,6 @@ class Code extends Component {
                   {this.props.content}
                 </a> : <div>{this.props.content}</div>}
             </h4>
-            {this.props.date_start ?
-              <div className="mx-1">depuis le {moment(this.props.date_start).format('LL')}<br /></div> : <div />}
-            {this.props.date_end ?
-              <div className="mx-1">jusqu&#39;au {moment(this.props.date_end).format('LL')}</div> : <div />}
           </CardBody>
         </Card>
       </Col>

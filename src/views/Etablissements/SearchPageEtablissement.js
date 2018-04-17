@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Badge, Button, Card, CardBody } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 
 class SearchPageEtablissement extends Component {
@@ -46,8 +47,8 @@ class SearchPageEtablissement extends Component {
               <i className="icon-eye mr-1" />
             Afficher
             </Button>
-            depuis le {this.props.date_start}
-            {this.props.date_end ? <span><br /> jusqu&#39;au </span> : <div />}{this.props.date_end}
+            depuis le {moment(this.props.date_start).format('LL')}
+            {this.props.date_end ? <span><br /> jusqu&#39;au {moment(this.props.date_end).format('LL')}</span> : <div />}
           </div>
         </CardBody>
       </Card>

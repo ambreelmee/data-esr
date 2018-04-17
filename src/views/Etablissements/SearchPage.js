@@ -4,6 +4,7 @@ import {
   Row, Col, Input,
 } from 'reactstrap';
 import debounce from 'lodash/debounce';
+import moment from 'moment';
 
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
@@ -88,6 +89,8 @@ class SearchPage extends Component {
   }
 
   render() {
+    const locale = window.navigator.userLanguage || window.navigator.language;
+    moment.locale(locale);
     if (this.state.redirectToNewInstitution) {
       return <NameModal toggleModal={this.toggleModal} />;
     }
