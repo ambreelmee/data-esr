@@ -218,8 +218,10 @@ class NameModal extends Component {
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Modification </span>
-              </div> : <div />}
-            {this.props.id ? 'Modifier le nom' : this.props.etablissement_id ? 'Ajouter un nom' : 'Créer un établissement'}
+              </div> :
+              <div>
+                {this.props.id ? 'Modifier le nom' : this.props.etablissement_id ? 'Ajouter un nom' : 'Créer un établissement'}
+              </div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>

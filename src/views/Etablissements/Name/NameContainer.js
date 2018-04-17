@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
-  Button, ButtonGroup, ButtonDropdown, Collapse, DropdownToggle, DropdownMenu,
-  DropdownItem, Card, CardHeader, CardBody, Tooltip,
+  Badge, Button, ButtonGroup, ButtonDropdown, Card, CardBody, CardHeader,
+  DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import { getActiveEntity, getArchivedEntities } from './../methods';
-import Name from './Name';
+import { getActiveEntity } from './../methods';
 import NameModal from './NameModal';
+import NameHistoryModal from './NameHistoryModal';
 
 
 class NameContainer extends Component {
@@ -15,20 +15,22 @@ class NameContainer extends Component {
     super(props);
 
     this.state = {
-      names: {},
-      collapse: false,
+      addModal: false,
+      deleteModal: false,
       displayDropdown: false,
       editModal: false,
-      addModal: false,
-      tooltip: false,
+      historyModal: false,
       isLoading: false,
+      isDeleting: false,
+      names: [],
     };
-    this.displayArchivedEntities = this.displayArchivedEntities.bind(this);
+    this.deleteName = this.deleteName.bind(this);
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getNames = this.getNames.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
+    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
-    this.toggleToolTip = this.toggleToolTip.bind(this);
+    this.toggleHistoryModal = this.toggleHistoryModal.bind(this);
   }
 
   componentWillMount() {
@@ -53,6 +55,40 @@ class NameContainer extends Component {
       });
   }
 
+  deleteName(nameId) {
+    this.setState({ isDeleting: true });
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names/${nameId}`,
+      {
+        method: 'DELETE',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')})`,
+        }),
+        body: JSON.stringify({ name: { id: nameId } }),
+      },
+    )
+      .then(res => res.json())
+      .then(() => {
+        this.setState({
+          isDeleting: false,
+        });
+        this.getNames();
+      });
+  }
+
+  toggleDeleteModal() {
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+    });
+  }
+
+  toggleHistoryModal() {
+    this.setState({
+      historyModal: !this.state.historyModal,
+    });
+  }
+
   toggleEditModal() {
     this.setState({
       editModal: !this.state.editModal,
@@ -65,49 +101,18 @@ class NameContainer extends Component {
     });
   }
 
-  toggleToolTip() {
-    this.setState({
-      tooltip: !this.state.tooltip,
-    });
-  }
-
   displayDropdown() {
     this.setState({
       displayDropdown: !this.state.displayDropdown,
     });
   }
 
-  displayArchivedEntities() {
-    this.setState({
-      collapse: !this.state.collapse,
-    });
-  }
-
-  renderArchivedNames() {
-    return getArchivedEntities(this.state.names).map(name =>
-      (
-        <tr key={name.id}>
-          <td key={name.id}>
-            <Name
-              date_start={name.date_start}
-              date_end={name.date_end}
-              id={name.id}
-              initials={name.initials}
-              etablissement_id={this.props.etablissement_id}
-              getNames={this.getNames}
-              status={name.status}
-              text={name.text}
-            />
-          </td>
-        </tr>
-      ));
-  }
-
   render() {
     if (this.state.isLoading) {
       return <p>Loading...</p>;
     }
-    const currentName = getActiveEntity(this.state.names);
+    const replacementName = this.state.names ? this.state.names[0] : null;
+    const displayedName = getActiveEntity(this.state.names) ? getActiveEntity(this.state.names) : replacementName;
     return (
       <div>
         <Card className="mb-0 mt-2">
@@ -123,83 +128,97 @@ class NameContainer extends Component {
                   <i className="icon-settings" />
                 </DropdownToggle>
                 <DropdownMenu>
-                  {currentName ?
-                    <DropdownItem onClick={this.toggleEditModal}>
-                      <i className="icon-pencil" />
+                  <DropdownItem onClick={this.toggleEditModal}>
+                    <i className="fa fa-pencil text-warning" />
                       Modifier le nom actuel
-                      {this.state.editModal ?
-                        (<NameModal
-                          date_start={currentName.date_start}
-                          date_end={currentName.date_end}
-                          id={currentName.id}
-                          initials={currentName.initials}
-                          etablissement_id={this.props.etablissement_id}
-                          getNames={this.getNames}
-                          toggleModal={this.toggleEditModal}
-                          text={currentName.text}
-                        />) : <div /> }
-                    </DropdownItem> : <div />}
+                  </DropdownItem>
+                  {this.state.editModal ?
+                    (<NameModal
+                      date_start={displayedName.date_start}
+                      date_end={displayedName.date_end}
+                      id={displayedName.id}
+                      initials={displayedName.initials}
+                      etablissement_id={this.props.etablissement_id}
+                      getNames={this.getNames}
+                      toggleModal={this.toggleEditModal}
+                      text={displayedName.text}
+                    />) : <div /> }
                   <DropdownItem onClick={this.toggleAddModal}>
-                    <i className="icon-plus" />
-                    Ajouter un nouveau nom
-                    {this.state.addModal ?
-                      (<NameModal
-                        etablissement_id={this.props.etablissement_id}
-                        getNames={this.getNames}
-                        toggleModal={this.toggleAddModal}
-                      />) : <div /> }
+                    <i className="fa fa-plus text-success" />
+                      Ajouter un nouveau nom
+                  </DropdownItem>
+                  {this.state.addModal ?
+                    (<NameModal
+                      etablissement_id={this.props.etablissement_id}
+                      getNames={this.getNames}
+                      toggleModal={this.toggleAddModal}
+                    />) : <div /> }
+                  <DropdownItem onClick={this.toggleHistoryModal}>
+                    <i className="fa fa-eye text-info" />
+                      Voir l&#39;historique
+                  </DropdownItem>
+                  {this.state.historyModal ?
+                    <NameHistoryModal
+                      deleteName={this.deleteName}
+                      etablissement_id={this.props.etablissement_id}
+                      getNames={this.getNames}
+                      history={this.state.names}
+                      toggleModal={this.toggleHistoryModal}
+                    /> : <div />}
+                  <DropdownItem onClick={this.toggleDeleteModal}>
+                    <i className="fa fa-close text-danger" />
+                      Supprimer le nom actuel
+                    <Modal isOpen={this.state.deleteModal} toggle={this.toggleDeleteModal} color="danger">
+                      <ModalHeader toggle={this.toggleDeleteModal}>
+                        Suppression du champ
+                      </ModalHeader>
+                      <ModalBody>
+                        Etes-vous sûr de vouloir supprimer ce champ ?
+                      </ModalBody>
+                      <ModalFooter>
+                        <p className="mt-2 text-danger">{this.state.errorMessage}</p>
+                        <Button
+                          className="m-1 float-right"
+                          color="danger"
+                          disabled={this.state.isDeleting}
+                          onClick={!this.state.isDeleting ? () => this.deleteName(displayedName.id) : null}
+                        >
+                          {this.state.isDeleting ?
+                            <div>
+                              <i className="fa fa-spinner fa-spin " />
+                              <span className="mx-1"> Suppression </span>
+                            </div> : <div />}
+                          Supprimer
+                        </Button>
+                        <Button color="secondary" onClick={this.toggleDeleteModal}>Annuler</Button>
+                      </ModalFooter>
+                    </Modal>
                   </DropdownItem>
                 </DropdownMenu>
               </ButtonDropdown>
             </ButtonGroup>
           </CardHeader>
-          {currentName ?
+          {displayedName ?
             <CardBody>
-              <Name
-                date_start={currentName.date_start}
-                date_end={currentName.date_end}
-                id={currentName.id}
-                initials={currentName.initials}
-                getNames={this.getNames}
-                status={currentName.status}
-                text={currentName.text}
-              />
-              {getArchivedEntities(this.state.names).length > 0 ?
-                <span>
-                  <Button
-                    outline
-                    id="name-voir-plus"
-                    className="float-right"
-                    color="secondary"
-                    size="sm"
-                    onClick={this.displayArchivedEntities}
-                  >
-                    <i className="icon-eye mr-1" /> Voir plus
-                  </Button>
-                  <Tooltip
-                    placement="bottom"
-                    isOpen={this.state.tooltip}
-                    target="name-voir-plus"
-                    toggle={this.toggleToolTip}
-                  >
-                    {this.state.collapse ? 'voir moins' : 'voir plus'}
-                  </Tooltip>
-                </span> : <span />}
-            </CardBody> : <CardBody>Aucun nom enregistrée actuellement...</CardBody>}
+              {displayedName.status === 'active' ?
+                <Badge color="success" className="float-right"> Actif </Badge> :
+                <Badge color="danger" className="float-right"> Archivé </Badge>}
+              <h2 className="text-center">{`${displayedName.initials} - ${displayedName.text}`}</h2>
+            </CardBody> :
+            <CardBody>
+              <em>Aucun nom enregistrée actuellement...<br /></em>
+              <Button color="primary" className="float-right" onClick={this.toggleAddModal}>
+                <i className="fa fa-plus mr-1" />
+                Ajouter un nom
+              </Button>
+              {this.state.addModal ?
+                (<NameModal
+                  etablissement_id={this.props.etablissement_id}
+                  getNames={this.getNames}
+                  toggleModal={this.toggleAddModal}
+                />) : <div /> }
+            </CardBody>}
         </Card>
-        <Collapse
-          isOpen={this.state.collapse}
-        >
-          <Card className="mb-0">
-            <CardBody className="p-0">
-              <table className="table">
-                <tbody>
-                  {this.renderArchivedNames()}
-                </tbody>
-              </table>
-            </CardBody>
-          </Card>
-        </Collapse>
       </div>
     );
   }

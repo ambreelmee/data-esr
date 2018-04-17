@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Badge, Button, ButtonGroup, Modal, ModalBody, ModalFooter, ModalHeader, Table, Tooltip } from 'reactstrap';
+import { Badge, Button, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
-import moment from 'moment'
+import moment from 'moment';
 
-import CodeEditModal from './CodeEditModal'
+import CodeEditModal from './CodeEditModal';
 
 class CodeHistoryModalRow extends Component {
   constructor(props) {

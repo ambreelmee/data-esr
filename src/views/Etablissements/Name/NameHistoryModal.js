@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table, Tooltip } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import CodeHistoryModalRow from './CodeHistoryModalRow';
+import NameHistoryModalRow from './NameHistoryModalRow';
 
 
-class CodeHistoryModal extends Component {
+class NameHistoryModal extends Component {
   constructor(props) {
     super(props);
 
@@ -23,19 +23,19 @@ class CodeHistoryModal extends Component {
   }
 
   renderTableRows() {
-    return this.props.history.map(code =>
+    return this.props.history.map(name =>
       (
-        <CodeHistoryModalRow
-          key={code.id}
-          category={this.props.category}
-          categoryId={this.props.categoryId}
-          content={code.content}
-          date_start={code.date_start}
-          date_end={code.date_end}
-          deleteCode={this.props.deleteCode}
-          getCodes={this.props.getCodes}
-          id={code.id}
-          status={code.status}
+        <NameHistoryModalRow
+          key={name.id}
+          deleteName={this.props.deleteName}
+          date_end={name.date_end}
+          date_start={name.date_start}
+          etablissement_id={this.props.etablissement_id}
+          getNames={this.props.getNames}
+          id={name.id}
+          initials={name.initials}
+          text={name.text}
+          status={name.status}
         />));
   }
 
@@ -43,13 +43,14 @@ class CodeHistoryModal extends Component {
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          Historique des codes {this.props.category.toLowerCase()}
+          Historique des noms
         </ModalHeader>
         <ModalBody>
           <Table hover bordered striped responsive size="sm">
             <thead>
               <tr>
-                <th>Code</th>
+                <th>Sigle</th>
+                <th>Nom complet</th>
                 <th>Début</th>
                 <th>Fin</th>
                 <th>Statut</th>
@@ -70,13 +71,12 @@ class CodeHistoryModal extends Component {
   }
 }
 
-CodeHistoryModal.propTypes = {
-  category: PropTypes.string.isRequired,
-  categoryId: PropTypes.number.isRequired,
+NameHistoryModal.propTypes = {
+  deleteName: PropTypes.func.isRequired,
+  etablissement_id: PropTypes.number.isRequired,
+  getNames: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired,
-  deleteCode: PropTypes.func.isRequired,
-  getCodes: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
-export default CodeHistoryModal;
+export default NameHistoryModal;

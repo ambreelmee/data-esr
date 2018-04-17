@@ -58,10 +58,10 @@ class Address extends Component {
         {`${this.props.zip_code}, ${this.props.city} ${this.props.country}`}
         {this.props.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{this.props.phone}
         {this.props.date_start ?
-          <span><br /><span className="mr-1">depuis le:</span></span> :
-          <span />}{moment(this.props.date_start).format('LL')}
+          <span><br /><span className="mr-1">depuis le {moment(this.props.date_start).format('LL')}</span></span> :
+          <span />}
         {this.props.date_end ?
-          <span><br /><span className="mr-1">jusqu&#39;au :{moment(this.props.date_end).format('LL')}</span></span> :
+          <span><br /><span className="mr-1">jusqu&#39;au {moment(this.props.date_end).format('LL')}</span></span> :
           <span />}
         {this.props.status === 'active' ? <span /> :
         <span>
