@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, ButtonGroup, ButtonDropdown, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
+import {
+  Card, CardBody, CardHeader, ButtonGroup, ButtonDropdown, DropdownItem,
+  DropdownMenu, DropdownToggle, Row
+} from 'reactstrap';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
 
@@ -28,6 +32,7 @@ class CodeContainer extends Component {
     };
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getCodes = this.getCodes.bind(this);
+    this.redirectToCategories = this.redirectToCategories.bind(this);
   }
 
   componentWillMount() {
@@ -87,6 +92,12 @@ class CodeContainer extends Component {
     }
   }
 
+  redirectToCategories() {
+    this.setState({
+      redirectToCategories: !this.state.redirectToCategories
+    });
+  }
+
 
   renderDropDownItems() {
     return this.state.categoriesWithoutCode.map(category => (
@@ -142,6 +153,9 @@ class CodeContainer extends Component {
     if (this.state.isLoading) {
       return <p>Loading...</p>;
     }
+    if (this.state.redirectToCategories) {
+      return <Redirect to="/categories" />;
+    }
     return (
       <Card className="mt-2">
         <CardHeader>
@@ -165,6 +179,9 @@ class CodeContainer extends Component {
                 </DropdownToggle>
                 <DropdownMenu>
                   {this.renderDropDownItems()}
+                  <DropdownItem onClick={this.redirectToCategories}>
+                    Gérer les codes...
+                  </DropdownItem>
                 </DropdownMenu>
               </ButtonDropdown>
             </ButtonGroup> : <div />}

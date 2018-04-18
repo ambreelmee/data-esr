@@ -8,27 +8,29 @@ class CategoryContainer extends Component {
   constructor(props) {
     super(props);
 
-    this.toggleCodeModal = this.toggleCodeModal.bind(this);
-    this.toggleLinkModal = this.toggleLinkModal.bind(this);
-    this.getLinkCategories = this.getLinkCategories.bind(this);
-    this.getCodeCategories = this.getCodeCategories.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+    this.getCategories = this.getCategories.bind(this);
     this.state = {
       codeModal: false,
+      institution_evolution_categories: [],
+      institution_evolutionModal: false,
       isLoading: false,
-      codeCategories: [],
-      linkCategories: [],
+      code_categories: [],
+      link_categories: [],
       linkModal: false,
     };
   }
 
   componentWillMount() {
-    this.getLinkCategories();
-    this.getCodeCategories();
+    this.getCategories('link_categories');
+    this.getCategories('code_categories');
+    this.getCategories('institution_evolution_categories');
   }
 
-  getLinkCategories() {
+
+  getCategories(category) {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}link_categories`, {
+    fetch(`${process.env.API_URL_STAGING}${category}`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -37,58 +39,25 @@ class CategoryContainer extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({
-          linkCategories: data,
+          [category]: data,
           isLoading: false,
         });
       });
   }
 
-  getCodeCategories() {
-    this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}code_categories`, {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          codeCategories: data,
-          isLoading: false,
-        });
-      });
-  }
-
-  toggleCodeModal() {
+  toggleModal(categoryModal) {
     this.setState({
-      codeModal: !this.state.codeModal,
+      [categoryModal]: !this.state[categoryModal],
     });
   }
 
-  toggleLinkModal() {
-    this.setState({
-      linkModal: !this.state.linkModal,
-    });
-  }
-
-  renderLinkCategories() {
-    return this.state.linkCategories.map(category =>
+  renderCategories(categoryType) {
+    const stateField = `${categoryType}_categories`
+    return this.state[stateField].map(category =>
       (<Category
         key={category.id}
-        categoryType="link"
-        getCategories={this.getLinkCategories}
-        id={category.id}
-        title={category.title}
-      />));
-  }
-
-  renderCodeCategories() {
-    return this.state.codeCategories.map(category =>
-      (<Category
-        key={category.id}
-        categoryType="code"
-        getCategories={this.getCodeCategories}
+        categoryType={categoryType}
+        getCategories={this.getCategories}
         id={category.id}
         title={category.title}
       />));
@@ -109,17 +78,17 @@ class CategoryContainer extends Component {
                 </h5>
               </CardHeader>
               <CardBody>
-                {this.renderLinkCategories()}
+                {this.renderCategories('link')}
               </CardBody>
               <CardFooter>
-                <Button color="primary" className="float-right" onClick={this.toggleLinkModal}>
+                <Button color="primary" className="float-right" onClick={() => this.toggleModal('linkModal')}>
                   <i className="fa fa-plus mr-1" /> Ajouter une catégorie
                 </Button>
                 {this.state.linkModal ?
                   <CategoryModal
                     categoryType="link"
-                    getCategories={this.getLinkCategories}
-                    toggleModal={this.toggleLinkModal}
+                    getCategories={this.getCategories}
+                    toggleModal={this.toggleModal}
                   /> : <div /> }
               </CardFooter>
             </Card>
@@ -132,17 +101,40 @@ class CategoryContainer extends Component {
                 </h5>
               </CardHeader>
               <CardBody>
-                {this.renderCodeCategories()}
+                {this.renderCategories('code')}
               </CardBody>
               <CardFooter>
-                <Button color="primary" className="float-right" onClick={this.toggleCodeModal}>
+                <Button color="primary" className="float-right" onClick={() => this.toggleModal('codeModal')}>
                   <i className="fa fa-plus mr-1" /> Ajouter une catégorie
                 </Button>
                 {this.state.codeModal ?
                   <CategoryModal
                     categoryType="code"
-                    getCategories={this.getCodeCategories}
-                    toggleModal={this.toggleCodeModal}
+                    getCategories={this.getCategories}
+                    toggleModal={this.toggleModal}
+                  /> : <div /> }
+              </CardFooter>
+            </Card>
+          </Col>
+          <Col xs="12" md="4">
+            <Card className="mt-4">
+              <CardHeader>
+                <h5>
+                  Gestion des <span className="text-primary"><strong>types d&#39;évolution</strong></span> associés à un établissement
+                </h5>
+              </CardHeader>
+              <CardBody>
+                {this.renderCategories('institution_evolution')}
+              </CardBody>
+              <CardFooter>
+                <Button color="primary" className="float-right" onClick={() => this.toggleModal('institution_evolutionModal')}>
+                  <i className="fa fa-plus mr-1" /> Ajouter une catégorie
+                </Button>
+                {this.state.institution_evolutionModal ?
+                  <CategoryModal
+                    categoryType="institution_evolution"
+                    getCategories={this.getCategories}
+                    toggleModal={this.toggleModal}
                   /> : <div /> }
               </CardFooter>
             </Card>

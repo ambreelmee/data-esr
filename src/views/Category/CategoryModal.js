@@ -23,7 +23,8 @@ class CategoryModal extends Component {
   }
 
   toggle() {
-    this.props.toggleModal();
+    const categoryModal = `${this.props.categoryType}Modal`
+    this.props.toggleModal(categoryModal);
     this.setState({
       modal: !this.state.modal,
       errorMessage: '',
@@ -54,7 +55,8 @@ class CategoryModal extends Component {
         } else {
           this.toggle();
           this.setState({ isLoading: false });
-          this.props.getCategories();
+          const category = `${this.props.categoryType}_categories`
+          this.props.getCategories(category);
         }
       });
   }

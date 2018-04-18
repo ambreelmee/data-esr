@@ -54,7 +54,8 @@ class Category extends Component {
         this.setState({
           isDeleting: false,
         });
-        this.props.getCategories();
+        const category = `${this.props.categoryType}_categories`
+        this.props.getCategories(category);
       });
   }
 

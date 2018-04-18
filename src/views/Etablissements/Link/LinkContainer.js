@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, ButtonGroup, ButtonDropdown, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
+import {
+  Card, CardBody, CardHeader, ButtonGroup, ButtonDropdown, DropdownMenu,
+  DropdownItem, DropdownToggle, Row
+} from 'reactstrap';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
 import LinkRef from './LinkRef';
 import LinkDropdown from './LinkDropdown';
@@ -26,11 +30,13 @@ class LinkContainer extends Component {
       displayDropdown: false,
       emptyCategories:[],
       isLoading: false,
-      links: {},
+      links: [],
+      redirectToCategories : false,
     };
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getLinks = this.getLinks.bind(this);
     this.getCategoryLinks = this.getCategoryLinks.bind(this);
+    this.redirectToCategories = this.redirectToCategories.bind(this);
   }
 
   componentWillMount() {
@@ -82,13 +88,19 @@ class LinkContainer extends Component {
     }
   }
 
+  redirectToCategories() {
+    this.setState({
+      redirectToCategories: !this.state.redirectToCategories
+    });
+  }
+
   renderDropDownItems() {
     return this.state.emptyCategories.map(category => (
       <LinkDropdown
         key={category.id}
         categoryId={category.id}
         category={category.title}
-        className={getCategoryClass(category.title) ? getCategoryClass(category.title).class : null}
+        className={getCategoryClass(category.title) ? getCategoryClass(category.title).class : ''}
         etablissement_id={this.props.etablissement_id}
         getLinks={this.getLinks}
       />
@@ -114,6 +126,9 @@ class LinkContainer extends Component {
     if (this.state.isLoading) {
       return <p>Loading...</p>;
     }
+    if (this.state.redirectToCategories) {
+      return <Redirect to="/categories" />;
+    }
     return (
       <Row className="my-2">
         <Card className="mt-2">
@@ -136,6 +151,9 @@ class LinkContainer extends Component {
                   </DropdownToggle>
                   <DropdownMenu>
                     {this.renderDropDownItems()}
+                    <DropdownItem onClick={this.redirectToCategories}>
+                      Gérer les liens...
+                    </DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>
               </ButtonGroup> : <div />}
