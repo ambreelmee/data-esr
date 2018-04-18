@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Button, InputGroup,  Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, Col, InputGroup,  Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 
-class CategoryModal extends Component {
+class CategoryLabelModal extends Component {
   constructor(props) {
     super(props);
 
@@ -23,8 +23,7 @@ class CategoryModal extends Component {
   }
 
   toggle() {
-    const categoryModal = `${this.props.categoryType}Modal`
-    this.props.toggleModal(categoryModal);
+    this.props.toggleModal('institution_categoryModal');
     this.setState({
       modal: !this.state.modal,
       errorMessage: '',
@@ -33,17 +32,17 @@ class CategoryModal extends Component {
 
   addCategory() {
     this.setState({ isLoading: true });
-    const newCategory = {}
-    newCategory[`${this.props.categoryType}_category`] = {
-      title: this.state.title,
-    };
-    fetch(`${process.env.API_URL_STAGING}${this.props.categoryType}_categories`, {
+    const newCategory = {
+      short_label: this.state.shortLabel,
+      long_label: this.state.longLabel,
+    }
+    fetch(`${process.env.API_URL_STAGING}institution_category_labels`, {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
-      body: JSON.stringify(newCategory),
+      body: JSON.stringify({ institution_category_label : newCategory}),
     })
       .then(res => res.json())
       .then((data) => {
@@ -55,8 +54,7 @@ class CategoryModal extends Component {
         } else {
           this.toggle();
           this.setState({ isLoading: false });
-          const category = `${this.props.categoryType}_categories`
-          this.props.getCategories(category);
+          this.props.getCategories('institution_category_labels');
         }
       });
   }
@@ -70,13 +68,24 @@ class CategoryModal extends Component {
         </ModalHeader>
         <ModalBody>
           <InputGroup className="mb-3">
-            <Input
-              id="title"
-              type="text"
-              value={this.state.title}
-              onChange={this.onChange}
-              placeholder="Nom de la catégorie"
-            />
+            <Col xs="4">
+              <Input
+                id="shortLabel"
+                type="text"
+                value={this.state.shortLabel}
+                onChange={this.onChange}
+                placeholder="Nom court"
+              />
+            </Col>
+            <Col xs="8">
+              <Input
+                id="longLabel"
+                type="text"
+                value={this.state.longLabel}
+                onChange={this.onChange}
+                placeholder="Nom complet*"
+              />
+            </Col>
           </InputGroup>
         </ModalBody>
         <ModalFooter>
@@ -91,7 +100,7 @@ class CategoryModal extends Component {
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Ajout </span>
-              </div> : <div>Ajouter une catégorie</div>}
+              </div> : <div>Ajouter une catégorie </div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
@@ -101,11 +110,10 @@ class CategoryModal extends Component {
   }
 }
 
-CategoryModal.propTypes = {
-  categoryType: PropTypes.string.isRequired,
+CategoryLabelModal.propTypes = {
   getCategories: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
 
-export default CategoryModal;
+export default CategoryLabelModal;
