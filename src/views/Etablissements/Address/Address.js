@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 const Address = props => (
   <div>
     {props.status === 'active' ?
-      <Badge color="success" className="float-right">Active</Badge> :
-      <Badge color="danger" className="float-right">Archivé</Badge>}
+      <Badge color="success" className="float-right ml-1">Active</Badge> :
+      <Badge color="danger" className="float-right ml-1">Archivé</Badge>}
     <span className="text-primary"><strong>{props.business_name}</strong></span>
     {props.business_name ? <br /> : <span />}
     <i className="fa fa-map-marker fa-lg mr-1" />
-    <strong>{props.address_1}</strong> ({props.address_2})<strong>{`, ${props.zip_code} ${props.city}`}</strong>
+    <strong>{props.address_1}</strong>{props.address_2 ? `(${props.address_2})` : ''}<strong>{`, ${props.zip_code} ${props.city}`}</strong>
     {props.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{props.phone}
   </div>);
 
