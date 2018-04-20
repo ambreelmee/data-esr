@@ -147,6 +147,7 @@ class NameContainer extends Component {
                       getNames={this.getNames}
                       toggleModal={this.toggleEditModal}
                       text={displayedName.text}
+                      status={displayedName.status}
                     />) : <div /> }
                   <DropdownItem onClick={this.toggleAddModal}>
                     <i className="fa fa-plus text-success" />

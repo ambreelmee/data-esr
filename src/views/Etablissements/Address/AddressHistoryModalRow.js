@@ -78,6 +78,7 @@ class AddressHistoryModalRow extends Component {
                 etablissement_id={this.props.etablissement_id}
                 id={this.props.id}
                 phone={this.props.phone}
+                status={this.props.status}
                 zip_code={this.props.zip_code}
               /> : <div /> }
             <Button

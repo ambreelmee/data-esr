@@ -170,6 +170,7 @@ class AddressContainer extends Component {
                           etablissement_id={this.props.etablissement_id}
                           id={displayedAddress.id}
                           phone={displayedAddress.phone}
+                          status={displayedAddress.status}
                           zip_code={displayedAddress.zip_code}
                         />) : <div /> }
                       <DropdownItem onClick={this.toggleAddModal}>

@@ -17,14 +17,20 @@ class CodeEditModal extends Component {
       errorMessage: '',
       isLoading: false,
       modal: true,
+      status: this.props.status,
     };
     this.changeCode = this.changeCode.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onRadioChange = this.onRadioChange.bind(this);
     this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
+  }
+
+  onRadioChange(event) {
+    this.setState({ status: event.target.id });
   }
 
   toggle() {
@@ -42,6 +48,7 @@ class CodeEditModal extends Component {
       content: this.state.content,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
+      status: this.state.status,
     };
     fetch(`${process.env.API_URL_STAGING}/codes/${this.props.id}`, {
       method: 'PUT',
@@ -112,6 +119,37 @@ class CodeEditModal extends Component {
                   onChange={this.onChange}
                 />
               </FormGroup>
+              <FormGroup row>
+                <Col md="3">
+                  <Label>Statut</Label>
+                </Col>
+                <Col md="9">
+                  <FormGroup check inline>
+                    <Input
+                      className="form-check-input"
+                      type="radio"
+                      id="1"
+                      name="status"
+                      value="1"
+                      defaultChecked={this.state.status === 1}
+                      onChange={this.onRadioChange}
+                    />
+                    <Label className="form-check-label" check htmlFor="active">Actif</Label>
+                  </FormGroup>
+                  <FormGroup check inline>
+                    <Input
+                      className="form-check-input"
+                      type="radio"
+                      id="0"
+                      name="status"
+                      value="0"
+                      defaultChecked={this.state.status === 0}
+                      onChange={this.onRadioChange}
+                    />
+                    <Label className="form-check-label" check htmlFor="archived">Archivé</Label>
+                  </FormGroup>
+                </Col>
+              </FormGroup>
             </Col>
           </Row>
         </ModalBody>
@@ -146,6 +184,7 @@ CodeEditModal.propTypes = {
   date_start: PropTypes.string,
   getCodes: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
+  status: PropTypes.number.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 

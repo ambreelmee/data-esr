@@ -19,14 +19,20 @@ class NameModal extends Component {
       modal: true,
       errorMessage: '',
       isLoading: false,
+      status: this.props.status,
     };
     this.triggerAction = this.triggerAction.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onRadioChange = this.onRadioChange.bind(this);
     this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
+  }
+
+  onRadioChange(event) {
+    this.setState({ status: event.target.id });
   }
 
   triggerAction() {
@@ -54,7 +60,7 @@ class NameModal extends Component {
       text: this.state.text,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
-      redirectToNewInstitutionId: null,
+      status: this.state.status,
     };
     fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names`, {
       method: 'POST',
@@ -114,6 +120,7 @@ class NameModal extends Component {
       text: this.state.text,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
+      status: this.state.status,
     };
     fetch(
       `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names/${this.props.id}`,
@@ -202,6 +209,37 @@ class NameModal extends Component {
                     </FormGroup>
                   </Col>
                 </Row>
+                <FormGroup row>
+                  <Col md="3">
+                    <Label>Statut</Label>
+                  </Col>
+                  <Col md="9">
+                    <FormGroup check inline>
+                      <Input
+                        className="form-check-input"
+                        type="radio"
+                        id="active"
+                        name="status"
+                        value="active"
+                        defaultChecked={this.state.status === 'active'}
+                        onChange={this.onRadioChange}
+                      />
+                      <Label className="form-check-label" check htmlFor="active">Actif</Label>
+                    </FormGroup>
+                    <FormGroup check inline>
+                      <Input
+                        className="form-check-input"
+                        type="radio"
+                        id="archived"
+                        name="status"
+                        value="archived"
+                        defaultChecked={this.state.status === 'archived'}
+                        onChange={this.onRadioChange}
+                      />
+                      <Label className="form-check-label" check htmlFor="archived">Archivé</Label>
+                    </FormGroup>
+                  </Col>
+                </FormGroup>
               </Form>
             </CardBody>
           </Card>
@@ -238,6 +276,7 @@ NameModal.propTypes = {
   date_end: PropTypes.string,
   etablissement_id: PropTypes.number,
   getNames: PropTypes.func,
+  status: PropTypes.string,
   text: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
 };
@@ -249,6 +288,7 @@ NameModal.defaultProps = {
   date_end: null,
   etablissement_id: null,
   getNames: null,
+  status: 'active',
   text: null,
 };
 

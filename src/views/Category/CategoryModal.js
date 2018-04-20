@@ -15,11 +15,18 @@ class CategoryModal extends Component {
     };
     this.addCategory = this.addCategory.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
     this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
+  }
+
+  onKeyPress(event) {
+    if (event.key === 'Enter') {
+      this.addCategory();
+    }
   }
 
   toggle() {
@@ -76,6 +83,7 @@ class CategoryModal extends Component {
               value={this.state.title}
               onChange={this.onChange}
               placeholder="Nom de la catégorie"
+              onKeyPress={this.onKeyPress}
             />
           </InputGroup>
         </ModalBody>

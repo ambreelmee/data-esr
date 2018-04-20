@@ -17,14 +17,20 @@ class CodeAddModal extends Component {
       errorMessage: '',
       isLoading: false,
       modal: true,
+      status: 1,
     };
     this.addNewCode = this.addNewCode.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onRadioChange = this.onRadioChange.bind(this);
     this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
+  }
+
+  onRadioChange(event) {
+    this.setState({ status: event.target.id });
   }
 
   toggle() {
@@ -42,6 +48,7 @@ class CodeAddModal extends Component {
       content: this.state.content,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
+      status: this.state.status,
     };
     fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/codes`, {
       method: 'POST',
@@ -111,6 +118,36 @@ class CodeAddModal extends Component {
                   placeholder=""
                   onChange={this.onChange}
                 />
+              </FormGroup>
+              <FormGroup row>
+                <Col md="3">
+                  <Label>Statut</Label>
+                </Col>
+                <Col md="9">
+                  <FormGroup check inline>
+                    <Input
+                      className="form-check-input"
+                      type="radio"
+                      id="1"
+                      name="status"
+                      value="1"
+                      defaultChecked
+                      onChange={this.onRadioChange}
+                    />
+                    <Label className="form-check-label" check htmlFor="1">Actif</Label>
+                  </FormGroup>
+                  <FormGroup check inline>
+                    <Input
+                      className="form-check-input"
+                      type="radio"
+                      id="0"
+                      name="status"
+                      value="0"
+                      onChange={this.onRadioChange}
+                    />
+                    <Label className="form-check-label" check htmlFor="0">Archivé</Label>
+                  </FormGroup>
+                </Col>
               </FormGroup>
             </Col>
           </Row>

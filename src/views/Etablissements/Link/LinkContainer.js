@@ -10,16 +10,15 @@ import LinkRef from './LinkRef';
 import LinkDropdown from './LinkDropdown';
 
 const icons = [
-  { class: 'fa fa-youtube', category: 'Page Youtube' },
-  { class: 'fa fa-facebook', category: 'Page facebook' },
-  { class: 'fa fa-wikipedia-w', category: 'Page Wikipedia' },
-  { class: 'fa fa-twitter', category: 'Twitter' },
-  { class: 'fa fa-tumblr', category: 'Tumbler' },
-  { class: 'fa fa-linkedin', category: 'Linkedin' },
-  { class: 'fa fa-at', category: 'Site internet' },
+  { class: 'fa fa-youtube', category: 'youtube' },
+  { class: 'fa fa-facebook', category: 'facebook' },
+  { class: 'fa fa-wikipedia-w', category: 'wikipedia' },
+  { class: 'fa fa-twitter', category: 'twitter' },
+  { class: 'fa fa-tumblr', category: 'tumblr' },
+  { class: 'fa fa-linkedin', category: 'linkedin' },
 ];
 
-const getCategoryClass = category => icons.find(item => item.category === category);
+const getCategoryClass = category => icons.find(item => item.category.toLowerCase().includes(category));
 
 class LinkContainer extends Component {
   constructor(props) {

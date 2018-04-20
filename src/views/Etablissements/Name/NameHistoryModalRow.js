@@ -69,6 +69,7 @@ class NameHistoryModalRow extends Component {
                 getNames={this.props.getNames}
                 toggleModal={this.toggleEditModal}
                 text={this.props.text}
+                status={this.props.status}
               /> : <div />
             }
             <Button

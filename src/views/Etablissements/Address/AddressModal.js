@@ -20,14 +20,20 @@ class AddressModal extends Component {
       country: this.props.country,
       date_start: this.props.date_start,
       date_end: this.props.date_end,
+      errorMessage: '',
+      modal: true,
       phone: this.props.phone,
       zip_code: this.props.zip_code,
-      modal: true,
-      errorMessage: '',
+      status: this.props.status,
     };
     this.triggerAction = this.triggerAction.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onRadioChange = this.onRadioChange.bind(this);
     this.toggle = this.toggle.bind(this);
+  }
+
+  onRadioChange(event) {
+    this.setState({ status: event.target.id });
   }
 
   onChange(event) {
@@ -60,6 +66,7 @@ class AddressModal extends Component {
       date_start: this.state.date_start,
       date_end: this.state.date_end,
       phone: this.state.phone,
+      status: this.state.status,
       zip_code: this.state.zip_code,
     };
     fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses`, {
@@ -94,6 +101,7 @@ class AddressModal extends Component {
       date_end: this.state.date_end,
       phone: this.state.phone,
       zip_code: this.state.zip_code,
+      status: this.state.status,
     };
     fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses/${this.props.id}`, {
       method: 'PUT',
@@ -242,6 +250,37 @@ class AddressModal extends Component {
                     </FormGroup>
                   </Col>
                 </Row>
+                <FormGroup row>
+                  <Col md="3">
+                    <Label>Statut</Label>
+                  </Col>
+                  <Col md="9">
+                    <FormGroup check inline>
+                      <Input
+                        className="form-check-input"
+                        type="radio"
+                        id="active"
+                        name="status"
+                        value="active"
+                        defaultChecked={this.state.status === 'active'}
+                        onChange={this.onRadioChange}
+                      />
+                      <Label className="form-check-label" check htmlFor="active">Actif</Label>
+                    </FormGroup>
+                    <FormGroup check inline>
+                      <Input
+                        className="form-check-input"
+                        type="radio"
+                        id="archived"
+                        name="status"
+                        value="archived"
+                        defaultChecked={this.state.status === 'archived'}
+                        onChange={this.onRadioChange}
+                      />
+                      <Label className="form-check-label" check htmlFor="archived">Archivé</Label>
+                    </FormGroup>
+                  </Col>
+                </FormGroup>
               </Form>
               <p>Vous pouvez ajouter ou modifier la géolocalisation directement depuis la carte</p>
             </CardBody>
@@ -273,6 +312,7 @@ AddressModal.propTypes = {
   etablissement_id: PropTypes.number.isRequired,
   getAddresses: PropTypes.func.isRequired,
   phone: PropTypes.string,
+  status: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
   zip_code: PropTypes.string,
 };
@@ -287,6 +327,7 @@ AddressModal.defaultProps = {
   date_end: null,
   id: null,
   phone: null,
+  status: 'active',
   zip_code: null,
 };
 

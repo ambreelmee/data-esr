@@ -121,6 +121,7 @@ class Code extends Component {
                         date_start={this.props.date_start}
                         id={this.props.id}
                         getCodes={this.props.getCodes}
+                        status={this.props.status}
                         toggleModal={this.toggleEditModal}
                       /> : <div />
                     }
