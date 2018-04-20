@@ -78,7 +78,7 @@ class AddressModal extends Component {
           });
         } else {
           this.toggle();
-          this.props.getAddresses();
+          this.props.getAddresses(this.props.etablissement_id);
         }
       });
   }
@@ -106,7 +106,7 @@ class AddressModal extends Component {
       .then(res => res.json())
       .then(() => {
         this.toggle();
-        this.props.getAddresses();
+        this.props.getAddresses(this.props.etablissement_id);
       })
       .catch(() => {
         this.setState({

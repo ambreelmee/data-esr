@@ -83,7 +83,7 @@ class AddressHistoryModalRow extends Component {
             <Button
               color="danger"
               id={`historymodal-delete-button-${this.props.id}`}
-              onClick={() => this.props.deleteAddress(this.props.id)}
+              onClick={() => this.props.deleteAddress(this.props.id, this.props.etablissement_id)}
               size="sm"
             >
               <i className="fa fa-close" />

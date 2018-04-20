@@ -73,7 +73,7 @@ class NameModal extends Component {
           });
         } else {
           this.toggle();
-          this.props.getNames();
+          this.props.getNames(this.props.etablissement_id);
         }
       });
   }
@@ -130,7 +130,7 @@ class NameModal extends Component {
       .then(() => {
         this.toggle();
         this.setState({ isLoading: false });
-        this.props.getNames();
+        this.props.getNames(this.props.etablissement_id);
       });
   }
 
@@ -165,7 +165,7 @@ class NameModal extends Component {
                   </Col>
                 </FormGroup>
                 <FormGroup className="was-validated">
-                  <Label>Champ adresse 1</Label>
+                  <Label>Nom de l&#39;établissement</Label>
                   <Input
                     id="text"
                     type="text"

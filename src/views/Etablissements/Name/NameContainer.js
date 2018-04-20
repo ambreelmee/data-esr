@@ -34,13 +34,17 @@ class NameContainer extends Component {
   }
 
   componentWillMount() {
-    this.getNames();
+    this.getNames(this.props.etablissement_id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.getNames(nextProps.etablissement_id);
   }
 
 
-  getNames() {
+  getNames(etablissementId) {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/institution_names`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -55,10 +59,10 @@ class NameContainer extends Component {
       });
   }
 
-  deleteName(nameId) {
+  deleteName(nameId, etablissementId) {
     this.setState({ isDeleting: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names/${nameId}`,
+      `${process.env.API_URL_STAGING}institutions/${etablissementId}/institution_names/${nameId}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -72,8 +76,9 @@ class NameContainer extends Component {
       .then(() => {
         this.setState({
           isDeleting: false,
+          deleteModal: false,
         });
-        this.getNames();
+        this.getNames(etablissementId);
       });
   }
 
@@ -181,7 +186,7 @@ class NameContainer extends Component {
                           className="m-1 float-right"
                           color="danger"
                           disabled={this.state.isDeleting}
-                          onClick={!this.state.isDeleting ? () => this.deleteName(displayedName.id) : null}
+                          onClick={!this.state.isDeleting ? () => this.deleteName(displayedName.id, this.props.etablissement_id) : null}
                         >
                           {this.state.isDeleting ?
                             <div>

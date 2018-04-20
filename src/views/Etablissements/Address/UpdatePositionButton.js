@@ -33,7 +33,7 @@ class UpdatePositionButton extends Component {
         this.setState({
           isLoading: false,
         });
-        this.props.getAddresses();
+        this.props.getAddresses(this.props.etablissement_id);
       });
   }
 

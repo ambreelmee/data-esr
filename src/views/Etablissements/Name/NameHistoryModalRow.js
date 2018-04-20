@@ -74,7 +74,7 @@ class NameHistoryModalRow extends Component {
             <Button
               color="danger"
               id={`historymodal-delete-button-${this.props.id}`}
-              onClick={() => this.props.deleteName(this.props.id)}
+              onClick={() => this.props.deleteName(this.props.id, this.props.etablissement_id)}
               size="sm"
             >
               <i className="fa fa-close" />

@@ -38,13 +38,17 @@ class AddressContainer extends Component {
   }
 
   componentWillMount() {
-    this.getAddresses();
+    this.getAddresses(this.props.etablissement_id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.getAddresses(nextProps.etablissement_id);
   }
 
 
-  getAddresses() {
+  getAddresses(etablissementId) {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/addresses`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -59,10 +63,10 @@ class AddressContainer extends Component {
       });
   }
 
-  deleteAddress(adressId) {
+  deleteAddress(adressId, etablissementId) {
     this.setState({ isLoading: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses/${adressId}`,
+      `${process.env.API_URL_STAGING}institutions/${etablissementId}/addresses/${adressId}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -77,7 +81,7 @@ class AddressContainer extends Component {
         this.setState({
           isLoading: false,
         });
-        this.getAddresses();
+        this.getAddresses(etablissementId);
       });
   }
 
@@ -206,7 +210,7 @@ class AddressContainer extends Component {
                               className="m-1 float-right"
                               color="danger"
                               disabled={this.state.isDeleting}
-                              onClick={!this.state.isDeleting ? () => this.deleteAddress(displayedAddress.id) : null}
+                              onClick={!this.state.isDeleting ? () => this.deleteAddress(displayedAddress.id, this.props.etablissement_id) : null}
                             >
                               {this.state.isDeleting ?
                                 <div>
