@@ -60,7 +60,7 @@ class CodeContainer extends Component {
 
   getCodes() {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/codes`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -69,7 +69,7 @@ class CodeContainer extends Component {
       .then(response => response.json())
       .then((data) => {
         const codesByCategory = {};
-        data.institution.codes.map((code) => {
+        data.map((code) => {
           if (!codesByCategory[code.category]) {
             codesByCategory[code.category] = [];
           }
@@ -77,9 +77,9 @@ class CodeContainer extends Component {
           return codesByCategory;
         });
         this.setState({
-          codes: data.institution.codes,
+          codes: data,
           displayDropdown: false,
-          codesByCategory
+          codesByCategory,
         });
         this.getCategoryCodes();
       });
@@ -94,7 +94,7 @@ class CodeContainer extends Component {
 
   redirectToCategories() {
     this.setState({
-      redirectToCategories: !this.state.redirectToCategories
+      redirectToCategories: !this.state.redirectToCategories,
     });
   }
 
