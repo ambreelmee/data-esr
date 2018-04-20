@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Button, FormGroup, Form, InputGroup, InputGroupAddon,
-  Row, Col, Input,
+  Row, Col, Input, Pagination, PaginationItem, PaginationLink,
 } from 'reactstrap';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
@@ -16,28 +16,66 @@ class SearchPage extends Component {
     super(props);
 
     this.state = {
+      activePage: 1,
+      error: false,
+      firstPage: 1,
       institutions: {},
       isLoading: false,
-      searchEntry: '',
+      lastPage: 6,
+      nextPage: 2,
       redirectToNewInstitution: false,
+      previousPage: 1,
+      searchEntry: '',
     };
-    this.toggleModal = this.toggleModal.bind(this);
+    this.getInstitutionByPage = this.getInstitutionByPage.bind(this);
+    this.getData = debounce(this.getData, 1000);
     this.onChange = this.onChange.bind(this);
+    this.onClick = this.onClick.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
     this.redirectToNewInstitution = this.redirectToNewInstitution.bind(this);
-    this.getData = debounce(this.getData, 1000);
+    this.toggleModal = this.toggleModal.bind(this);
   }
 
   componentWillMount() {
     this.setState({ isLoading: true });
-    this.getData();
+    this.getInstitutionByPage(this.state.firstPage);
   }
 
+  onClick(event) {
+    event.persist()
+    this.setState({ activePage: this.state[event.target.id] })
+    this.getInstitutionByPage(this.state[event.target.id])
+  }
 
   onChange(event) {
     event.preventDefault();
     this.setState({ [event.target.id]: event.target.value });
     this.getData();
+  }
+
+  getInstitutionByPage(page) {
+    this.setState({ isLoading: true });
+    fetch(`${process.env.API_URL_STAGING}institutions?page_number=${page}&page_size=20`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            this.setState({
+              institutions: data,
+              isLoading: false,
+            });
+          });
+        } else {
+          this.setState({
+            error: true,
+            isLoading: false,
+          });
+        }
+      });
   }
 
   getData() {
@@ -82,7 +120,7 @@ class SearchPage extends Component {
           date_start={institution.date_start}
           date_end={institution.date_end}
           id={institution.id}
-          name={getActiveEntity(institution.names).text}
+          name={getActiveEntity(institution.names) ? getActiveEntity(institution.names).text : institution.names[0]}
         />
       </Col>
     ));
@@ -91,6 +129,9 @@ class SearchPage extends Component {
   render() {
     const locale = window.navigator.userLanguage || window.navigator.language;
     moment.locale(locale);
+    if (this.state.error) {
+      return <p>Une erreur est survenue</p>;
+    }
     if (this.state.redirectToNewInstitution) {
       return <NameModal toggleModal={this.toggleModal} />;
     }
@@ -156,6 +197,51 @@ class SearchPage extends Component {
           <Row>
             {this.renderInstitutionsCards()}
           </Row>}
+        <Row>
+          <Pagination>
+            {this.state.activePage === this.state.firstPage ? <div /> :
+            <PaginationItem>
+              <PaginationLink id="firstPage" onClick={this.onClick}>
+                {this.state.firstPage}
+              </PaginationLink>
+            </PaginationItem>}
+            {this.state.activePage - this.state.firstPage < 2 ? <div /> :
+            <PaginationItem disabled>
+              <PaginationLink>
+                ...
+              </PaginationLink>
+            </PaginationItem>}
+            {this.state.previousPage === this.state.firstPage ? <div /> :
+            <PaginationItem>
+              <PaginationLink id="previousPage" onClick={this.onClick}>
+                {this.state.previousPage}
+              </PaginationLink>
+            </PaginationItem>}
+            <PaginationItem active>
+              <PaginationLink id="activePage" onClick={this.onClick}>
+                {this.state.activePage}
+              </PaginationLink>
+            </PaginationItem>
+            {this.state.nextPage === this.state.lastPage ? <div /> :
+            <PaginationItem>
+              <PaginationLink id="nextPage" onClick={this.onClick}>
+                {this.state.nextPage}
+              </PaginationLink>
+            </PaginationItem>}
+            {this.state.lastPage - this.state.firstPage < 2 ? <div /> :
+            <PaginationItem disabled>
+              <PaginationLink>
+                ...
+              </PaginationLink>
+            </PaginationItem>}
+            {this.state.activePage === this.state.lastPage ? <div /> :
+            <PaginationItem>
+              <PaginationLink id="lastPage" onClick={this.onClick}>
+                {this.state.lastPage}
+              </PaginationLink>
+            </PaginationItem>}
+          </Pagination>
+        </Row>
       </div>
     );
   }
