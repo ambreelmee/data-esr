@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 
-import EvolutionModal from './EvolutionModal'
+import EvolutionModal from './EvolutionModal';
 
 const options = {
   responsive: true,
@@ -35,10 +35,11 @@ class Evolution extends Component {
     super(props);
 
     this.state = {
+      index: null,
       followers: [],
       isFollowersLoading: false,
       isPredecessorsLoading: false,
-      institutionId: null,
+      institutionName: null,
       modal: false,
       predecessors: [],
       redirectToInstitution: false,
@@ -59,6 +60,21 @@ class Evolution extends Component {
   getInstitutionEvolution(etablissementId) {
     const customDatesets = [];
     const customYLabels =  ['Université actuelle'];
+    const datasetObject = {
+      label: '',
+      fill: true,
+      borderColor: 'rgba(179,181,198,1)',
+      pointBorderColor: 'rgba(179,181,198,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 8,
+      pointHoverBackgroundColor: 'rgba(179,181,198,1)',
+      pointHoverBorderColor: 'rgba(179,181,198,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 5,
+      data: ['', 'Université actuelle'],
+    };
+    customDatesets.push(datasetObject);
     this.setState({ isPredecessorsLoading: true, isFollowersLoading: true });
     fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/predecessors`, {
       method: 'GET',
@@ -67,12 +83,10 @@ class Evolution extends Component {
       }),
     })
       .then(response => response.json())
-      .then((evolutions) => {
-        console.log('predecessor')
-        console.log(evolutions)
-        if (evolutions.length > 0) {
+      .then((results) => {
+        if (results.evolutions.length > 0) {
           let count = 0;
-          evolutions.map((evolution) => {
+          results.evolutions.map((evolution) => {
             const datasetObject = {
               label: '',
               fill: false,
@@ -87,12 +101,12 @@ class Evolution extends Component {
               pointRadius: 5,
               data: ['Université actuelle'],
             };
-            datasetObject.data.unshift(`${evolution.predecessor.id}`);
-            datasetObject.label = `${evolution.predecessor.id}`;
+            datasetObject.data.unshift(`${evolution.predecessor.name}`);
+            datasetObject.label = `${evolution.evolution.category} ${evolution.evolution.date ? `le ${evolution.evolution.date}` : ''}`;
             if (count % 2 === 0) {
-              customYLabels.push(`${evolution.predecessor.id}`);
+              customYLabels.push(`${evolution.predecessor.name}`);
             } else {
-              customYLabels.unshift(`${evolution.predecessor.id}`);
+              customYLabels.unshift(`${evolution.predecessor.name}`);
             }
             customDatesets.push(datasetObject);
             count += 1;
@@ -100,7 +114,7 @@ class Evolution extends Component {
           customYLabels.push();
         }
         this.setState({
-          predecessors: evolutions,
+          predecessors: results.evolutions,
           isPredecessorsLoading: false
         });
       });
@@ -111,11 +125,10 @@ class Evolution extends Component {
       }),
     })
       .then(response => response.json())
-      .then((evolutions) => {
-        console.log('follower')
-        if (evolutions.length > 0) {
+      .then((results) => {
+        if (results.evolutions.length > 0) {
           let count = 0;
-          evolutions.map((evolution) => {
+          results.evolutions.map((evolution) => {
             const datasetObject = {
               label: '',
               fill: false,
@@ -131,19 +144,19 @@ class Evolution extends Component {
               data: ['Université actuelle'],
             };
             datasetObject.data.unshift('');
-            datasetObject.data.push(`${evolution.follower.id}`);
-            datasetObject.label = `${evolution.follower.id}`;
+            datasetObject.data.push(`${evolution.follower.name}`);
+            datasetObject.label = `${evolution.evolution.category} ${evolution.evolution.date ? `le ${evolution.evolution.date}` : ''}`;
             if (count % 2 === 0) {
-              customYLabels.push(`${evolution.follower.id}`);
+              customYLabels.push(`${evolution.follower.name}`);
             } else {
-              customYLabels.unshift(`${evolution.follower.id}`);
+              customYLabels.unshift(`${evolution.follower.name}`);
             }
             customDatesets.push(datasetObject);
             count += 1;
           });
         }
         this.setState({
-          followers: evolutions,
+          followers: results.evolutions,
           isFollowersLoading: false,
           customDatesets,
           customYLabels,
@@ -160,7 +173,10 @@ class Evolution extends Component {
       return <p>loading...</p>;
     }
     if (this.state.redirectToInstitution) {
-      return <Redirect to={`/etablissements/${this.state.institutionId}`} />;
+      const evolutionType = this.state.index === 0 ? 'predecessor' : 'follower'
+      const institutionId = this.state[`${evolutionType}s`].find(evolution =>
+        evolution[evolutionType].name === this.state.institutionName)[evolutionType].id;
+      return <Redirect to={`/etablissements/${institutionId}`} />;
     }
     return (
       <Card className="mt-2">
@@ -169,7 +185,7 @@ class Evolution extends Component {
         </CardHeader>
         <CardBody>
           <div className="chart-wrapper">
-            {this.state.followers || this.state.predecessors ?
+            {this.state.followers.length === 0 && this.state.predecessors.length === 0 ?
               <div>
                 <em>Aucune évolution enregistrée actuellement...</em>
                 <Button color="primary" className="float-right" onClick={this.toggleModal}>
@@ -183,23 +199,26 @@ class Evolution extends Component {
                     toggleModal={this.toggleModal}
                   /> : <div />}
               </div> :
-              <Line
-                data={{
-                  xLabels: ['Prédecesseurs', 'Actuel', 'Successeurs'],
-                  yLabels: this.state.customYLabels,
-                  title: 'Evolutions',
-                  datasets: this.state.customDatesets,
-                }}
-                options={options}
-                getElementAtEvent={(elems) => {
-                  const datasetIndex = elems[0]._datasetIndex;
-                  const index = elems[0]._index;
-                  const id = elems[0]._chart.config.data.datasets[datasetIndex].data[index];
-                  if (id !== 'Université actuelle') {
-                    this.setState({ redirectToInstitution: true, institutionId: id });
-                  }
-                }}
-              />}
+              <div>
+                <Line
+                  data={{
+                    xLabels: ['Prédecesseurs', 'Actuel', 'Successeurs'],
+                    yLabels: this.state.customYLabels,
+                    title: 'Evolutions',
+                    datasets: this.state.customDatesets,
+                  }}
+                  options={options}
+                  getElementAtEvent={(elems) => {
+                    const datasetIndex = elems[0]._datasetIndex;
+                    const index = elems[0]._index;
+                    const name = elems[0]._chart.config.data.datasets[datasetIndex].data[index];
+                    if (name !== 'Université actuelle') {
+                      this.setState({ redirectToInstitution: true, institutionName: name, index });
+                    }
+                  }}
+                />
+              Cliquer sur un point pour être redirigé vers l&#39;établissement
+              </div>}
           </div>
         </CardBody>
       </Card>
