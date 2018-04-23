@@ -66,7 +66,7 @@ class AddressContainer extends Component {
   deleteAddress(adressId, etablissementId) {
     this.setState({ isLoading: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${etablissementId}/addresses/${adressId}`,
+      `${process.env.API_URL_STAGING}addresses/${adressId}`,
       {
         method: 'DELETE',
         headers: new Headers({

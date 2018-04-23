@@ -96,9 +96,8 @@ class LinkModal extends Component {
             {this.state.isLoading ?
               <div>
                 <i className="fa fa-spinner fa-spin " />
-                <span className="mx-1"> Ajout </span>
-              </div> : <div />}
-            Ajouter un lien
+                <span className="mx-1">Ajout</span>
+              </div> : <div>Ajouter un lien</div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>

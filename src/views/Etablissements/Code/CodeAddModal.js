@@ -164,8 +164,7 @@ class CodeAddModal extends Component {
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Ajout </span>
-              </div> : <div />}
-            Ajouter
+              </div> : <div>Ajouter</div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>

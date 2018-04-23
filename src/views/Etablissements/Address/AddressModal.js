@@ -103,7 +103,7 @@ class AddressModal extends Component {
       zip_code: this.state.zip_code,
       status: this.state.status,
     };
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses/${this.props.id}`, {
+    fetch(`${process.env.API_URL_STAGING}addresses/${this.props.id}`, {
       method: 'PUT',
       headers: new Headers({
         'Content-Type': 'application/json',
