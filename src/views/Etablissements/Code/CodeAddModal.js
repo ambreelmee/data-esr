@@ -17,7 +17,7 @@ class CodeAddModal extends Component {
       errorMessage: '',
       isLoading: false,
       modal: true,
-      status: 1,
+      status: 'active',
     };
     this.addNewCode = this.addNewCode.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -58,17 +58,26 @@ class CodeAddModal extends Component {
       }),
       body: JSON.stringify({ code: newCode }),
     })
-      .then(res => res.json())
-      .then((data) => {
-        if (data === 'Record not found') {
+      .then((res) => {
+        if (res.ok) {
+          res.json()
+            .then((data) => {
+              if (data === 'Record not found') {
+                this.setState({
+                  errorMessage: "Erreur lors de l'envoi du formulaire",
+                  isLoading: false,
+                });
+              } else {
+                this.toggle();
+                this.setState({ isLoading: false });
+                this.props.getCodes();
+              }
+            });
+        } else {
           this.setState({
-            errorMessage: 'Formulaire vide ou incomplet',
+            errorMessage: "Erreur lors de l'envoi du formulaire",
             isLoading: false,
           });
-        } else {
-          this.toggle();
-          this.setState({ isLoading: false });
-          this.props.getCodes();
         }
       });
   }
@@ -128,24 +137,24 @@ class CodeAddModal extends Component {
                     <Input
                       className="form-check-input"
                       type="radio"
-                      id="1"
+                      id="active"
                       name="status"
-                      value="1"
+                      value="active"
                       defaultChecked
                       onChange={this.onRadioChange}
                     />
-                    <Label className="form-check-label" check htmlFor="1">Actif</Label>
+                    <Label className="form-check-label" check htmlFor="active">Actif</Label>
                   </FormGroup>
                   <FormGroup check inline>
                     <Input
                       className="form-check-input"
                       type="radio"
-                      id="0"
+                      id="archived"
                       name="status"
-                      value="0"
+                      value="archived"
                       onChange={this.onRadioChange}
                     />
-                    <Label className="form-check-label" check htmlFor="0">Archivé</Label>
+                    <Label className="form-check-label" check htmlFor="archived">Archivé</Label>
                   </FormGroup>
                 </Col>
               </FormGroup>

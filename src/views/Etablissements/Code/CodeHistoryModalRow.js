@@ -44,7 +44,7 @@ class CodeHistoryModalRow extends Component {
         <td>{this.props.date_start ? moment(this.props.date_start).format('LL') : ''}</td>
         <td>{this.props.date_end ? moment(this.props.date_end).format('LL') : ''}</td>
         <td>
-          {this.props.status === 1 ?
+          {this.props.status === 'active' ?
             <Badge color="success"> Actif </Badge> :
             <Badge color="danger"> Archivé </Badge>}
         </td>
@@ -109,12 +109,12 @@ CodeHistoryModalRow.propTypes = {
   date_start: PropTypes.string,
   deleteCode: PropTypes.func.isRequired,
   getCodes: PropTypes.func.isRequired,
-  status: PropTypes.number.isRequired,
+  status: PropTypes.string.isRequired,
 };
 
 CodeHistoryModalRow.defaultProps = {
   date_end: '',
   date_start: '',
-}
+};
 
 export default CodeHistoryModalRow;

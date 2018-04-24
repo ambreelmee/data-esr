@@ -128,10 +128,10 @@ class CodeEditModal extends Component {
                     <Input
                       className="form-check-input"
                       type="radio"
-                      id="1"
+                      id="active"
                       name="status"
-                      value="1"
-                      defaultChecked={this.state.status === 1}
+                      value="active"
+                      defaultChecked={this.state.status === 'active'}
                       onChange={this.onRadioChange}
                     />
                     <Label className="form-check-label" check htmlFor="active">Actif</Label>
@@ -140,10 +140,10 @@ class CodeEditModal extends Component {
                     <Input
                       className="form-check-input"
                       type="radio"
-                      id="0"
+                      id="archived"
                       name="status"
-                      value="0"
-                      defaultChecked={this.state.status === 0}
+                      value="archived"
+                      defaultChecked={this.state.status === 'archived'}
                       onChange={this.onRadioChange}
                     />
                     <Label className="form-check-label" check htmlFor="archived">Archivé</Label>
@@ -184,7 +184,7 @@ CodeEditModal.propTypes = {
   date_start: PropTypes.string,
   getCodes: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
-  status: PropTypes.number.isRequired,
+  status: PropTypes.string.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 

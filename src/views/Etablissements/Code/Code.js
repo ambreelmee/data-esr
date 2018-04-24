@@ -186,7 +186,7 @@ class Code extends Component {
             </h5>
           </CardHeader>
           <CardBody className="pt-0 px-0">
-            {this.props.status ?
+            {this.props.status === 'active' ?
               <Badge color="success" className="float-right mt-1 mr-1">Actif</Badge> :
               <Badge color="danger" className="float-right mt-1 mr-1">Archivé</Badge>}
             <h4 className="mb-0 mt-4 mx-2">
@@ -213,7 +213,7 @@ Code.propTypes = {
   getCodes: PropTypes.func,
   history: PropTypes.array,
   id: PropTypes.number.isRequired,
-  status: PropTypes.number.isRequired,
+  status: PropTypes.string.isRequired,
 };
 
 Code.defaultProps = {

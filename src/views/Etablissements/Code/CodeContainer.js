@@ -113,7 +113,7 @@ class CodeContainer extends Component {
 
   renderItems() {
     return map(this.state.codesByCategory, ((codes) => {
-      const activeCode = codes.find(code => code.status === 1);
+      const activeCode = codes.find(code => code.status === 'active');
       if (activeCode) {
         return (
           <Code
