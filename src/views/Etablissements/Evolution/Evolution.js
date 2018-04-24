@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardHeader } from 'reactstrap';
+import {
+  Button, ButtonDropdown, ButtonGroup, Card, CardBody, CardHeader, DropdownItem, DropdownMenu,
+  DropdownToggle
+} from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 
-import EvolutionModal from './EvolutionModal';
+import EvolutionAddModal from './EvolutionAddModal';
+import EvolutionsModal from './EvolutionsModal';
 
 const options = {
   responsive: true,
@@ -35,17 +39,21 @@ class Evolution extends Component {
     super(props);
 
     this.state = {
+      addModal: false,
       index: null,
+      displaySettingDropdown: false,
+      evolutionsModal: false,
       followers: [],
       isFollowersLoading: false,
       isPredecessorsLoading: false,
       institutionName: null,
-      modal: false,
       predecessors: [],
       redirectToInstitution: false,
     };
-    this.toggleModal = this.toggleModal.bind(this);
+    this.displaySettingDropdown = this.displaySettingDropdown.bind(this);
     this.getInstitutionEvolution = this.getInstitutionEvolution.bind(this);
+    this.toggleAddModal = this.toggleAddModal.bind(this);
+    this.toggleEvolutionsModal = this.toggleEvolutionsModal.bind(this);
   }
 
   componentWillMount() {
@@ -102,7 +110,7 @@ class Evolution extends Component {
               data: ['Université actuelle'],
             };
             datasetObject.data.unshift(`${evolution.predecessor.name}`);
-            datasetObject.label = `${evolution.evolution.category} ${evolution.evolution.date ? `le ${evolution.evolution.date}` : ''}`;
+            datasetObject.label = `${evolution.evolution.category}`;
             if (count % 2 === 0) {
               customYLabels.push(`${evolution.predecessor.name}`);
             } else {
@@ -145,7 +153,7 @@ class Evolution extends Component {
             };
             datasetObject.data.unshift('');
             datasetObject.data.push(`${evolution.follower.name}`);
-            datasetObject.label = `${evolution.evolution.category} ${evolution.evolution.date ? `le ${evolution.evolution.date}` : ''}`;
+            datasetObject.label = `${evolution.evolution.category}`;
             if (count % 2 === 0) {
               customYLabels.push(`${evolution.follower.name}`);
             } else {
@@ -164,8 +172,22 @@ class Evolution extends Component {
       });
   }
 
-  toggleModal() {
-    this.setState({ modal: !this.state.modal });
+  toggleEvolutionsModal() {
+    this.setState({
+      evolutionsModal: !this.state.evolutionsModal,
+    });
+  }
+
+  toggleAddModal() {
+    this.setState({
+      addModal: !this.state.addModal,
+    });
+  }
+
+  displaySettingDropdown() {
+    this.setState({
+      displaySettingDropdown: !this.state.displaySettingDropdown,
+    });
   }
 
   render() {
@@ -182,21 +204,56 @@ class Evolution extends Component {
       <Card className="mt-2">
         <CardHeader>
           Evolutions
+          <ButtonGroup className="float-right">
+            <ButtonDropdown
+              id="codeDropdown"
+              isOpen={this.state.displaySettingDropdown}
+              toggle={this.displaySettingDropdown}
+            >
+              <DropdownToggle caret className="p-0" color="light">
+                <i className="icon-settings" />
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem onClick={this.toggleAddModal}>
+                  <i className="fa fa-plus text-success" />
+                    Ajouter une évolution
+                </DropdownItem>
+                {this.state.addModal ?
+                  <EvolutionAddModal
+                    etablissement_id={this.props.etablissement_id}
+                    getInstitutionEvolution={this.getInstitutionEvolution}
+                    toggleModal={this.toggleAddModal}
+                  /> : <div />}
+                <DropdownItem onClick={this.toggleEvolutionsModal}>
+                  <i className="fa fa-eye text-info" />
+                    Gérer les évolutions
+                </DropdownItem>
+                {this.state.evolutionsModal ?
+                  <EvolutionsModal
+                    id={this.props.etablissement_id}
+                    followers={this.state.followers}
+                    getInstitutionEvolution={this.getInstitutionEvolution}
+                    predecessors={this.state.predecessors}
+                    toggleModal={this.toggleEvolutionsModal}
+                  /> : <div />}
+              </DropdownMenu>
+            </ButtonDropdown>
+          </ButtonGroup>
         </CardHeader>
         <CardBody>
           <div className="chart-wrapper">
             {this.state.followers.length === 0 && this.state.predecessors.length === 0 ?
               <div>
                 <em>Aucune évolution enregistrée actuellement...</em>
-                <Button color="primary" className="float-right" onClick={this.toggleModal}>
+                <Button color="primary" className="float-right" onClick={this.toggleAddModal}>
                   <i className="fa fa-plus mr-1" />
                   Ajouter une évolution
                 </Button>
-                {this.state.modal ?
-                  <EvolutionModal
+                {this.state.addModal ?
+                  <EvolutionAddModal
                     etablissement_id={this.props.etablissement_id}
                     getInstitutionEvolution={this.getInstitutionEvolution}
-                    toggleModal={this.toggleModal}
+                    toggleModal={this.toggleAddModal}
                   /> : <div />}
               </div> :
               <div>

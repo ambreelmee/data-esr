@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import {
   Button, Col, FormGroup, Input,
-  InputGroup, InputGroupAddon, Modal, ModalBody, ModalFooter, ModalHeader
+  InputGroup, InputGroupAddon, Label, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 
-import getActiveEntity from './methods'
 
-class EvolutionModal extends Component {
+class EvolutionEditModal extends Component {
   constructor(props) {
     super(props);
 
@@ -17,7 +16,7 @@ class EvolutionModal extends Component {
       date: '',
       dropdown: false,
       errorMessage: '',
-      evolutionId: null,
+      etablissementId: null,
       evolutionType: '',
       evolutionCategoryId: '',
       institutions: [],
@@ -119,7 +118,7 @@ class EvolutionModal extends Component {
     this.setState({ isLoading: true });
     const newEvolution = {};
     newEvolution[this.state.evolutionType] = {
-      [`${this.state.evolutionType}_id`]: this.state.evolutionId,
+      [`${this.state.evolutionType}_id`]: this.state.etablissementId,
       institution_evolution_category_id: this.state.evolutionCategoryId,
       date: this.state.date,
     };
@@ -237,7 +236,7 @@ class EvolutionModal extends Component {
                   }}
                 />
                 <select
-                  id="evolutionId"
+                  id="etablissementId"
                   className="form-control"
                   onChange={this.onSelectorChange}
                 >
@@ -245,6 +244,20 @@ class EvolutionModal extends Component {
                   {this.renderInstitutionNameSuggestions()}
                 </select>
               </InputGroup>
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Col xs="4" />
+            <Col xs="2" className="mx-auto">
+              <Label>Date</Label>
+            </Col>
+            <Col xs="6" className="mx-auto">
+              <Input
+                type="date"
+                id="date"
+                value={this.state.date}
+                onChange={this.onChange}
+              />
             </Col>
           </FormGroup>
         </ModalBody>
@@ -270,11 +283,11 @@ class EvolutionModal extends Component {
   }
 }
 
-EvolutionModal.propTypes = {
+EvolutionEditModal.propTypes = {
   etablissement_id: PropTypes.number.isRequired,
   getInstitutionEvolution: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
 
-export default EvolutionModal;
+export default EvolutionEditModal;

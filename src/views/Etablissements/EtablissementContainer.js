@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Col, Row, Card, CardColumns, CardHeader, CardBody } from 'reactstrap';
+import { Button, Col, Row } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
-import { Line } from 'react-chartjs-2';
+import moment from 'moment';
 
 import AddressContainer from './Address/AddressContainer';
-import Evolution from './Evolution';
+import Evolution from './Evolution/Evolution';
 import NameContainer from './Name/NameContainer';
 
 
@@ -37,6 +37,8 @@ class EtablissementContainer extends Component {
   }
 
   render() {
+    const locale = window.navigator.userLanguage || window.navigator.language;
+    moment.locale(locale);
     const etablissementId = parseInt(this.props.match.params.number, 10);
     if (this.state.redirectToSearchPage) {
       return <Redirect to="/etablissements" />;
