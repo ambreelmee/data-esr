@@ -6,6 +6,7 @@ import moment from 'moment';
 import AddressContainer from './Address/AddressContainer';
 import Evolution from './Evolution/Evolution';
 import NameContainer from './Name/NameContainer';
+import CodeContainer from './Code/CodeContainer';
 
 
 class EtablissementContainer extends Component {
@@ -13,13 +14,7 @@ class EtablissementContainer extends Component {
     super(props);
 
     this.state = {
-      followers: [],
-      isFollowersLoading: false,
-      isPredecessorsLoading: false,
-      institutionId: null,
-      predecessors: [],
       redirectToSearchPage: false,
-      redirectToInstitution: false,
     };
     this.goToSearchPage = this.goToSearchPage.bind(this);
   }
@@ -44,7 +39,7 @@ class EtablissementContainer extends Component {
       return <Redirect to="/etablissements" />;
     }
     if (this.state.isFollowersLoading || this.state.isPredecessorsLoading) {
-      return <p>loading</p>
+      return <p>loading</p>;
     }
     return (
       <div className="animated fadeIn">
@@ -70,8 +65,9 @@ class EtablissementContainer extends Component {
             <AddressContainer etablissement_id={etablissementId} />
           </Col>
           <Col md="4">
-            <Row>
+            <Row className="mx-1">
               <Evolution etablissement_id={etablissementId} />
+              <CodeContainer etablissement_id={etablissementId} />
             </Row>
           </Col>
         </Row>

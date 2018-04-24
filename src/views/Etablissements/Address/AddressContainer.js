@@ -10,7 +10,7 @@ import { getActiveEntity } from './../methods';
 import Address from './Address';
 import AddressHistoryModal from './AddressHistoryModal';
 import AddressModal from './AddressModal';
-import CodeContainer from './../Code/CodeContainer';
+import ConnectionContainer from './../Connection/ConnectionContainer';
 import LinkContainer from './../Link/LinkContainer';
 import MapContainer from './MapContainer';
 
@@ -135,7 +135,7 @@ class AddressContainer extends Component {
               /> :
               <div />}
           </Card>
-          <CodeContainer etablissement_id={this.props.etablissement_id} />
+          <ConnectionContainer etablissement_id={this.props.etablissement_id} />
         </Col>
         <Col md="5">
           <Row>

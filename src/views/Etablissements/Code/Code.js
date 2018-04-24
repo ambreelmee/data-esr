@@ -93,7 +93,7 @@ class Code extends Component {
 
   render() {
     return (
-      <Col md="6" xs="12">
+      <Col xs="12">
         <Card className="text-white bg-info text-center">
           <CardHeader className="pb-0">
             <h5 className="mb-0">

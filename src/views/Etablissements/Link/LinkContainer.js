@@ -30,7 +30,7 @@ class LinkContainer extends Component {
       emptyCategories:[],
       isLoading: false,
       links: [],
-      redirectToCategories : false,
+      redirectToCategories: false,
     };
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getLinks = this.getLinks.bind(this);
@@ -89,7 +89,7 @@ class LinkContainer extends Component {
 
   redirectToCategories() {
     this.setState({
-      redirectToCategories: !this.state.redirectToCategories
+      redirectToCategories: !this.state.redirectToCategories,
     });
   }
 
