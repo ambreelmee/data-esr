@@ -5,15 +5,15 @@ import PropTypes from 'prop-types';
 import ModalRow from './../ModalRow';
 
 
-class EvolutionsModal extends Component {
+class ConnectionsModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       modal: true,
     };
+    this.deleteConnection = this.deleteConnection.bind(this);
     this.toggle = this.toggle.bind(this);
-    this.deleteEvolution = this.deleteEvolution.bind(this);
   }
 
   toggle() {
@@ -23,10 +23,10 @@ class EvolutionsModal extends Component {
     });
   }
 
-  deleteEvolution(etablissement_id, evolutionType) {
+  deleteConnection(etablissement_id, connectionType) {
     this.setState({ isDeleting: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.id}/${evolutionType}/${etablissement_id}`,
+      `${process.env.API_URL_STAGING}institutions/${this.props.id}/${connectionType}/${etablissement_id}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -40,43 +40,42 @@ class EvolutionsModal extends Component {
         this.setState({
           isDeleting: false,
         });
-        this.props.getInstitutionEvolution(this.props.id);
+        this.props.getConnections(this.props.id, connectionType);
       });
   }
 
 
-
-  renderPredecessorsTableRows() {
-    if (this.props.predecessors.length > 0) {
-      return this.props.predecessors.map(predecessor =>
+  renderMothersTableRows() {
+    if (this.props.mothers.length > 0) {
+      return this.props.mothers.map(mother =>
         (
           <ModalRow
-            key={predecessor.evolution.id}
-            category={predecessor.evolution.category}
-            date={predecessor.evolution.date}
-            deleteMethod={this.deleteEvolution}
+            key={mother.connection.id}
+            category={mother.connection.category}
+            date={mother.connection.date}
+            deleteMethod={this.deleteConnection}
             id={this.props.id}
-            etablissement={predecessor.predecessor.name}
-            etablissement_id={predecessor.predecessor.id}
-            categoryType="predecessors"
+            etablissement={mother.mother.name}
+            etablissement_id={mother.mother.id}
+            categoryType="mothers"
           />));
     }
     return '';
   }
 
-  renderFollowersTableRows() {
-    if (this.props.followers.length > 0) {
-      return this.props.followers.map(follower =>
+  renderDaughtersTableRows() {
+    if (this.props.daughters.length > 0) {
+      return this.props.daughters.map(daughter =>
         (
           <ModalRow
-            key={follower.evolution.id}
-            category={follower.evolution.category}
-            date={follower.evolution.date}
-            deleteMethod={this.deleteEvolution}
+            key={daughter.connection.id}
+            category={daughter.connection.category}
+            date={daughter.connection.date}
+            deleteMethod={this.deleteConnection}
             id={this.props.id}
-            etablissement={follower.follower.name}
-            etablissement_id={follower.follower.id}
-            categoryType="followers"
+            etablissement={daughter.daughter.name}
+            etablissement_id={daughter.daughter.id}
+            categoryType="daughters"
           />));
     }
     return '';
@@ -86,40 +85,40 @@ class EvolutionsModal extends Component {
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          Evolutions lié à l&#39;établissement
+          Rattachements de l&#39;établissement
         </ModalHeader>
         <ModalBody>
-          {this.props.predecessors.length > 0 ?
+          {this.props.mothers.length > 0 ?
             <div>
-              <h5>Prédécesseurs</h5>
+              <h5>Etablissements mères</h5>
               <Table hover bordered striped responsive size="sm">
                 <thead>
                   <tr>
                     <th>Etablissement</th>
-                    <th>Catégorie d&#39;évolution</th>
+                    <th>Catégorie de rattachement</th>
                     <th>Date</th>
                     <th>Action </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {this.renderPredecessorsTableRows()}
+                  {this.renderMothersTableRows()}
                 </tbody>
               </Table>
             </div> : <div />}
-          {this.props.followers.length > 0 ?
+          {this.props.daughters.length > 0 ?
             <div>
-              <h5>Successeurs</h5>
+              <h5>Etablissements filles</h5>
               <Table hover bordered striped responsive size="sm">
                 <thead>
                   <tr>
                     <th>Etablissement</th>
-                    <th>Catégorie d&#39;évolution</th>
+                    <th>Catégorie de rattachement</th>
                     <th>Date</th>
                     <th>Action </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {this.renderFollowersTableRows()}
+                  {this.renderDaughtersTableRows()}
                 </tbody>
               </Table>
             </div> : <div />}
@@ -133,12 +132,12 @@ class EvolutionsModal extends Component {
   }
 }
 
-EvolutionsModal.propTypes = {
+ConnectionsModal.propTypes = {
+  daughters: PropTypes.array.isRequired,
   id: PropTypes.number.isRequired,
-  followers: PropTypes.array.isRequired,
-  predecessors: PropTypes.array.isRequired,
-  getInstitutionEvolution: PropTypes.func.isRequired,
+  getConnections: PropTypes.func.isRequired,
+  mothers: PropTypes.array.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
-export default EvolutionsModal;
+export default ConnectionsModal;

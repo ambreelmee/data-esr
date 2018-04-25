@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 
-class EvolutionsModalRow extends Component {
+class ModalRow extends Component {
   constructor(props) {
     super(props);
 
@@ -12,7 +12,6 @@ class EvolutionsModalRow extends Component {
       deleteTooltip: false,
       deleteModal: false,
     };
-    this.deleteEvolution = this.deleteEvolution.bind(this);
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
   }
@@ -30,26 +29,6 @@ class EvolutionsModalRow extends Component {
   }
 
 
-  deleteEvolution() {
-    this.setState({ isDeleting: true });
-    fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.id}/${this.props.evolutionType}/${this.props.etablissement_id}`,
-      {
-        method: 'DELETE',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.setState({
-          isDeleting: false,
-        });
-        this.props.getInstitutionEvolution(this.props.id);
-      });
-  }
 
 
   render() {
@@ -58,7 +37,7 @@ class EvolutionsModalRow extends Component {
         <td>{this.props.etablissement}</td>
         <td>{this.props.category}</td>
         <td>{this.props.date ? moment(this.props.date).format('LL') : ''}</td>
-        <td className="d-flex flex-row">
+        <td>
           <Button
             color="danger"
             id={`evolutionsmodal-delete-button-${this.props.etablissement_id}`}
@@ -81,7 +60,9 @@ class EvolutionsModalRow extends Component {
                   className="m-1 float-right"
                   color="danger"
                   disabled={this.state.isDeleting}
-                  onClick={!this.state.isDeleting ? this.deleteEvolution : null}
+                  onClick={!this.state.isDeleting ?
+                    () => this.props.deleteMethod(this.props.etablissement_id, this.props.categoryType) :
+                    null}
                 >
                   {this.state.isDeleting ?
                     <div>
@@ -106,18 +87,18 @@ class EvolutionsModalRow extends Component {
   }
 }
 
-EvolutionsModalRow.propTypes = {
+ModalRow.propTypes = {
   id: PropTypes.number.isRequired,
+  deleteMethod: PropTypes.func.isRequired,
   etablissement: PropTypes.string.isRequired,
   etablissement_id: PropTypes.number.isRequired,
-  evolutionType: PropTypes.string.isRequired,
+  categoryType: PropTypes.string.isRequired,
   date: PropTypes.string,
-  getInstitutionEvolution: PropTypes.func.isRequired,
   category: PropTypes.string.isRequired,
 };
 
-EvolutionsModalRow.defaultProps = {
+ModalRow.defaultProps = {
   date: '',
 };
 
-export default EvolutionsModalRow;
+export default ModalRow;

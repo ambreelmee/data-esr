@@ -6,7 +6,7 @@ import moment from 'moment';
 import AddressContainer from './Address/AddressContainer';
 import Evolution from './Evolution/Evolution';
 import NameContainer from './Name/NameContainer';
-import CodeContainer from './Code/CodeContainer';
+import LinkContainer from './Link/LinkContainer';
 
 
 class EtablissementContainer extends Component {
@@ -67,7 +67,7 @@ class EtablissementContainer extends Component {
           <Col md="4">
             <Row className="mx-1">
               <Evolution etablissement_id={etablissementId} />
-              <CodeContainer etablissement_id={etablissementId} />
+              <LinkContainer etablissement_id={etablissementId} />
             </Row>
           </Col>
         </Row>

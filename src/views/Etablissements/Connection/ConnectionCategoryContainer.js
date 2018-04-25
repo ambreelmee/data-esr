@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 const ConnectionCategoryContainer = (props) => {
   const renderMothers = () => (
     props.mothers.map(mother => (
-      <div>{mother.name}</div>
+      <div key={mother.id}>{mother.name}</div>
     )));
   const renderDaughters = () => (
     props.daughters.map(daughter => (
-      <div>{daughter.name}</div>
+      <div key={daughter.id}>{daughter.name}</div>
     )));
 
   return (

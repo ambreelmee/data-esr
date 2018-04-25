@@ -162,9 +162,7 @@ class CodeContainer extends Component {
           Identifiants référentiels
         </CardHeader>
         <CardBody>
-          <Row>
-            {this.renderItems()}
-          </Row>
+          {this.renderItems()}
           {this.state.codes.length === 0 ? <em>Aucun code enregistré actuellement...<br /></em> : <div />}
           {this.state.categoriesWithoutCode.length > 0 ?
             <ButtonGroup className="float-right">

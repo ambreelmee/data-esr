@@ -11,7 +11,7 @@ import Address from './Address';
 import AddressHistoryModal from './AddressHistoryModal';
 import AddressModal from './AddressModal';
 import ConnectionContainer from './../Connection/ConnectionContainer';
-import LinkContainer from './../Link/LinkContainer';
+import CodeContainer from './../Code/CodeContainer';
 import MapContainer from './MapContainer';
 
 
@@ -125,7 +125,7 @@ class AddressContainer extends Component {
       getActiveEntity(this.state.addresses) : replacementAddress;
     return (
       <Row>
-        <Col md="7" className="pl-0">
+        <Col md="8" className="pl-0">
           <Card className="mt-2">
             {displayedAddress ?
               <MapContainer
@@ -137,7 +137,7 @@ class AddressContainer extends Component {
           </Card>
           <ConnectionContainer etablissement_id={this.props.etablissement_id} />
         </Col>
-        <Col md="5">
+        <Col md="4">
           <Row>
             <Card className="mb-0 mt-2">
               <CardHeader>
@@ -249,8 +249,8 @@ class AddressContainer extends Component {
                   </Button>
                 </CardBody>}
             </Card>
+            <CodeContainer etablissement_id={this.props.etablissement_id} />
           </Row>
-          <LinkContainer etablissement_id={this.props.etablissement_id} />
         </Col>
       </Row>
     );

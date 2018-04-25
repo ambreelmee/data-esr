@@ -6,10 +6,9 @@ import {
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
 
-import AddressHistoryModal from './../Address/AddressHistoryModal';
-import AddressModal from './../Address/AddressModal';
-
+import AddModal from './../AddModal';
 import ConnectionCategoryContainer from './ConnectionCategoryContainer';
+import ConnectionsModal from './ConnectionsModal';
 
 class ConnectionContainer extends Component {
   constructor(props) {
@@ -17,12 +16,14 @@ class ConnectionContainer extends Component {
 
     this.state = {
       addModal: false,
+      connectionCategories: [],
       connectionsModal: false,
       daughters: [],
       displayDropdown: false,
       isLoading: false,
       mothers: [],
     };
+    this.addConnection = this.addConnection.bind(this);
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getConnections = this.getConnections.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
@@ -30,19 +31,20 @@ class ConnectionContainer extends Component {
   }
 
   componentWillMount() {
-    this.getConnections(this.props.etablissement_id, 'mothers');
-    this.getConnections(this.props.etablissement_id, 'daughters');
+    this.getConnectionCategories();
+    this.getConnections(this.props.etablissement_id, 'mother');
+    this.getConnections(this.props.etablissement_id, 'daughter');
   }
 
   componentWillReceiveProps(nextProps) {
-    this.getConnections(nextProps.etablissement_id, 'mothers');
-    this.getConnections(nextProps.etablissement_id, 'daughters');
+    this.getConnections(nextProps.etablissement_id, 'mother');
+    this.getConnections(nextProps.etablissement_id, 'daughter');
   }
 
 
-  getConnections(etablissementId, connectionType) {
+  getConnectionCategories() {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/${connectionType}`, {
+    fetch(`${process.env.API_URL_STAGING}institution_connection_categories`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -51,7 +53,63 @@ class ConnectionContainer extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({
-          [connectionType]: data.connections,
+          connectionCategories: data,
+          isLoading: false,
+        });
+      });
+  }
+
+  addConnection(etablissementId, evolutionCategoryId, date, evolutionType, type) {
+    this.setState({ isLoading: true });
+    const newConnection = {};
+    newConnection[evolutionType] = {
+      [`${evolutionType}_id`]: etablissementId,
+      [`institution_${type}_category_id`]: evolutionCategoryId,
+      date: date,
+    };
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${evolutionType}s`,
+      {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }),
+        body: JSON.stringify(newConnection),
+      },
+    )
+      .then((res) => {
+        if (res.ok) {
+          res.json().then(() => {
+            this.setState({
+              errorMessage: '',
+              isLoading: false,
+            });
+            this.toggleAddModal();
+            this.getConnections(this.props.etablissement_id, evolutionType);
+          });
+        } else {
+          this.setState({
+            errorMessage: 'Erreur, merci de vérifier le formulaire',
+            isLoading: false,
+          });
+        }
+      });
+  }
+
+
+  getConnections(etablissementId, connectionType) {
+    this.setState({ isLoading: true });
+    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/${connectionType}s`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          [`${connectionType}s`]: data.connections,
           isLoading: false,
         });
       });
@@ -96,6 +154,7 @@ class ConnectionContainer extends Component {
     const connectionsByCategory = this.getConnectionsByCategory();
     return map(connectionsByCategory, (connection, category) => (
       <ConnectionCategoryContainer
+        key={category}
         category={category}
         daughters={connection.daughters}
         mothers={connection.mothers}
@@ -126,21 +185,23 @@ class ConnectionContainer extends Component {
                     Ajouter un nouveau rattachement
                 </DropdownItem>
                 {this.state.addModal ?
-                  (<AddressModal
+                  <AddModal
                     etablissement_id={this.props.etablissement_id}
-                    getConnections={this.getConnections}
+                    categories={this.state.connectionCategories}
+                    addMethod={this.addConnection}
                     toggleModal={this.toggleAddModal}
-                  />) : <div /> }
+                    type="rattachement"
+                  /> : <div />}
                 <DropdownItem onClick={this.toggleConnectionsModal}>
                   <i className="fa fa-eye text-info" />
                     Voir le détail des rattachements
                 </DropdownItem>
                 {this.state.connectionsModal ?
-                  <AddressHistoryModal
-                    deleteAddress={this.deleteAddress}
-                    etablissement_id={this.props.etablissement_id}
+                  <ConnectionsModal
+                    daughters={this.state.daughters}
+                    id={this.props.etablissement_id}
                     getConnections={this.getConnections}
-                    history={this.state.addresses}
+                    mothers={this.state.mothers}
                     toggleModal={this.toggleConnectionsModal}
                   /> : <div />}
               </DropdownMenu>

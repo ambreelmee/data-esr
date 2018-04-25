@@ -7,7 +7,7 @@ import { Redirect } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 
-import EvolutionAddModal from './EvolutionAddModal';
+import AddModal from './../AddModal';
 import EvolutionsModal from './EvolutionsModal';
 
 const options = {
@@ -42,6 +42,7 @@ class Evolution extends Component {
       addModal: false,
       index: null,
       displaySettingDropdown: false,
+      evolutionCategories: [],
       evolutionsModal: false,
       followers: [],
       isFollowersLoading: false,
@@ -50,6 +51,7 @@ class Evolution extends Component {
       predecessors: [],
       redirectToInstitution: false,
     };
+    this.addInstitutionEvolution = this.addInstitutionEvolution.bind(this);
     this.displaySettingDropdown = this.displaySettingDropdown.bind(this);
     this.getInstitutionEvolution = this.getInstitutionEvolution.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
@@ -57,6 +59,7 @@ class Evolution extends Component {
   }
 
   componentWillMount() {
+    this.getEvolutionCategories();
     this.getInstitutionEvolution(this.props.etablissement_id);
   }
 
@@ -64,6 +67,62 @@ class Evolution extends Component {
     this.setState({ redirectToInstitution: false });
     this.getInstitutionEvolution(nextProps.etablissement_id);
   }
+
+  getEvolutionCategories() {
+    this.setState({ isLoading: true });
+    fetch(`${process.env.API_URL_STAGING}institution_evolution_categories`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          evolutionCategories: data,
+          isLoading: false,
+        });
+      });
+  }
+
+  addInstitutionEvolution(etablissementId, evolutionCategoryId, date, evolutionType) {
+    this.setState({ isLoading: true });
+    const newEvolution = {};
+    newEvolution[evolutionType] = {
+      [`${evolutionType}_id`]: etablissementId,
+      institution_evolution_category_id: evolutionCategoryId,
+      date: date,
+    };
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${evolutionType}s`,
+      {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }),
+        body: JSON.stringify(newEvolution),
+      },
+    )
+      .then((res) => {
+        if (res.ok) {
+          res.json().then(() => {
+            this.setState({
+              errorMessage: '',
+              isLoading: false,
+            });
+            this.toggleAddModal();
+            this.getInstitutionEvolution(this.props.etablissement_id);
+          });
+        } else {
+          this.setState({
+            errorMessage: 'Erreur, merci de vérifier le formulaire',
+            isLoading: false,
+          });
+        }
+      });
+  }
+
 
   getInstitutionEvolution(etablissementId) {
     const customDatesets = [];
@@ -201,7 +260,7 @@ class Evolution extends Component {
       return <Redirect to={`/etablissements/${institutionId}`} />;
     }
     return (
-      <Card className="mt-2">
+      <Card className="mt-2 mb-0">
         <CardHeader>
           Evolutions
           <ButtonGroup className="float-right">
@@ -219,10 +278,12 @@ class Evolution extends Component {
                     Ajouter une évolution
                 </DropdownItem>
                 {this.state.addModal ?
-                  <EvolutionAddModal
+                  <AddModal
                     etablissement_id={this.props.etablissement_id}
-                    getInstitutionEvolution={this.getInstitutionEvolution}
+                    categories={this.state.evolutionCategories}
+                    addMethod={this.addInstitutionEvolution}
                     toggleModal={this.toggleAddModal}
+                    type="évolution"
                   /> : <div />}
                 <DropdownItem onClick={this.toggleEvolutionsModal}>
                   <i className="fa fa-eye text-info" />
@@ -250,7 +311,7 @@ class Evolution extends Component {
                   Ajouter une évolution
                 </Button>
                 {this.state.addModal ?
-                  <EvolutionAddModal
+                  <AddModal
                     etablissement_id={this.props.etablissement_id}
                     getInstitutionEvolution={this.getInstitutionEvolution}
                     toggleModal={this.toggleAddModal}

@@ -129,36 +129,34 @@ class LinkContainer extends Component {
       return <Redirect to="/categories" />;
     }
     return (
-      <Row className="my-2">
-        <Card className="mt-2">
-          <CardHeader>
-            Présence sur le web
-          </CardHeader>
-          <CardBody>
-            {this.renderItems()}
-            {this.state.links.length === 0 ? <em>Aucun lien enregistré actuellement...<br /></em> : <div />}
-            {this.state.emptyCategories.length > 0 ?
-              <ButtonGroup className="float-right">
-                <ButtonDropdown
-                  id="linkDropdown"
-                  isOpen={this.state.displayDropdown}
-                  toggle={this.displayDropdown}
-                >
-                  <DropdownToggle caret color="primary" id="source-link">
-                    <i className="fa fa-plus mr-1" />
-                    Ajouter un lien
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    {this.renderDropDownItems()}
-                    <DropdownItem onClick={this.redirectToCategories}>
-                      Gérer les liens...
-                    </DropdownItem>
-                  </DropdownMenu>
-                </ButtonDropdown>
-              </ButtonGroup> : <div />}
-          </CardBody>
-        </Card>
-      </Row>
+      <Card className="mt-2">
+        <CardHeader>
+          Présence sur le web
+        </CardHeader>
+        <CardBody>
+          {this.renderItems()}
+          {this.state.links.length === 0 ? <em>Aucun lien enregistré actuellement...<br /></em> : <div />}
+          {this.state.emptyCategories.length > 0 ?
+            <ButtonGroup className="float-right">
+              <ButtonDropdown
+                id="linkDropdown"
+                isOpen={this.state.displayDropdown}
+                toggle={this.displayDropdown}
+              >
+                <DropdownToggle caret color="primary" id="source-link">
+                  <i className="fa fa-plus mr-1" />
+                  Ajouter un lien
+                </DropdownToggle>
+                <DropdownMenu>
+                  {this.renderDropDownItems()}
+                  <DropdownItem onClick={this.redirectToCategories}>
+                    Gérer les liens...
+                  </DropdownItem>
+                </DropdownMenu>
+              </ButtonDropdown>
+            </ButtonGroup> : <div />}
+        </CardBody>
+      </Card>
     );
   }
 }

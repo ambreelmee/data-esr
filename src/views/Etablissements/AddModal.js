@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 
 
-class EvolutionEditModal extends Component {
+class AddModal extends Component {
   constructor(props) {
     super(props);
 
@@ -17,15 +17,14 @@ class EvolutionEditModal extends Component {
       dropdown: false,
       errorMessage: '',
       etablissementId: null,
-      evolutionType: '',
-      evolutionCategoryId: '',
+      categoryType: '',
+      categoryId: '',
       institutions: [],
       isLoading: false,
       isSearching: false,
       modal: true,
       searchEntry: '',
     };
-    this.addInstitutionEvolution = this.addInstitutionEvolution.bind(this);
     this.getData = debounce(this.getData, 1000);
     this.onChange = this.onChange.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
@@ -34,10 +33,6 @@ class EvolutionEditModal extends Component {
     this.resetSearch = this.resetSearch.bind(this);
     this.toggle = this.toggle.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
-  }
-
-  componentWillMount() {
-    this.getEvolutionCategories();
   }
 
   onChange(event) {
@@ -52,7 +47,12 @@ class EvolutionEditModal extends Component {
 
   onKeyPress(event) {
     if (event.key === 'Enter') {
-      this.addInstitutionEvolution();
+      this.props.addMethod(
+        this.state.etablissementId,
+        this.state.categoryId,
+        this.state.date,
+        this.state.categoryType
+      );
     }
   }
 
@@ -62,22 +62,6 @@ class EvolutionEditModal extends Component {
     });
   }
 
-  getEvolutionCategories() {
-    this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institution_evolution_categories`, {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          evolutionCategories: data,
-          isLoading: false,
-        });
-      });
-  }
 
   getData() {
     this.setState({ isSearching: true });
@@ -114,49 +98,11 @@ class EvolutionEditModal extends Component {
     this.setState({ dropdown: !this.state.dropdown });
   }
 
-  addInstitutionEvolution() {
-    this.setState({ isLoading: true });
-    const newEvolution = {};
-    newEvolution[this.state.evolutionType] = {
-      [`${this.state.evolutionType}_id`]: this.state.etablissementId,
-      institution_evolution_category_id: this.state.evolutionCategoryId,
-      date: this.state.date,
-    };
-    fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${this.state.evolutionType}s`,
-      {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }),
-        body: JSON.stringify(newEvolution),
-      },
-    )
-      .then((res) => {
-        if (res.ok) {
-          res.json().then(() => {
-            this.setState({
-              errorMessage: '',
-              isLoading: false,
-            });
-            this.toggle();
-            this.props.getInstitutionEvolution(this.props.etablissement_id);
-          });
-        } else {
-          this.setState({
-            errorMessage: 'Erreur, merci de vérifier le formulaire',
-            isLoading: false,
-          });
-        }
-      });
-  }
-
-  renderEvolutionCategories() {
+  renderCategories() {
     if (this.state.isLoading) {
       return '';
     }
-    return this.state.evolutionCategories.map(category =>
+    return this.props.categories.map(category =>
       <option key={category.id} value={category.id}>{category.title}</option>);
   }
 
@@ -176,36 +122,47 @@ class EvolutionEditModal extends Component {
 
 
   render() {
-    if (this.state.evolutionCategoryId === 'redirect') {
+    if (this.state.categoryId === 'redirect') {
       return <Redirect to="/categories" />;
     }
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          Ajouter une évolution
+          Ajouter un{this.props.type === 'évolution' ? 'e ' : ' '}{this.props.type}
         </ModalHeader>
         <ModalBody>
           <FormGroup row>
             <Col xs="6">
+            {this.props.type === 'évolution' ?
               <select
-                id="evolutionType"
+                id="categoryType"
                 className="form-control form-control-warning"
                 onChange={this.onSelectorChange}
               >
                 <option value="0">Sens de l&#39;évolution</option>
                 <option value="predecessor" >Prédecesseur</option>
                 <option value="follower">Successeur</option>
-              </select>
+              </select> :
+              <select
+                id="categoryType"
+                className="form-control form-control-warning"
+                onChange={this.onSelectorChange}
+              >
+                <option value="0">Sens du rattachement</option>
+                <option value="mother" >Mère</option>
+                <option value="daughter">Fille</option>
+              </select>}
+
             </Col>
             <Col xs="6">
               <select
-                id="evolutionCategoryId"
+                id="categoryId"
                 className="form-control"
                 onChange={this.onSelectorChange}
               >
-                <option value="0">Type d&#39;évolution</option>
-                {this.renderEvolutionCategories()}
-                <option value="redirect">Gérer les évolutions...</option>
+                <option value="0">Catégorie</option>
+                {this.renderCategories()}
+                <option value="redirect">Gérer les {this.props.type}...</option>
               </select>
             </Col>
             <Col xs="12" className="mx-auto mt-3">
@@ -267,13 +224,21 @@ class EvolutionEditModal extends Component {
             className="m-1 float-right"
             color="primary"
             disabled={this.state.isLoading}
-            onClick={!this.state.isLoading ? this.addInstitutionEvolution : null}
+            onClick={!this.state.isLoading ?
+              () => this.props.addMethod(
+                this.state.etablissementId,
+                this.state.categoryId,
+                this.state.date,
+                this.state.categoryType,
+                this.props.type === 'évolution' ? 'evolution' : 'connection'
+              ) :
+              null}
           >
             {this.state.isLoading ?
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Ajout </span>
-              </div> : <div>Ajouter une évolution</div>}
+              </div> : <div>Ajouter un{this.props.type === 'évolution' ? 'e ':' '}{this.props.type}</div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
@@ -283,11 +248,13 @@ class EvolutionEditModal extends Component {
   }
 }
 
-EvolutionEditModal.propTypes = {
+AddModal.propTypes = {
+  addMethod: PropTypes.func.isRequired,
   etablissement_id: PropTypes.number.isRequired,
-  getInstitutionEvolution: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 
-export default EvolutionEditModal;
+export default AddModal;
