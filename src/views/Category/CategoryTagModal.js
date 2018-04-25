@@ -3,7 +3,7 @@ import { Button, Col, InputGroup,  Input, Modal, ModalBody, ModalFooter, ModalHe
 import PropTypes from 'prop-types';
 
 
-class CategoryLabelModal extends Component {
+class CategoryTagModal extends Component {
   constructor(props) {
     super(props);
 
@@ -23,7 +23,6 @@ class CategoryLabelModal extends Component {
   }
 
   toggle() {
-    this.props.toggleModal('institution_categoryModal');
     this.setState({
       modal: !this.state.modal,
       errorMessage: '',
@@ -32,17 +31,17 @@ class CategoryLabelModal extends Component {
 
   addCategory() {
     this.setState({ isLoading: true });
-    const newCategory = {
-      short_label: this.state.shortLabel,
-      long_label: this.state.longLabel,
+    const institution_tag_category = {
+      origin: this.state.origin,
+      title: this.state.title,
     }
-    fetch(`${process.env.API_URL_STAGING}institution_category_labels`, {
+    fetch(`${process.env.API_URL_STAGING}institution_tag_categories`, {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
-      body: JSON.stringify({ institution_category_label : newCategory}),
+      body: JSON.stringify({ institution_tag_category }),
     })
       .then(res => res.json())
       .then((data) => {
@@ -52,9 +51,9 @@ class CategoryLabelModal extends Component {
             isLoading: false,
           });
         } else {
-          this.toggle();
+          this.toggle()
           this.setState({ isLoading: false });
-          this.props.getCategories('institution_category_labels');
+          this.props.getCategories('institution_tag_categories');
         }
       });
   }
@@ -70,20 +69,20 @@ class CategoryLabelModal extends Component {
           <InputGroup className="mb-3">
             <Col xs="4">
               <Input
-                id="shortLabel"
+                id="origin"
                 type="text"
-                value={this.state.shortLabel}
+                value={this.state.origin}
                 onChange={this.onChange}
-                placeholder="Nom court"
+                placeholder="Source"
               />
             </Col>
             <Col xs="8">
               <Input
-                id="longLabel"
+                id="title"
                 type="text"
-                value={this.state.longLabel}
+                value={this.state.title}
                 onChange={this.onChange}
-                placeholder="Nom complet*"
+                placeholder="Nom du type*"
               />
             </Col>
           </InputGroup>
@@ -110,10 +109,10 @@ class CategoryLabelModal extends Component {
   }
 }
 
-CategoryLabelModal.propTypes = {
+CategoryTagModal.propTypes = {
   getCategories: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
 
-export default CategoryLabelModal;
+export default CategoryTagModal;

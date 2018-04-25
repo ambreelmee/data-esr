@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-class CategoryLabel extends Component {
+class CategoryTag extends Component {
   constructor(props) {
     super(props);
 
@@ -41,7 +41,7 @@ class CategoryLabel extends Component {
   deleteCategory() {
     this.setState({ isDeleting: true });
     fetch(
-      `${process.env.API_URL_STAGING}/institution_category_labels/${this.props.id}`,
+      `${process.env.API_URL_STAGING}/institution_tag/${this.props.id}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -55,26 +55,26 @@ class CategoryLabel extends Component {
         this.setState({
           isDeleting: false,
         });
-        this.props.getCategories('institution_category_labels');
+        this.props.getTag();
       });
   }
 
   modifyCurrentCategory() {
     this.setState({ isEditing: true });
-    const institution_category_label = {
+    const institution_tag = {
       id: this.props.id,
       long_label: this.state.longLabel,
       short_label: this.state.shortLabel,
     };
     fetch(
-      `${process.env.API_URL_STAGING}/institution_category_labels/${this.props.id}`,
+      `${process.env.API_URL_STAGING}/institution_tags/${this.props.id}`,
       {
         method: 'PUT',
         headers: new Headers({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         }),
-        body: JSON.stringify({ institution_category_label }),
+        body: JSON.stringify({ institution_tag }),
       },
     )
       .then(res => res.json())
@@ -83,8 +83,8 @@ class CategoryLabel extends Component {
           isEditing: false,
           displayEditButton: false,
           editTooltip: false,
-          longLabel: data.long_label,
-          shortLabel: data.short_label,
+          longLabel: data.longLabel,
+          shortLabel: data.shortLabel,
         });
       });
   }
@@ -229,16 +229,16 @@ class CategoryLabel extends Component {
   }
 }
 
-CategoryLabel.propTypes = {
-  getCategories: PropTypes.func.isRequired,
+CategoryTag.propTypes = {
+  getTag: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   longLabel: PropTypes.string.isRequired,
   shortLabel: PropTypes.string,
 };
 
-CategoryLabel.defaultProps = {
+CategoryTag.defaultProps = {
   shortLabel: '',
 }
 
 
-export default CategoryLabel;
+export default CategoryTag;

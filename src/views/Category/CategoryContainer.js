@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Button, Col, Card, CardHeader, CardFooter, CardBody, Row } from 'reactstrap';
 
 import Category from './Category';
-import CategoryLabel from './CategoryLabel';
-import CategoryLabelModal from './CategoryLabelModal';
+import CategoryTag from './CategoryTag';
+import CategoryTagModal from './CategoryTagModal';
 import CategoryModal from './CategoryModal';
 
 class CategoryContainer extends Component {
@@ -14,10 +14,13 @@ class CategoryContainer extends Component {
     this.getCategories = this.getCategories.bind(this);
     this.state = {
       codeModal: false,
-      institution_category_labels: [],
-      institution_categoryModal: false,
+      institution_connection_categories: [],
+      institution_connectionModal: false,
       institution_evolution_categories: [],
       institution_evolutionModal: false,
+      institution_tags: [],
+      institution_tag_categories: [],
+      institution_tagyModal: false,
       isLoading: false,
       code_categories: [],
       link_categories: [],
@@ -29,12 +32,24 @@ class CategoryContainer extends Component {
     this.getCategories('link_categories');
     this.getCategories('code_categories');
     this.getCategories('institution_evolution_categories');
-    this.getCategories('institution_category_labels');
+    this.getCategories('institution_connection_categories');
+    this.getCategories('institution_tag_categories');
+    this.getCategories('institution_tags');
   }
 
 
   getCategories(category) {
-    this.setState({ isLoading: true });
+    const split = category.split('_');
+    let modal = ''
+    if (split.length === 3) {
+      modal=`${split[0]}_${split[1]}Modal`;
+    } else {
+      modal = `${split[0]}Modal`;
+    }
+    this.setState({
+      isLoading: true,
+      [modal]: false,
+    });
     fetch(`${process.env.API_URL_STAGING}${category}`, {
       method: 'GET',
       headers: new Headers({
@@ -68,14 +83,15 @@ class CategoryContainer extends Component {
       />));
   }
 
-  renderInstitutionCategoryLabels() {
-    return this.state.institution_category_labels.map(category =>
-      (<CategoryLabel
+  renderInstitutionCategoryTags() {
+    return this.state.institution_tag_categories.map(category =>
+      (<CategoryTag
         key={category.id}
         getCategories={this.getCategories}
         id={category.id}
-        longLabel={category.long_label}
-        shortLabel={category.short_label ? category.short_label : ''}
+        origin={category.origin ? category.origin : ''}
+        title={category.title}
+        tags={this.state.institution_tags.filter(tag => tag.institution_tag_category_id === category.id)}
       />));
   }
 
@@ -86,6 +102,28 @@ class CategoryContainer extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
+          <Col xs="12" md="8">
+            <Card className="mt-4">
+              <CardHeader>
+                <h5>
+                  Gestion des <span className="text-primary"><strong>types</strong></span> associés à un établissement
+                </h5>
+              </CardHeader>
+              <CardBody>
+                {this.renderInstitutionCategoryTags()}
+              </CardBody>
+              <CardFooter>
+                <Button color="primary" className="float-right" onClick={() => this.toggleModal('institution_tagModal')}>
+                  <i className="fa fa-plus mr-1" /> Ajouter une catégorie
+                </Button>
+                {this.state.institution_tagModal ?
+                  <CategoryTagModal
+                    getCategories={this.getCategories}
+                    toggleModal={this.toggleModal}
+                  /> : <div /> }
+              </CardFooter>
+            </Card>
+          </Col>
           <Col xs="12" md="4">
             <Card className="mt-4">
               <CardHeader>
@@ -108,8 +146,6 @@ class CategoryContainer extends Component {
                   /> : <div /> }
               </CardFooter>
             </Card>
-          </Col>
-          <Col xs="12" md="4">
             <Card className="mt-4">
               <CardHeader>
                 <h5>
@@ -131,8 +167,6 @@ class CategoryContainer extends Component {
                   /> : <div /> }
               </CardFooter>
             </Card>
-          </Col>
-          <Col xs="12" md="4">
             <Card className="mt-4">
               <CardHeader>
                 <h5>
@@ -154,25 +188,22 @@ class CategoryContainer extends Component {
                   /> : <div /> }
               </CardFooter>
             </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs="12" md="8">
-            <Card className="mt-4">
+            <Card>
               <CardHeader>
                 <h5>
-                  Gestion des <span className="text-primary"><strong>types</strong></span> associés à un établissement
+                  Gestion des <span className="text-primary"><strong>types de rattachement</strong></span> associés à un établissement
                 </h5>
               </CardHeader>
               <CardBody>
-                {this.renderInstitutionCategoryLabels()}
+                {this.renderCategories('institution_connection')}
               </CardBody>
               <CardFooter>
-                <Button color="primary" className="float-right" onClick={() => this.toggleModal('institution_categoryModal')}>
+                <Button color="primary" className="float-right" onClick={() => this.toggleModal('institution_connectionModal')}>
                   <i className="fa fa-plus mr-1" /> Ajouter une catégorie
                 </Button>
-                {this.state.institution_categoryModal ?
-                  <CategoryLabelModal
+                {this.state.institution_connectionModal ?
+                  <CategoryModal
+                    categoryType="institution_connection"
                     getCategories={this.getCategories}
                     toggleModal={this.toggleModal}
                   /> : <div /> }
