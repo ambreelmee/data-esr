@@ -33,8 +33,6 @@ class SearchPageEtablissement extends Component {
               {!this.props.date_end ? 'Actif' : 'Archivé'}
             </Badge>
             <h4>{this.props.name}</h4>
-            <Badge color="primary" pill>Etablissement d&#39;enseignment supérieur</Badge><br />
-            <em> campus de Gif </em><br />
             {this.props.address}<br />
             <Button
               outline

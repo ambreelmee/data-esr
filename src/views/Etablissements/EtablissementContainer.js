@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import moment from 'moment';
 
 import AddressContainer from './Address/AddressContainer';
+import EtablissementStatus from './EtablissementStatus';
 import Evolution from './Evolution/Evolution';
 import NameContainer from './Name/NameContainer';
 import LinkContainer from './Link/LinkContainer';
@@ -14,15 +15,39 @@ class EtablissementContainer extends Component {
     super(props);
 
     this.state = {
+      isLoading: false,
       redirectToSearchPage: false,
     };
     this.goToSearchPage = this.goToSearchPage.bind(this);
+    this.getData = this.getData.bind(this);
+  }
+
+  componentWillMount() {
+    this.getData();
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.match.params.number) {
       this.props.match.params.number = nextProps.match.params.number;
     }
+  }
+
+  getData() {
+    this.setState({ isLoading: true });
+    fetch(`${process.env.API_URL_STAGING}institutions/${parseInt(this.props.match.params.number, 10)}`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          date_end: data.institution.date_end,
+          date_start: data.institution.date_start,
+          isLoading: false,
+        });
+      });
   }
 
   goToSearchPage() {
@@ -43,24 +68,26 @@ class EtablissementContainer extends Component {
     }
     return (
       <div className="animated fadeIn">
+        <div className="d-flex d-inline-block pt-3">
+          <Button
+            color="primary"
+            className="mt-2 mb-4 mr-3"
+            size="lg"
+            onClick={this.goToSearchPage}
+          >
+          Retour
+          </Button>
+          <EtablissementStatus
+            date_end={this.state.date_end}
+            date_start={this.state.date_start}
+            id={etablissementId}
+            getData={this.getData}
+          />
+        </div>
         <Row>
           <Col md="8">
             <Row>
-              <Col md="2">
-                <Row>
-                  <Button
-                    color="primary"
-                    className="m-3"
-                    size="lg"
-                    onClick={this.goToSearchPage}
-                  >
-                  Retour
-                  </Button>
-                </Row>
-              </Col>
-              <Col md="10">
-                <NameContainer etablissement_id={etablissementId} />
-              </Col>
+              <NameContainer etablissement_id={etablissementId} />
             </Row>
             <AddressContainer etablissement_id={etablissementId} />
           </Col>

@@ -104,6 +104,10 @@ class SearchPage extends Component {
         this.setState({
           institutions: data,
           isLoading: false,
+          last: '',
+          next: '',
+          prev: '',
+          self: '',
         });
       });
   }
@@ -146,9 +150,6 @@ class SearchPage extends Component {
     }
     if (this.state.redirectToNewInstitution) {
       return <NameModal toggleModal={this.toggleModal} />;
-    }
-    if (this.state.isLoading) {
-      return <p>Chargement...</p>
     }
     return (
       <div>
@@ -211,52 +212,52 @@ class SearchPage extends Component {
           </div> :
           <Row>
             {this.renderInstitutionsCards()}
+            <Pagination>
+              {this.state.self && this.state.self.page_number !== '1' ?
+                <PaginationItem>
+                  <PaginationLink id="first" onClick={this.onClick}>
+                    1
+                  </PaginationLink>
+                </PaginationItem> : <div />}
+              {this.state.self && parseInt(this.state.self.page_number, 10) > 2 ?
+                <PaginationItem disabled>
+                  <PaginationLink>
+                    ...
+                  </PaginationLink>
+                </PaginationItem> : <div />}
+              {this.state.prev && this.state.prev.page_number !== '1' ?
+                <PaginationItem>
+                  <PaginationLink id="prev" onClick={this.onClick}>
+                    {this.state.prev.page_number}
+                  </PaginationLink>
+                </PaginationItem> : <div />}
+              {this.state.self ?
+                <PaginationItem active>
+                  <PaginationLink id="self" onClick={this.onClick}>
+                    {this.state.self.page_number}
+                  </PaginationLink>
+                </PaginationItem> : <div />}
+              {this.state.next && this.state.next.page_number !== this.state.last.page_number ?
+                <PaginationItem>
+                  <PaginationLink id="next" onClick={this.onClick}>
+                    {this.state.next.page_number}
+                  </PaginationLink>
+                </PaginationItem> : <div />}
+              {this.state.last &&
+                parseInt(this.state.last.page_number, 10) - parseInt(this.state.self.page_number, 10) > 2 ?
+                  <PaginationItem disabled>
+                    <PaginationLink>
+                      ...
+                    </PaginationLink>
+                  </PaginationItem> : <div /> }
+              {this.state.last && this.state.self.page_number !== this.state.last.page_number ?
+                <PaginationItem>
+                  <PaginationLink id="last" onClick={this.onClick}>
+                    {this.state.last.page_number}
+                  </PaginationLink>
+                </PaginationItem> : <div />}
+            </Pagination>
           </Row>}
-        <Row>
-          <Pagination>
-            {this.state.self && this.state.self.page_number !== "1" ?
-              <PaginationItem>
-                <PaginationLink id="first" onClick={this.onClick}>
-                  1
-                </PaginationLink>
-              </PaginationItem> : <div />}
-            {this.state.self && parseInt(this.state.self.page_number, 10) > 2 ?
-              <PaginationItem disabled>
-                <PaginationLink>
-                  ...
-                </PaginationLink>
-              </PaginationItem> : <div />}
-            {this.state.prev && this.state.prev.page_number !== "1" ?
-              <PaginationItem>
-                <PaginationLink id="prev" onClick={this.onClick}>
-                  {this.state.prev.page_number}
-                </PaginationLink>
-              </PaginationItem> : <div />}
-            <PaginationItem active>
-              <PaginationLink id="self" onClick={this.onClick}>
-                {this.state.self.page_number}
-              </PaginationLink>
-            </PaginationItem>
-            {this.state.next && this.state.next.page_number !== this.state.last.page_number ?
-              <PaginationItem>
-                <PaginationLink id="next" onClick={this.onClick}>
-                  {this.state.next.page_number}
-                </PaginationLink>
-              </PaginationItem> : <div />}
-            {this.state.last && parseInt(this.state.last.page_number, 10) - parseInt(this.state.self.page_number, 10) > 2 ?
-              <PaginationItem disabled>
-                <PaginationLink>
-                  ...
-                </PaginationLink>
-              </PaginationItem> : <div /> }
-            {this.state.last && this.state.self.page_number !== this.state.last.page_number ?
-              <PaginationItem>
-                <PaginationLink id="last" onClick={this.onClick}>
-                  {this.state.last.page_number}
-                </PaginationLink>
-              </PaginationItem> : <div />}
-          </Pagination>
-        </Row>
       </div>
     );
   }
