@@ -85,44 +85,6 @@ class Evolution extends Component {
       });
   }
 
-  addInstitutionEvolution(etablissementId, evolutionCategoryId, date, evolutionType) {
-    this.setState({ isLoading: true });
-    const newEvolution = {};
-    newEvolution[evolutionType] = {
-      [`${evolutionType}_id`]: etablissementId,
-      institution_evolution_category_id: evolutionCategoryId,
-      date: date,
-    };
-    fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${evolutionType}s`,
-      {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }),
-        body: JSON.stringify(newEvolution),
-      },
-    )
-      .then((res) => {
-        if (res.ok) {
-          res.json().then(() => {
-            this.setState({
-              errorMessage: '',
-              isLoading: false,
-            });
-            this.toggleAddModal();
-            this.getInstitutionEvolution(this.props.etablissement_id);
-          });
-        } else {
-          this.setState({
-            errorMessage: 'Erreur, merci de vérifier le formulaire',
-            isLoading: false,
-          });
-        }
-      });
-  }
-
 
   getInstitutionEvolution(etablissementId) {
     const customDatesets = [];
@@ -231,6 +193,45 @@ class Evolution extends Component {
       });
   }
 
+
+  addInstitutionEvolution(etablissementId, evolutionCategoryId, date, evolutionType) {
+    this.setState({ isLoading: true });
+    const newEvolution = {};
+    newEvolution[`${evolutionType.slice(0, -1)}`] = {
+      [`${evolutionType.slice(0, -1)}_id`]: etablissementId,
+      institution_evolution_category_id: evolutionCategoryId,
+      date,
+    };
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${evolutionType}`,
+      {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }),
+        body: JSON.stringify(newEvolution),
+      },
+    )
+      .then((res) => {
+        if (res.ok) {
+          res.json().then(() => {
+            this.setState({
+              errorMessage: '',
+              isLoading: false,
+            });
+            this.getInstitutionEvolution(this.props.etablissement_id);
+          });
+        } else {
+          this.setState({
+            errorMessage: 'Erreur, merci de vérifier le formulaire',
+            isLoading: false,
+          });
+        }
+      });
+  }
+
+
   toggleEvolutionsModal() {
     this.setState({
       evolutionsModal: !this.state.evolutionsModal,
@@ -280,6 +281,7 @@ class Evolution extends Component {
                 {this.state.addModal ?
                   <AddModal
                     etablissement_id={this.props.etablissement_id}
+                    getData={this.props.getData}
                     categories={this.state.evolutionCategories}
                     addMethod={this.addInstitutionEvolution}
                     toggleModal={this.toggleAddModal}
@@ -313,8 +315,11 @@ class Evolution extends Component {
                 {this.state.addModal ?
                   <AddModal
                     etablissement_id={this.props.etablissement_id}
-                    getInstitutionEvolution={this.getInstitutionEvolution}
+                    getData={this.props.getData}
+                    categories={this.state.evolutionCategories}
+                    addMethod={this.addInstitutionEvolution}
                     toggleModal={this.toggleAddModal}
+                    type="évolution"
                   /> : <div />}
               </div> :
               <div>
@@ -346,6 +351,7 @@ class Evolution extends Component {
 
 Evolution.propTypes = {
   etablissement_id: PropTypes.number.isRequired,
+  getData: PropTypes.func.isRequired,
 };
 
 export default Evolution;

@@ -32,13 +32,13 @@ class ConnectionContainer extends Component {
 
   componentWillMount() {
     this.getConnectionCategories();
-    this.getConnections(this.props.etablissement_id, 'mother');
-    this.getConnections(this.props.etablissement_id, 'daughter');
+    this.getConnections(this.props.etablissement_id, 'mothers');
+    this.getConnections(this.props.etablissement_id, 'daughters');
   }
 
   componentWillReceiveProps(nextProps) {
-    this.getConnections(nextProps.etablissement_id, 'mother');
-    this.getConnections(nextProps.etablissement_id, 'daughter');
+    this.getConnections(nextProps.etablissement_id, 'mothers');
+    this.getConnections(nextProps.etablissement_id, 'daughters');
   }
 
 
@@ -59,16 +59,50 @@ class ConnectionContainer extends Component {
       });
   }
 
-  addConnection(etablissementId, evolutionCategoryId, date, evolutionType, type) {
+  getConnections(etablissementId, connectionType) {
+    this.setState({ isLoading: true });
+    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/${connectionType}`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          [connectionType]: data.connections,
+          isLoading: false,
+        });
+      });
+  }
+
+  getConnectionsByCategory() {
+    const connectionsByCategory = {};
+    this.state.mothers.map((mother) => {
+      if (!connectionsByCategory[mother.connection.category]) {
+        connectionsByCategory[mother.connection.category] = { mothers: [], daughters: [] };
+      }
+      connectionsByCategory[mother.connection.category].mothers.push(mother.mother);
+    });
+    this.state.daughters.map((daughter) => {
+      if (!connectionsByCategory[daughter.connection.category]) {
+        connectionsByCategory[daughter.connection.category] = { mothers: [], daughters: [] };
+      }
+      connectionsByCategory[daughter.connection.category].daughters.push(daughter.daughter);
+    });
+    return connectionsByCategory;
+  }
+
+  addConnection(etablissementId, evolutionCategoryId, date, evolutionType) {
     this.setState({ isLoading: true });
     const newConnection = {};
-    newConnection[evolutionType] = {
-      [`${evolutionType}_id`]: etablissementId,
-      [`institution_${type}_category_id`]: evolutionCategoryId,
-      date: date,
+    newConnection[`${evolutionType.slice(0, -1)}`] = {
+      [`${evolutionType.slice(0, -1)}_id`]: etablissementId,
+      institution_connection_category_id: evolutionCategoryId,
+      date,
     };
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${evolutionType}s`,
+      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${evolutionType}`,
       {
         method: 'POST',
         headers: new Headers({
@@ -95,41 +129,6 @@ class ConnectionContainer extends Component {
           });
         }
       });
-  }
-
-
-  getConnections(etablissementId, connectionType) {
-    this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/${connectionType}s`, {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          [`${connectionType}s`]: data.connections,
-          isLoading: false,
-        });
-      });
-  }
-
-  getConnectionsByCategory() {
-    const connectionsByCategory = {};
-    this.state.mothers.map((mother) => {
-      if (!connectionsByCategory[mother.connection.category]) {
-        connectionsByCategory[mother.connection.category] = { mothers: [], daughters: [] };
-      }
-      connectionsByCategory[mother.connection.category].mothers.push(mother.mother);
-    });
-    this.state.daughters.map((daughter) => {
-      if (!connectionsByCategory[daughter.connection.category]) {
-        connectionsByCategory[daughter.connection.category] = { mothers: [], daughters: [] };
-      }
-      connectionsByCategory[daughter.connection.category].daughters.push(daughter.daughter);
-    });
-    return connectionsByCategory;
   }
 
   displayDropdown() {

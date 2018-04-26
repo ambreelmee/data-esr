@@ -19,6 +19,7 @@ class AddModal extends Component {
       etablissementId: null,
       categoryType: '',
       categoryId: '',
+      closure: false,
       institutions: [],
       isLoading: false,
       isSearching: false,
@@ -29,9 +30,11 @@ class AddModal extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.onClick = this.onClick.bind(this);
     this.onSelectorChange = this.onSelectorChange.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.toggleClosure = this.toggleClosure.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
   }
 
@@ -47,13 +50,28 @@ class AddModal extends Component {
 
   onKeyPress(event) {
     if (event.key === 'Enter') {
+      if (this.state.closure) {
+        this.updateInstitution();
+      }
       this.props.addMethod(
         this.state.etablissementId,
         this.state.categoryId,
         this.state.date,
-        this.state.categoryType
+        this.state.categoryType,
       );
     }
+  }
+
+  onClick() {
+    if (this.state.closure) {
+      this.updateInstitution();
+    }
+    this.props.addMethod(
+      this.state.etablissementId,
+      this.state.categoryId,
+      this.state.date,
+      this.state.categoryType,
+    )
   }
 
   onSelectorChange(event) {
@@ -61,7 +79,6 @@ class AddModal extends Component {
       [event.target.id]: document.getElementById(`${event.target.id}`).value,
     });
   }
-
 
   getData() {
     this.setState({ isSearching: true });
@@ -81,6 +98,31 @@ class AddModal extends Component {
       });
   }
 
+  updateInstitution() {
+    const updatedInstitution = {
+      date_end: this.state.date,
+    };
+    const targetId = this.state.categoryType === 'predecessors' ? this.state.etablissementId : this.props.etablissement_id;
+    fetch(`${process.env.API_URL_STAGING}institutions/${targetId}`, {
+      method: 'PUT',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+      body: JSON.stringify({ institution: updatedInstitution }),
+    })
+      .then(res => res.json())
+      .then((data) => {
+        if (data === 'Record not found') {
+          this.setState({
+            errorMessage: 'Formulaire est vide ou incomplet',
+          });
+        } else {
+          this.props.getData();
+        }
+      });
+  }
+
   resetSearch() {
     this.setState({ searchEntry: '' });
     this.getData();
@@ -91,6 +133,12 @@ class AddModal extends Component {
     this.setState({
       modal: !this.state.modal,
       errorMessage: '',
+    });
+  }
+
+  toggleClosure() {
+    this.setState({
+      closure: !this.state.closure,
     });
   }
 
@@ -133,26 +181,25 @@ class AddModal extends Component {
         <ModalBody>
           <FormGroup row>
             <Col xs="6">
-            {this.props.type === 'évolution' ?
-              <select
-                id="categoryType"
-                className="form-control form-control-warning"
-                onChange={this.onSelectorChange}
-              >
-                <option value="0">Sens de l&#39;évolution</option>
-                <option value="predecessor" >Prédecesseur</option>
-                <option value="follower">Successeur</option>
-              </select> :
-              <select
-                id="categoryType"
-                className="form-control form-control-warning"
-                onChange={this.onSelectorChange}
-              >
-                <option value="0">Sens du rattachement</option>
-                <option value="mother" >Mère</option>
-                <option value="daughter">Fille</option>
-              </select>}
-
+              {this.props.type === 'évolution' ?
+                <select
+                  id="categoryType"
+                  className="form-control form-control-warning"
+                  onChange={this.onSelectorChange}
+                >
+                  <option value="0">Sens de l&#39;évolution</option>
+                  <option value="predecessors" >Prédecesseur</option>
+                  <option value="followers">Successeur</option>
+                </select> :
+                <select
+                  id="categoryType"
+                  className="form-control form-control-warning"
+                  onChange={this.onSelectorChange}
+                >
+                  <option value="0">Sens du rattachement</option>
+                  <option value="mothers" >Mère</option>
+                  <option value="daughters">Fille</option>
+                </select>}
             </Col>
             <Col xs="6">
               <select
@@ -217,6 +264,13 @@ class AddModal extends Component {
               />
             </Col>
           </FormGroup>
+          {this.props.type === 'évolution' ?
+            <FormGroup check className="checkbox">
+              <Input className="form-check-input" type="checkbox" id="checkbox1" value="closure" onChange={this.toggleClosure} />
+              <Label check className="form-check-label" htmlFor="checkbox1">
+                Déclarer l&#39;établissement prédécesseur comme fermé
+              </Label>
+            </FormGroup> : <div />}
         </ModalBody>
         <ModalFooter>
           <p className="mt-2 text-danger">{this.state.errorMessage}</p>
@@ -224,21 +278,13 @@ class AddModal extends Component {
             className="m-1 float-right"
             color="primary"
             disabled={this.state.isLoading}
-            onClick={!this.state.isLoading ?
-              () => this.props.addMethod(
-                this.state.etablissementId,
-                this.state.categoryId,
-                this.state.date,
-                this.state.categoryType,
-                this.props.type === 'évolution' ? 'evolution' : 'connection'
-              ) :
-              null}
+            onClick={!this.state.isLoading ? this.onClick : null}
           >
             {this.state.isLoading ?
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Ajout </span>
-              </div> : <div>Ajouter un{this.props.type === 'évolution' ? 'e ':' '}{this.props.type}</div>}
+              </div> : <div>Ajouter un{this.props.type === 'évolution' ? 'e ' : ' '}{this.props.type}</div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
@@ -251,6 +297,7 @@ class AddModal extends Component {
 AddModal.propTypes = {
   addMethod: PropTypes.func.isRequired,
   etablissement_id: PropTypes.number.isRequired,
+  getData: PropTypes.func,
   categories: PropTypes.array.isRequired,
   toggleModal: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,

@@ -93,7 +93,7 @@ class EtablissementContainer extends Component {
           </Col>
           <Col md="4">
             <Row className="mx-1">
-              <Evolution etablissement_id={etablissementId} />
+              <Evolution etablissement_id={etablissementId} getData={this.getData} />
               <LinkContainer etablissement_id={etablissementId} />
             </Row>
           </Col>
