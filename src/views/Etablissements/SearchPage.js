@@ -24,7 +24,7 @@ class SearchPage extends Component {
       searchEntry: '',
     };
     this.getInstitutionByPage = this.getInstitutionByPage.bind(this);
-    this.getData = debounce(this.getData, 1000);
+    this.search = debounce(this.search, 1000);
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
@@ -49,14 +49,14 @@ class SearchPage extends Component {
   onChange(event) {
     event.preventDefault();
     this.setState({ [event.target.id]: event.target.value });
-    this.getData();
+    this.search();
   }
 
   getInstitutionByPage(page) {
     this.setState({ isLoading: true });
     let url = '';
     if (page) {
-      url = page.url
+      url = page.url;
     }
     else {
       url = `${process.env.API_URL_STAGING}institutions`;
@@ -69,10 +69,9 @@ class SearchPage extends Component {
     })
       .then((response) => {
         if (response.ok) {
-          const links = parse(response.headers.get('Link'))
+          const links = parse(response.headers.get('Link'));
           response.json().then((data) => {
             this.setState({
-
               institutions: data,
               isLoading: false,
               last: links.last,
@@ -90,7 +89,7 @@ class SearchPage extends Component {
       });
   }
 
-  getData() {
+  search() {
     this.setState({ isLoading: true });
     const params = encodeURI(this.state.searchEntry);
     fetch(`${process.env.API_URL_STAGING}institutions/search?q=${params}`, {
@@ -99,16 +98,25 @@ class SearchPage extends Component {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
     })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          institutions: data,
-          isLoading: false,
-          last: '',
-          next: '',
-          prev: '',
-          self: '',
-        });
+      .then((response) => {
+        if (response.ok) {
+          const links = parse(response.headers.get('Link'));
+          response.json().then((data) => {
+            this.setState({
+              institutions: data,
+              isLoading: false,
+              last: links.last,
+              next: links.next,
+              prev: links.prev,
+              self: links.self,
+            });
+          });
+        } else {
+          this.setState({
+            error: true,
+            isLoading: false,
+          });
+        }
       });
   }
 
@@ -124,7 +132,7 @@ class SearchPage extends Component {
 
   resetSearch() {
     this.setState({ searchEntry: '' });
-    this.getData();
+    this.search();
   }
 
   renderInstitutionsCards() {
@@ -210,54 +218,58 @@ class SearchPage extends Component {
             <i className="fa fa-spinner fa-spin " />
             <span className="mx-1"> Chargement </span>
           </div> :
-          <Row>
-            {this.renderInstitutionsCards()}
-            <Pagination>
-              {this.state.self && this.state.self.page_number !== '1' ?
-                <PaginationItem>
-                  <PaginationLink id="first" onClick={this.onClick}>
-                    1
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.self && parseInt(this.state.self.page_number, 10) > 2 ?
-                <PaginationItem disabled>
-                  <PaginationLink>
-                    ...
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.prev && this.state.prev.page_number !== '1' ?
-                <PaginationItem>
-                  <PaginationLink id="prev" onClick={this.onClick}>
-                    {this.state.prev.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.self ?
-                <PaginationItem active>
-                  <PaginationLink id="self" onClick={this.onClick}>
-                    {this.state.self.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.next && this.state.next.page_number !== this.state.last.page_number ?
-                <PaginationItem>
-                  <PaginationLink id="next" onClick={this.onClick}>
-                    {this.state.next.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.last &&
-                parseInt(this.state.last.page_number, 10) - parseInt(this.state.self.page_number, 10) > 2 ?
+          <div>
+            <Row>
+              {this.renderInstitutionsCards()}
+            </Row>
+            <div className="d-flex justify-content-center">
+              <Pagination>
+                {this.state.self && this.state.self.page_number !== '1' ?
+                  <PaginationItem>
+                    <PaginationLink id="first" onClick={this.onClick}>
+                      1
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.self && parseInt(this.state.self.page_number, 10) > 2 ?
                   <PaginationItem disabled>
                     <PaginationLink>
                       ...
                     </PaginationLink>
-                  </PaginationItem> : <div /> }
-              {this.state.last && this.state.self.page_number !== this.state.last.page_number ?
-                <PaginationItem>
-                  <PaginationLink id="last" onClick={this.onClick}>
-                    {this.state.last.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-            </Pagination>
-          </Row>}
+                  </PaginationItem> : <div />}
+                {this.state.prev && this.state.prev.page_number !== '1' ?
+                  <PaginationItem>
+                    <PaginationLink id="prev" onClick={this.onClick}>
+                      {this.state.prev.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.self ?
+                  <PaginationItem active>
+                    <PaginationLink id="self" onClick={this.onClick}>
+                      {this.state.self.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.next && this.state.next.page_number !== this.state.last.page_number ?
+                  <PaginationItem>
+                    <PaginationLink id="next" onClick={this.onClick}>
+                      {this.state.next.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.last &&
+                  parseInt(this.state.last.page_number, 10) - parseInt(this.state.self.page_number, 10) > 2 ?
+                    <PaginationItem disabled>
+                      <PaginationLink>
+                        ...
+                      </PaginationLink>
+                    </PaginationItem> : <div /> }
+                {this.state.last && this.state.self.page_number !== this.state.last.page_number ?
+                  <PaginationItem>
+                    <PaginationLink id="last" onClick={this.onClick}>
+                      {this.state.last.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+              </Pagination>
+            </div>
+          </div>}
       </div>
     );
   }
