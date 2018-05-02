@@ -41,7 +41,7 @@ class CategoryTag extends Component {
   deleteCategory() {
     this.setState({ isDeleting: true });
     fetch(
-      `${process.env.API_URL_STAGING}/institution_tag/${this.props.id}`,
+      `${process.env.API_URL_STAGING}/institution_tags/${this.props.id}`,
       {
         method: 'DELETE',
         headers: new Headers({
@@ -55,7 +55,7 @@ class CategoryTag extends Component {
         this.setState({
           isDeleting: false,
         });
-        this.props.getTag();
+        this.props.getTag('institution_tags');
       });
   }
 
@@ -124,7 +124,7 @@ class CategoryTag extends Component {
 
   render() {
     return (
-      <InputGroup className="mb-3">
+      <InputGroup className="mt-3">
         <Col xs="4" className="pr-0">
           <Input
             id="shortLabel"

@@ -5,11 +5,15 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+import Tag from './Tag';
+import TagModal from './TagModal'
+
 class CategoryTag extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      addTag: false,
       cancelTooltip: false,
       collapse: false,
       deleteTooltip: false,
@@ -20,6 +24,7 @@ class CategoryTag extends Component {
       title: this.props.title,
       modal: false,
       origin: this.props.origin,
+      plusTooltip: false,
       showMoreTooltip: false,
     };
     this.cancelEdition = this.cancelEdition.bind(this);
@@ -27,9 +32,11 @@ class CategoryTag extends Component {
     this.deleteCategory = this.deleteCategory.bind(this);
     this.onChange = this.onChange.bind(this);
     this.modifyCurrentCategory = this.modifyCurrentCategory.bind(this);
+    this.toggleAddTag = this.toggleAddTag.bind(this);
     this.toggleCancelToolTip = this.toggleCancelToolTip.bind(this);
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
     this.toggleEditToolTip = this.toggleEditToolTip.bind(this);
+    this.togglePlusTooltip = this.togglePlusTooltip.bind(this);
     this.toggleShowMoreToolTip = this.toggleShowMoreToolTip.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
   }
@@ -101,6 +108,18 @@ class CategoryTag extends Component {
     });
   }
 
+  toggleAddTag() {
+    this.setState({
+      addTag: !this.state.addTag,
+    });
+  }
+
+  togglePlusTooltip() {
+    this.setState({
+      plusTooltip: !this.state.plusTooltip,
+    });
+  }
+
   toggleShowMoreToolTip() {
     this.setState({
       showMoreTooltip: !this.state.showMoreTooltip,
@@ -135,6 +154,20 @@ class CategoryTag extends Component {
     this.setState({
       collapse: !this.state.collapse,
     })
+  }
+
+  renderTags() {
+    if (this.props.tags.length >0) {
+      return this.props.tags.map(tag =>
+        <Tag
+          key={tag.id}
+          getTag={this.props.getCategories}
+          id={tag.id}
+          longLabel={tag.long_label}
+          shortLabel={tag.short_label}
+        />
+      )}
+      return <p>Aucun label dans cette catégorie</p>
   }
 
   render() {
@@ -238,6 +271,29 @@ class CategoryTag extends Component {
               </ModalFooter>
             </Modal>
             <Button
+              id={`labels-plus-button-${this.props.id}`}
+              color="success"
+              outline
+              size="sm"
+              onClick={this.toggleAddTag}
+            >
+              <i className="fa fa-plus" />
+            </Button>
+            <Tooltip
+              isOpen={this.state.plusTooltip}
+              target={`labels-plus-button-${this.props.id}`}
+              toggle={this.togglePlusTooltip}
+            >
+              Ajouter un tag dans cette catégorie
+            </Tooltip>
+            {this.state.addTag ?
+              <TagModal
+                getCategories={this.props.getCategories}
+                toggleModal={this.toggleAddTag}
+                categoryId={this.props.id}
+              /> : <div />
+            }
+            <Button
               id={`labels-more-button-${this.props.id}`}
               color="secondary"
               outline
@@ -254,10 +310,10 @@ class CategoryTag extends Component {
               Voir plus
             </Tooltip>
           </InputGroup>
-          <Collapse isOpen={this.state.collapse}>
-            coucou
-          </Collapse>
         </Col>
+        <Collapse isOpen={this.state.collapse} className="ml-4 pl-4">
+          {this.renderTags()}
+        </Collapse>
       </InputGroup>
     );
   }

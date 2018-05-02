@@ -91,7 +91,7 @@ class CategoryContainer extends Component {
         id={category.id}
         origin={category.origin ? category.origin : ''}
         title={category.title}
-        tags={this.state.institution_tags.filter(tag => tag.institution_tag_category_id === category.id)}
+        tags={this.state.institution_tags.filter(tag => tag.category === category.title)}
       />));
   }
 
