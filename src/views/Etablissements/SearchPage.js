@@ -62,7 +62,7 @@ class SearchPage extends Component {
       url = `${process.env.API_URL_STAGING}institutions`;
     }
     fetch(url, {
-      method: 'GET',
+      method: this.state.searchEntry ? 'POST' : 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),

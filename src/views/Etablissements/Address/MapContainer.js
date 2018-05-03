@@ -126,7 +126,7 @@ export class MapContainer extends Component {
 
     return (
       <div>
-        <div className="m-2 text-center h6">Cliquer sur la carte pour ajuster la position </div>
+        <div className="m-2 text-center h6">Cliquer sur la carte pour ajuster la position</div>
         <Map
           google={this.props.google}
           initialCenter={this.state.initialPosition}

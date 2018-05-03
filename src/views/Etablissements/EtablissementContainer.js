@@ -8,6 +8,7 @@ import EtablissementStatus from './EtablissementStatus';
 import Evolution from './Evolution/Evolution';
 import NameContainer from './Name/NameContainer';
 import LinkContainer from './Link/LinkContainer';
+import TagContainer from './Tag/TagContainer';
 
 
 class EtablissementContainer extends Component {
@@ -30,6 +31,7 @@ class EtablissementContainer extends Component {
     if (nextProps.match.params.number) {
       this.props.match.params.number = nextProps.match.params.number;
     }
+    this.getData();
   }
 
   getData() {
@@ -94,6 +96,7 @@ class EtablissementContainer extends Component {
           <Col md="4">
             <Row className="mx-1">
               <Evolution etablissement_id={etablissementId} getData={this.getData} />
+              <TagContainer etablissement_id={etablissementId} />
               <LinkContainer etablissement_id={etablissementId} />
             </Row>
           </Col>

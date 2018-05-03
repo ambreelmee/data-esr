@@ -10,7 +10,8 @@ const Address = props => (
     <span className="text-primary"><strong>{props.business_name}</strong></span>
     {props.business_name ? <br /> : <span />}
     <i className="fa fa-map-marker fa-lg mr-1" />
-    <strong>{props.address_1}</strong>{props.address_2 ? `(${props.address_2})` : ''}<strong>{`, ${props.zip_code} ${props.city}`}</strong>
+    <strong>{props.address_1}</strong>{props.address_2 ? ` (${props.address_2})` : ''}
+    <strong>{`, ${props.zip_code} ${props.city}`}</strong>
     {props.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{props.phone}
   </div>);
 

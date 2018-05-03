@@ -129,7 +129,7 @@ class LinkContainer extends Component {
       return <Redirect to="/categories" />;
     }
     return (
-      <Card className="mt-2">
+      <Card className="mt-2 w-100">
         <CardHeader>
           Présence sur le web
         </CardHeader>
