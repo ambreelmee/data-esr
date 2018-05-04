@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
-// import parse from 'parse-link-header';
+import parse from 'parse-link-header';
 
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
@@ -69,15 +69,15 @@ class SearchPage extends Component {
     })
       .then((response) => {
         if (response.ok) {
-          // const links = parse(response.headers.get('Link'));
+          const links = parse(response.headers.get('Link'));
           response.json().then((data) => {
             this.setState({
               institutions: data,
               isLoading: false,
-              // last: links.last,
-              // next: links.next,
-              // prev: links.prev,
-              // self: links.self,
+              last: links.last,
+              next: links.next,
+              prev: links.prev,
+              self: links.self,
             });
           });
         } else {
@@ -100,15 +100,15 @@ class SearchPage extends Component {
     })
       .then((response) => {
         if (response.ok) {
-          // const links = parse(response.headers.get('Link'));
+          const links = parse(response.headers.get('Link'));
           response.json().then((data) => {
             this.setState({
               institutions: data,
               isLoading: false,
-              // last: links.last,
-              // next: links.next,
-              // prev: links.prev,
-              // self: links.self,
+              last: links.last,
+              next: links.next,
+              prev: links.prev,
+              self: links.self,
             });
           });
         } else {
@@ -222,6 +222,53 @@ class SearchPage extends Component {
             <Row>
               {this.renderInstitutionsCards()}
             </Row>
+            <div className="d-flex justify-content-center">
+              <Pagination>
+                {this.state.self && this.state.self.page_number !== '1' ?
+                  <PaginationItem>
+                    <PaginationLink id="first" onClick={this.onClick}>
+                      1
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.self && parseInt(this.state.self.page_number, 10) > 2 ?
+                  <PaginationItem disabled>
+                    <PaginationLink>
+                      ...
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.prev && this.state.prev.page_number !== '1' ?
+                  <PaginationItem>
+                    <PaginationLink id="prev" onClick={this.onClick}>
+                      {this.state.prev.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.self ?
+                  <PaginationItem active>
+                    <PaginationLink id="self" onClick={this.onClick}>
+                      {this.state.self.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.next && this.state.next.page_number !== this.state.last.page_number ?
+                  <PaginationItem>
+                    <PaginationLink id="next" onClick={this.onClick}>
+                      {this.state.next.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+                {this.state.last &&
+                  parseInt(this.state.last.page_number, 10) - parseInt(this.state.self.page_number, 10) > 2 ?
+                    <PaginationItem disabled>
+                      <PaginationLink>
+                        ...
+                      </PaginationLink>
+                    </PaginationItem> : <div /> }
+                {this.state.last && this.state.self.page_number !== this.state.last.page_number ?
+                  <PaginationItem>
+                    <PaginationLink id="last" onClick={this.onClick}>
+                      {this.state.last.page_number}
+                    </PaginationLink>
+                  </PaginationItem> : <div />}
+              </Pagination>
+            </div>
           </div>}
       </div>
     );
