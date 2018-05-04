@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 
 import UpdatePositionButton from './UpdatePositionButton';
 
+
+// this component is not used anymore
 export class MapContainer extends Component {
   constructor(props) {
     super(props);
