@@ -62,7 +62,7 @@ class NameContainer extends Component {
   deleteName(nameId, etablissementId) {
     this.setState({ isDeleting: true });
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${etablissementId}/institution_names/${nameId}`,
+      `${process.env.API_URL_STAGING}institution_names/${nameId}`,
       {
         method: 'DELETE',
         headers: new Headers({

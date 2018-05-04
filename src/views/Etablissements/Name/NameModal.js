@@ -123,7 +123,7 @@ class NameModal extends Component {
       status: this.state.status,
     };
     fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names/${this.props.id}`,
+      `${process.env.API_URL_STAGING}institution_names/${this.props.id}`,
       {
         method: 'PUT',
         headers: new Headers({
