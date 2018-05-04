@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Button, ButtonDropdown, ButtonGroup, Card, CardBody, CardHeader, DropdownItem, DropdownMenu,
-  DropdownToggle
+  DropdownToggle,
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
@@ -88,8 +88,8 @@ class Evolution extends Component {
 
   getInstitutionEvolution(etablissementId) {
     const customDatesets = [];
-    const customYLabels =  ['Université actuelle'];
-    const datasetObject = {
+    const customYLabels = ['Université actuelle'];
+    const datasetInitialObject = {
       label: '',
       fill: true,
       borderColor: 'rgba(179,181,198,1)',
@@ -103,7 +103,7 @@ class Evolution extends Component {
       pointRadius: 5,
       data: ['', 'Université actuelle'],
     };
-    customDatesets.push(datasetObject);
+    customDatesets.push(datasetInitialObject);
     this.setState({ isPredecessorsLoading: true, isFollowersLoading: true });
     fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/predecessors`, {
       method: 'GET',
@@ -139,12 +139,13 @@ class Evolution extends Component {
             }
             customDatesets.push(datasetObject);
             count += 1;
+            return customDatesets;
           });
           customYLabels.push();
         }
         this.setState({
           predecessors: results.evolutions,
-          isPredecessorsLoading: false
+          isPredecessorsLoading: false,
         });
       });
     fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/followers`, {
@@ -182,6 +183,7 @@ class Evolution extends Component {
             }
             customDatesets.push(datasetObject);
             count += 1;
+            return customDatesets;
           });
         }
         this.setState({
@@ -255,7 +257,7 @@ class Evolution extends Component {
       return <p>loading...</p>;
     }
     if (this.state.redirectToInstitution) {
-      const evolutionType = this.state.index === 0 ? 'predecessor' : 'follower'
+      const evolutionType = this.state.index === 0 ? 'predecessor' : 'follower';
       const institutionId = this.state[`${evolutionType}s`].find(evolution =>
         evolution[evolutionType].name === this.state.institutionName)[evolutionType].id;
       return <Redirect to={`/etablissements/${institutionId}`} />;
