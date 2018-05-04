@@ -13,6 +13,7 @@ import AddressModal from './AddressModal';
 import ConnectionContainer from './../Connection/ConnectionContainer';
 import CodeContainer from './../Code/CodeContainer';
 import MapContainer from './MapContainer';
+import LeafletMap from './LeafletMap';
 
 
 class AddressContainer extends Component {
@@ -128,12 +129,11 @@ class AddressContainer extends Component {
         <Col md="8" className="pl-0">
           <Card className="mt-2">
             {displayedAddress ?
-              <MapContainer
+              <LeafletMap
                 currentAddress={displayedAddress}
-                getAddresses={this.getAddresses}
                 etablissement_id={this.props.etablissement_id}
-              /> :
-              <div />}
+                getAddresses={this.getAddresses}
+              /> : <div />}
           </Card>
           <ConnectionContainer etablissement_id={this.props.etablissement_id} />
         </Col>
