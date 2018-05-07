@@ -10,7 +10,7 @@ import parse from 'parse-link-header';
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
-
+import ImportDatas from './ImportDatas';
 
 class SearchPage extends Component {
   constructor(props) {
@@ -246,15 +246,16 @@ class SearchPage extends Component {
               </FormGroup>
             </Form>
           </Col>
-          <Col xs="12" md="4">
+          <Col xs="12" md="5">
             <Button
               type="button"
               color="primary"
-              className="col-xs-1"
+              className="m-1"
               onClick={this.redirectToNewInstitution}
             >
               <i className="fa fa-plus" /> Ajouter un établissement
             </Button>
+            <ImportDatas />
           </Col>
         </Row>
         {this.state.isLoading ?
