@@ -18,6 +18,7 @@ class SearchPage extends Component {
 
     this.state = {
       error: false,
+      initialData: {},
       institutions: {},
       isLoading: false,
       redirectToNewInstitution: false,
@@ -34,7 +35,7 @@ class SearchPage extends Component {
 
   componentWillMount() {
     this.setState({ isLoading: true });
-    this.getInstitutionByPage();
+    this.getInitialData();
   }
 
   onClick(event) {
@@ -52,17 +53,9 @@ class SearchPage extends Component {
     this.search();
   }
 
-  getInstitutionByPage(page) {
-    this.setState({ isLoading: true });
-    let url = '';
-    if (page) {
-      url = page.url;
-    }
-    else {
-      url = `${process.env.API_URL_STAGING}institutions`;
-    }
-    fetch(url, {
-      method: this.state.searchEntry ? 'POST' : 'GET',
+  getInitialData() {
+    fetch(`${process.env.API_URL_STAGING}institutions`, {
+      method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
@@ -72,7 +65,9 @@ class SearchPage extends Component {
           const links = parse(response.headers.get('Link'));
           response.json().then((data) => {
             this.setState({
+              initialData: data,
               institutions: data,
+              initialLinks: links,
               isLoading: false,
               last: links.last,
               next: links.next,
@@ -87,6 +82,44 @@ class SearchPage extends Component {
           });
         }
       });
+  }
+
+  getInstitutionByPage(page) {
+    this.setState({ isLoading: true });
+    if (page) {
+      const url = page.url;
+      fetch(url, {
+        method: this.state.searchEntry ? 'POST' : 'GET',
+        headers: new Headers({
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            const links = parse(response.headers.get('Link'));
+            response.json().then((data) => {
+              this.setState({
+                institutions: data,
+                isLoading: false,
+                last: links.last,
+                next: links.next,
+                prev: links.prev,
+                self: links.self,
+              });
+            });
+          } else {
+            this.setState({
+              error: true,
+              isLoading: false,
+            });
+          }
+        });
+    } else {
+      this.setState({
+        isLoading: false,
+        institutions: this.state.initialData,
+      });
+    }
   }
 
   search() {
@@ -131,8 +164,14 @@ class SearchPage extends Component {
   }
 
   resetSearch() {
-    this.setState({ searchEntry: '' });
-    this.search();
+    this.setState({
+      institutions: this.state.initialData,
+      searchEntry: '',
+      last: this.state.initialLinks.last,
+      next: this.state.initialLinks.next,
+      prev: this.state.initialLinks.prev,
+      self: this.state.initialLinks.self,
+    });
   }
 
   renderInstitutionsCards() {
