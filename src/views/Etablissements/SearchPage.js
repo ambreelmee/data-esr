@@ -136,18 +136,23 @@ class SearchPage extends Component {
   }
 
   renderInstitutionsCards() {
-    return this.state.institutions.map(institution => (
-      <Col xs="12" md="6" lg="4" key={institution.id}>
-        <SearchPageEtablissement
-          address={getActiveEntity(institution.addresses) ?
-            getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
-          date_start={institution.date_start}
-          date_end={institution.date_end}
-          id={institution.id}
-          name={getActiveEntity(institution.names) ? getActiveEntity(institution.names).text : institution.names[0]}
-        />
-      </Col>
-    ));
+    return this.state.institutions.map((institution) => {
+      const codeUAI = institution.codes.find(code => code.category === 'UAI' && code.status === 'active');
+      return (
+        <Col xs="12" md="6" lg="4" key={institution.id}>
+          <SearchPageEtablissement
+            address={getActiveEntity(institution.addresses) ?
+              getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
+            codeUAI={codeUAI ? codeUAI.content : ''}
+            date_start={institution.date_start}
+            date_end={institution.date_end}
+            id={institution.id}
+            name={getActiveEntity(institution.names) ? getActiveEntity(institution.names) : institution.names[0]}
+            tags={institution.tags}
+          />
+        </Col>
+      );
+    });
   }
 
   render() {

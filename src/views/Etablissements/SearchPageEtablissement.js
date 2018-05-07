@@ -4,6 +4,9 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
 
 class SearchPageEtablissement extends Component {
   constructor(props) {
@@ -21,6 +24,11 @@ class SearchPageEtablissement extends Component {
     });
   }
 
+  renderTags() {
+    return this.props.tags.map(tag =>
+      <Badge key={tag.id} pill color="warning" className="mx-1">{tag.short_label}</Badge>);
+  }
+
   render() {
     if (this.state.displayInstitutionPage) {
       return <Redirect to={`/etablissements/${this.props.id}`} />;
@@ -32,8 +40,11 @@ class SearchPageEtablissement extends Component {
             <Badge color={!this.props.date_end ? 'success' : 'danger'} className="float-right">
               {!this.props.date_end ? 'Actif' : 'Archivé'}
             </Badge>
-            <h4>{this.props.name}</h4>
-            {this.props.address}<br />
+            <h4>{`${this.props.name.initials} - ${this.props.name.text.toProperCase()}`}</h4>
+            {this.props.codeUAI ?
+              <div className="p-1 d-inline-block text-primary"><strong>{this.props.codeUAI}</strong><br /></div> :
+              <div />}
+            {this.props.address ? <div>{this.props.address.toProperCase()}<br /></div> : <div />}
             <Button
               outline
               id="searchpage-1"
@@ -45,8 +56,11 @@ class SearchPageEtablissement extends Component {
               <i className="icon-eye mr-1" />
             Afficher
             </Button>
-            depuis le {moment(this.props.date_start).format('LL')}
-            {this.props.date_end ? <span><br /> jusqu&#39;au {moment(this.props.date_end).format('LL')}</span> : <div />}
+            {this.props.tags.length > 0 ? <div> {this.renderTags()} <br /></div> : <div />}
+            {this.props.date_end ?
+              <span className="text-danger">
+                <strong>fermé depuis le {moment(this.props.date_end).format('LL')}</strong>
+              </span> : <div />}
           </div>
         </CardBody>
       </Card>
@@ -55,11 +69,16 @@ class SearchPageEtablissement extends Component {
 }
 
 SearchPageEtablissement.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.shape({
+    initials: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+  }).isRequired,
   address: PropTypes.string.isRequired,
+  codeUAI: PropTypes.string.isRequired,
   date_start: PropTypes.string.isRequired,
   date_end: PropTypes.string,
   id: PropTypes.number.isRequired,
+  tags: PropTypes.array.isRequired,
 };
 
 SearchPageEtablissement.defaultProps = {
