@@ -166,7 +166,7 @@ class ConnectionContainer extends Component {
       return <p>Loading...</p>;
     }
     return (
-      <Card>
+      <Card className="mb-0 mt-2">
         <CardHeader>
           Rattachements
           <ButtonGroup className="float-right">

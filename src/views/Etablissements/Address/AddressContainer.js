@@ -127,14 +127,14 @@ class AddressContainer extends Component {
     return (
       <Row>
         <Col md="8" className="pl-0">
-          <Card className="mt-2">
-            {displayedAddress ?
+          {displayedAddress && displayedAddress.latitude && displayedAddress.longitude ?
+            <Card className="mt-2">
               <LeafletMap
                 currentAddress={displayedAddress}
                 etablissement_id={this.props.etablissement_id}
                 getAddresses={this.getAddresses}
-              /> : <div />}
-          </Card>
+              />
+            </Card> : <div />}
           <ConnectionContainer etablissement_id={this.props.etablissement_id} />
         </Col>
         <Col md="4">
