@@ -75,7 +75,7 @@ class CategoryContainer extends Component {
     const stateField = `${categoryType}_categories`
     return this.state[stateField].map(category =>
       (<Category
-        key={category.id}
+        key={`${stateField}-${category.id}`}
         categoryType={categoryType}
         getCategories={this.getCategories}
         id={category.id}
@@ -86,7 +86,7 @@ class CategoryContainer extends Component {
   renderInstitutionCategoryTags() {
     return this.state.institution_tag_categories.map(category =>
       (<CategoryTag
-        key={category.id}
+        key={`tag-${category.id}`}
         getCategories={this.getCategories}
         id={category.id}
         origin={category.origin ? category.origin : ''}
@@ -97,7 +97,7 @@ class CategoryContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     return (
       <div className="animated fadeIn">

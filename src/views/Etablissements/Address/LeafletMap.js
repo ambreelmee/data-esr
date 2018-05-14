@@ -9,7 +9,7 @@ class LeafletMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      zoom: 17,
+      zoom: 16,
       latlng: null,
     };
     this.handleClick = this.handleClick.bind(this);

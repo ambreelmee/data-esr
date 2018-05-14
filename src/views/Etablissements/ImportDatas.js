@@ -61,10 +61,10 @@ class ImportDatas extends Component {
           type="file"
           style={{
             position: 'relative',
-            'text-align': 'right',
-            '-moz-opacity': 0,
+            textAlign: 'right',
+            MozOpacity: 0,
             opacity: 0,
-            'z-index': 2,
+            zIndex: 2,
           }}
           onChange={this.handleChange}
         />
@@ -73,7 +73,7 @@ class ImportDatas extends Component {
             position: 'absolute',
             top: 0,
             left: 0,
-            'z-index': 1,
+            zIndex: 1,
           }}
           color="success"
           className="m-1"

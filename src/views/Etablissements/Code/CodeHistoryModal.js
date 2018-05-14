@@ -26,7 +26,7 @@ class CodeHistoryModal extends Component {
     return this.props.history.map(code =>
       (
         <CodeHistoryModalRow
-          key={code.id}
+          key={`code-history-${code.id}`}
           category={this.props.category}
           categoryId={this.props.categoryId}
           content={code.content}

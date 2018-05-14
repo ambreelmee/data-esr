@@ -7,7 +7,7 @@ const Tag = props => (
   <Card className="card-accent-primary text-primary">
     <CardBody className="p-0">
       {props.categoryTags.map(tag => (
-        <h6 key={tag.id} className="my-1 mx-2">
+        <h6 key={`tag-${tag.id}`} className="my-1 mx-2">
           {tag.tag.long_label}
         </h6>
       ))}

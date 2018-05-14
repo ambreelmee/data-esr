@@ -24,9 +24,9 @@ class ConnectionCategoryContainer extends Component {
   renderConnections(connectionsList) {
     return connectionsList.map(connection => (
       <Button
-        style={{ 'white-space': 'normal' }}
+        style={{ whiteSpace: 'normal' }}
         color="light"
-        key={connection.id}
+        key={`connection-${connection.id}`}
         id={connection.id}
         onClick={this.redirectToInstitution}
       >

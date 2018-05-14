@@ -119,7 +119,7 @@ class AddressContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     const replacementAddress = this.state.addresses ? this.state.addresses[0] : null;
     const displayedAddress = getActiveEntity(this.state.addresses) ?
@@ -128,7 +128,7 @@ class AddressContainer extends Component {
       <Row>
         <Col md="8" className="pl-0">
           {displayedAddress && displayedAddress.latitude && displayedAddress.longitude ?
-            <Card className="mt-2">
+            <Card className="mt-2 mb-0">
               <LeafletMap
                 currentAddress={displayedAddress}
                 etablissement_id={this.props.etablissement_id}

@@ -66,7 +66,7 @@ class EtablissementContainer extends Component {
       return <Redirect to="/etablissements" />;
     }
     if (this.state.isFollowersLoading || this.state.isPredecessorsLoading) {
-      return <p>loading</p>;
+      return <p />;
     }
     return (
       <div className="animated fadeIn">

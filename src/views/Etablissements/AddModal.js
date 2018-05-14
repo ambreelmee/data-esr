@@ -151,7 +151,7 @@ class AddModal extends Component {
       return '';
     }
     return this.props.categories.map(category =>
-      <option key={category.id} value={category.id}>{category.title}</option>);
+      <option key={`${this.props.type}-${category.id}`} value={category.id}>{category.title}</option>);
   }
 
   renderInstitutionNameSuggestions() {
@@ -162,7 +162,7 @@ class AddModal extends Component {
       return <option>Aucun résultat</option>;
     }
     return this.state.institutions.map(institution => (
-      <option key={institution.id} value={institution.id}>
+      <option key={`institution-${institution.id}`} value={institution.id}>
         {institution.names.find(name => name.status === 'active') ?
         institution.names.find(name => name.status === 'active').text : ''}
       </option>));

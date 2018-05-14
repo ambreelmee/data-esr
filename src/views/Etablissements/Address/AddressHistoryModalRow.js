@@ -39,7 +39,7 @@ class AddressHistoryModalRow extends Component {
 
   render() {
     return (
-      <tr key={this.props.id}>
+      <tr key={`address-history-${this.props.id}`}>
         <td>{this.props.business_name}</td>
         <td>{this.props.address_1}</td>
         <td>{this.props.address_2}</td>

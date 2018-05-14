@@ -49,7 +49,7 @@ class InstitutionsContainer extends Component {
     const { institutions, isLoading } = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     if (institutions.length === 0) {
       return <p>Aucune entrée en base </p>;
@@ -76,7 +76,7 @@ class InstitutionsContainer extends Component {
                   </thead>
                   <tbody>{institutions.map(institution => (
                     <Item
-                      key={institution.id}
+                      key={`${institution.id}-${institution.name}`}
                       id={institution.id}
                       id_esr={institution.id_esr}
                       name={institution.name}

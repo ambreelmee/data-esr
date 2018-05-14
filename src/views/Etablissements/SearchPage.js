@@ -178,7 +178,7 @@ class SearchPage extends Component {
     return this.state.institutions.map((institution) => {
       const codeUAI = institution.codes.find(code => code.category === 'UAI' && code.status === 'active');
       return (
-        <Col xs="12" md="6" lg="4" key={institution.id}>
+        <Col xs="12" md="6" lg="4" key={`institution-${institution.id}`}>
           <SearchPageEtablissement
             address={getActiveEntity(institution.addresses) ?
               getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}

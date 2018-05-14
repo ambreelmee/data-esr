@@ -96,7 +96,7 @@ class LinkContainer extends Component {
   renderDropDownItems() {
     return this.state.emptyCategories.map(category => (
       <LinkDropdown
-        key={category.id}
+        key={`${category.id}-${category.title}`}
         categoryId={category.id}
         category={category.title}
         className={getCategoryClass(category.title) ? getCategoryClass(category.title).class : ''}
@@ -123,7 +123,7 @@ class LinkContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     if (this.state.redirectToCategories) {
       return <Redirect to="/categories" />;

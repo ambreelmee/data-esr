@@ -254,7 +254,7 @@ class Evolution extends Component {
 
   render() {
     if (this.state.isFollowersLoading || this.state.isPredecessorsLoading) {
-      return <p>loading...</p>;
+      return <p />;
     }
     if (this.state.redirectToInstitution) {
       const evolutionType = this.state.index === 0 ? 'predecessor' : 'follower';

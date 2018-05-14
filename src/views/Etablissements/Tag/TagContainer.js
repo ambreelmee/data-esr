@@ -91,10 +91,10 @@ class TagContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     return (
-      <Card className="mt-2 w-100">
+      <Card className="mt-2 mb-0 w-100">
         <CardHeader>
           Caractérisations de l&#39;établissement
           <ButtonGroup className="float-right">

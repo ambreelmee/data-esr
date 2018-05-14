@@ -163,7 +163,7 @@ class ConnectionContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     return (
       <Card className="mb-0 mt-2">

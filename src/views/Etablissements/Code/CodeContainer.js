@@ -102,7 +102,7 @@ class CodeContainer extends Component {
   renderDropDownItems() {
     return this.state.categoriesWithoutCode.map(category => (
       <CodeDropdown
-        key={category.id}
+        key={`code-${category.id}`}
         categoryId={category.id}
         category={category.title}
         etablissement_id={this.props.etablissement_id}
@@ -117,7 +117,7 @@ class CodeContainer extends Component {
       if (activeCode) {
         return (
           <Code
-            key={activeCode.id}
+            key={`active-code-${activeCode.id}`}
             addons={getAddons(activeCode.category)}
             content={activeCode.content}
             category={activeCode.category}
@@ -133,7 +133,7 @@ class CodeContainer extends Component {
       }
       return (
         <Code
-          key={codes[0].id}
+          key={`code-${codes[0].id}`}
           addons={getAddons(codes[0].category)}
           content={codes[0].content}
           category={codes[0].category}
@@ -151,7 +151,7 @@ class CodeContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     if (this.state.redirectToCategories) {
       return <Redirect to="/categories" />;

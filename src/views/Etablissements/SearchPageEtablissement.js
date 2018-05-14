@@ -25,8 +25,10 @@ class SearchPageEtablissement extends Component {
   }
 
   renderTags() {
-    return this.props.tags.map(tag =>
-      <Badge key={tag.id} pill color="warning" className="mx-1">{tag.short_label}</Badge>);
+    return this.props.tags.map(tag => (
+      <Badge key={`${this.props.name.initials}-tag-${tag.id}`} pill color="warning" className="mx-1">
+        {tag.short_label}
+      </Badge>));
   }
 
   render() {

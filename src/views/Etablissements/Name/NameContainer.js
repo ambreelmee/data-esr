@@ -114,7 +114,7 @@ class NameContainer extends Component {
 
   render() {
     if (this.state.isLoading) {
-      return <p>Loading...</p>;
+      return <p />;
     }
     const replacementName = this.state.names ? this.state.names[0] : null;
     const displayedName = getActiveEntity(this.state.names) ? getActiveEntity(this.state.names) : replacementName;

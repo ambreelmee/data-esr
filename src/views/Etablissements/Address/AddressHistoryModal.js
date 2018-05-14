@@ -26,7 +26,7 @@ class AddressHistoryModal extends Component {
     return this.props.history.map(address =>
       (
         <AddressHistoryModalRow
-          key={address.id}
+          key={`address-${address.id}`}
           address_1={address.address_1}
           address_2={address.address_2}
           business_name={address.business_name}
