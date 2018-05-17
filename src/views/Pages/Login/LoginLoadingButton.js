@@ -24,7 +24,7 @@ class LoginLoadingButton extends Component {
   login() {
     this.setState({ isLoading: true });
     fetch(
-      `${process.env.API_URL_STAGING}auth/login?email=${this.props.username}&password=${this.props.password}`,
+      `${process.env.API_LOGIN_URL_STAGING}auth/login?email=${this.props.username}&password=${this.props.password}`,
       { method: 'POST' },
     )
       .then(res => res.json())
