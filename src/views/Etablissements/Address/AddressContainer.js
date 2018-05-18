@@ -12,7 +12,6 @@ import AddressHistoryModal from './AddressHistoryModal';
 import AddressModal from './AddressModal';
 import ConnectionContainer from './../Connection/ConnectionContainer';
 import CodeContainer from './../Code/CodeContainer';
-import MapContainer from './MapContainer';
 import LeafletMap from './LeafletMap';
 
 

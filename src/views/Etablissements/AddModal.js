@@ -16,7 +16,7 @@ class AddModal extends Component {
       date: '',
       dropdown: false,
       errorMessage: '',
-      etablissementId: null,
+      etablissementId: '',
       categoryType: '',
       categoryId: '',
       closure: false,
@@ -76,7 +76,7 @@ class AddModal extends Component {
 
   onSelectorChange(event) {
     this.setState({
-      [event.target.id]: document.getElementById(`${event.target.id}`).value,
+      [event.target.id]: event.target.value,
     });
   }
 
@@ -184,6 +184,7 @@ class AddModal extends Component {
               {this.props.type === 'évolution' ?
                 <select
                   id="categoryType"
+                  value={this.state.categoryType}
                   className="form-control form-control-warning"
                   onChange={this.onSelectorChange}
                 >
@@ -193,6 +194,7 @@ class AddModal extends Component {
                 </select> :
                 <select
                   id="categoryType"
+                  value={this.state.categoryType}
                   className="form-control form-control-warning"
                   onChange={this.onSelectorChange}
                 >
@@ -206,6 +208,7 @@ class AddModal extends Component {
                 id="categoryId"
                 className="form-control"
                 onChange={this.onSelectorChange}
+                value={this.state.categoryId}
               >
                 <option value="0">Catégorie</option>
                 {this.renderCategories()}
@@ -243,6 +246,7 @@ class AddModal extends Component {
                   id="etablissementId"
                   className="form-control"
                   onChange={this.onSelectorChange}
+                  value={this.state.etablissementId}
                 >
                   <option>2. Choisir...</option>
                   {this.renderInstitutionNameSuggestions()}
