@@ -269,19 +269,20 @@ class SearchPage extends Component {
             </Row>
             <div className="d-flex justify-content-center">
               <Pagination>
-                {this.state.self && this.state.self.page_number !== '1' ?
-                  <PaginationItem>
-                    <PaginationLink id="first" onClick={this.onClick}>
-                      1
-                    </PaginationLink>
-                  </PaginationItem> : <div />}
+                {this.state.self && this.state.self.page_number !== '1' &&
+                  this.state.prev && this.state.prev.page_number !== '1' ?
+                    <PaginationItem>
+                      <PaginationLink id="first" onClick={this.onClick}>
+                        1
+                      </PaginationLink>
+                    </PaginationItem> : <div />}
                 {this.state.self && parseInt(this.state.self.page_number, 10) > 2 ?
                   <PaginationItem disabled>
                     <PaginationLink>
                       ...
                     </PaginationLink>
                   </PaginationItem> : <div />}
-                {this.state.prev && this.state.prev.page_number !== '1' ?
+                {this.state.prev ?
                   <PaginationItem>
                     <PaginationLink id="prev" onClick={this.onClick}>
                       {this.state.prev.page_number}
