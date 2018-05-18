@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
+import dataESR from './dataESR.svg';
 
-class Footer extends Component {
-  render() {
-    return (
-      <footer className="app-footer">
-        <span> Footer </span>
-      </footer>
-    );
-  }
-}
+
+const Footer = () => (
+  <footer className="app-footer">
+    <img src={dataESR} alt="dataESR-footer" width="100px" />
+  </footer>
+);
 
 export default Footer;
