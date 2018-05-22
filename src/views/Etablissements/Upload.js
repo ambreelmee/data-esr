@@ -5,7 +5,7 @@ const triggerFileInputClick = () => {
   document.getElementById('import').click();
 };
 
-class ImportDatas extends Component {
+class Upload extends Component {
   constructor(props) {
     super(props);
 
@@ -127,4 +127,4 @@ class ImportDatas extends Component {
   }
 }
 
-export default ImportDatas;
+export default Upload;

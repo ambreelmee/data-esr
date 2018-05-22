@@ -10,14 +10,16 @@ import parse from 'parse-link-header';
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
-import ImportDatas from './ImportDatas';
+import Upload from './Upload';
 
 class SearchPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      csvFile: null,
       error: false,
+      initialCsvFile : null,
       initialData: {},
       institutions: {},
       isLoading: false,
@@ -75,6 +77,7 @@ class SearchPage extends Component {
               self: links.self,
             });
           });
+          this.downloadSearchResults()
         } else {
           this.setState({
             error: true,
@@ -144,10 +147,32 @@ class SearchPage extends Component {
               self: links.self,
             });
           });
+          this.downloadSearchResults();
         } else {
           this.setState({
             error: true,
             isLoading: false,
+          });
+        }
+      });
+  }
+
+  downloadSearchResults() {
+    const params = encodeURI(this.state.searchEntry);
+    fetch(`${process.env.API_URL_STAGING}institutions/search?q=${params}&download=true`, {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.blob().then((data) => {
+            const csvFile = URL.createObjectURL(data);
+            this.setState({
+              csvFile,
+              initialCsvFile: params ? this.state.initialCsvFile : csvFile,
+            });
           });
         }
       });
@@ -165,6 +190,7 @@ class SearchPage extends Component {
 
   resetSearch() {
     this.setState({
+      csvFile: this.state.initialCsvFile,
       institutions: this.state.initialData,
       searchEntry: '',
       last: this.state.initialLinks.last,
@@ -205,7 +231,7 @@ class SearchPage extends Component {
     }
     return (
       <div>
-        <Row className="py-5">
+        <Row className="pt-5 pb-1">
           <Col md="6" className="mx-auto">
             <Form>
               <FormGroup>
@@ -255,7 +281,13 @@ class SearchPage extends Component {
             >
               <i className="fa fa-plus" /> Ajouter un établissement
             </Button>
-            <ImportDatas />
+            <Upload />
+            {this.state.csvFile && !this.state.isLoading ?
+              <div>
+                <a href={this.state.csvFile} download="etablissement.csv" className="btn btn-primary float-right m-1">
+                  <i className="fa fa-download" /> Télécharger
+                </a>
+              </div> : <div />}
           </Col>
         </Row>
         {this.state.isLoading ?
