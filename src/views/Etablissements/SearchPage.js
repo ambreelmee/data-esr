@@ -10,7 +10,7 @@ import parse from 'parse-link-header';
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
-import Upload from './Upload';
+import UploadModal from './UploadModal';
 
 class SearchPage extends Component {
   constructor(props) {
@@ -19,12 +19,13 @@ class SearchPage extends Component {
     this.state = {
       csvFile: null,
       error: false,
-      initialCsvFile : null,
+      initialCsvFile: null,
       initialData: {},
       institutions: {},
       isLoading: false,
       redirectToNewInstitution: false,
       searchEntry: '',
+      uploadModal: false,
     };
     this.getInstitutionByPage = this.getInstitutionByPage.bind(this);
     this.search = debounce(this.search, 1000);
@@ -33,6 +34,7 @@ class SearchPage extends Component {
     this.resetSearch = this.resetSearch.bind(this);
     this.redirectToNewInstitution = this.redirectToNewInstitution.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
+    this.toggleUploadModal = this.toggleUploadModal.bind(this);
   }
 
   componentWillMount() {
@@ -41,11 +43,11 @@ class SearchPage extends Component {
   }
 
   onClick(event) {
-    event.persist()
+    event.persist();
     if (this.state[event.target.id]) {
-      this.getInstitutionByPage(this.state[event.target.id])
+      this.getInstitutionByPage(this.state[event.target.id]);
     } else {
-      this.getInstitutionByPage()
+      this.getInstitutionByPage();
     }
   }
 
@@ -77,7 +79,7 @@ class SearchPage extends Component {
               self: links.self,
             });
           });
-          this.downloadSearchResults()
+          this.downloadSearchResults();
         } else {
           this.setState({
             error: true,
@@ -90,7 +92,7 @@ class SearchPage extends Component {
   getInstitutionByPage(page) {
     this.setState({ isLoading: true });
     if (page) {
-      const url = page.url;
+      const { url } = page;
       fetch(url, {
         method: this.state.searchEntry ? 'POST' : 'GET',
         headers: new Headers({
@@ -181,6 +183,12 @@ class SearchPage extends Component {
   toggleModal() {
     this.setState({
       modal: !this.state.modal,
+    });
+  }
+
+  toggleUploadModal() {
+    this.setState({
+      uploadModal: !this.state.uploadModal,
     });
   }
 
@@ -281,7 +289,14 @@ class SearchPage extends Component {
             >
               <i className="fa fa-plus" /> Ajouter un établissement
             </Button>
-            <Upload />
+            <Button type="button" color="success" className="m-1" onClick={this.toggleUploadModal}>
+              <i className="fa fa-upload" /> Importer des données (csv)
+            </Button>
+            {this.state.uploadModal ?
+              <UploadModal
+                csvTemplate={this.state.initialCsvFile}
+                toggleModal={this.toggleUploadModal}
+              /> : <div />}
             {this.state.csvFile && !this.state.isLoading ?
               <div>
                 <a href={this.state.csvFile} download="etablissement.csv" className="btn btn-primary float-right m-1">
