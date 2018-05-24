@@ -16,7 +16,7 @@ import '../scss/core/_dropdown-menu-right.scss';
 
 import PrivateRoute from './PrivateRoute';
 import Full from './containers/Full/';
-import Login from './views/Pages/Login';
+import Login from './views/Login';
 import Register from './views/Pages/Register';
 
 ReactDOM.render(

@@ -5,7 +5,6 @@ import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
-import Update from '../../views/Update/Update';
 import SearchPage from '../../views/Etablissements/SearchPage';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
 import CategoryContainer from '../../views/Category/CategoryContainer';
@@ -21,7 +20,6 @@ const Full = props => (
             <PrivateRoute exact path="/etablissements"component={SearchPage} />
             <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
             <PrivateRoute path="/categories" component={CategoryContainer} />
-            <PrivateRoute path="/referentiel" component={Update} />
             <Redirect from="/" to="/etablissements" />
           </Switch>
         </Container>
