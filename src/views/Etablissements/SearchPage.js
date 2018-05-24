@@ -311,9 +311,9 @@ class SearchPage extends Component {
             <span className="mx-1"> Chargement </span>
           </div> :
           <div>
-            <Row>
-              {this.renderInstitutionsCards()}
-            </Row>
+            {this.state.institutions.length === 0 ?
+              <p className="text-center"><em>aucun résultat</em></p> :
+              <Row> {this.renderInstitutionsCards()} </Row>}
             <div className="d-flex justify-content-center">
               <Pagination>
                 {this.state.self && this.state.self.page_number !== '1' &&
@@ -335,7 +335,7 @@ class SearchPage extends Component {
                       {this.state.prev.page_number}
                     </PaginationLink>
                   </PaginationItem> : <div />}
-                {this.state.self ?
+                {this.state.self && this.state.institutions.length > 0 ?
                   <PaginationItem active>
                     <PaginationLink id="self" onClick={this.onClick}>
                       {this.state.self.page_number}
