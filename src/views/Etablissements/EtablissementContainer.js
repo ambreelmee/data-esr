@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import moment from 'moment';
 
 import AddressContainer from './Address/AddressContainer';
+import DeleteInstitution from './DeleteInstitution';
 import EtablissementStatus from './EtablissementStatus';
 import Evolution from './Evolution/Evolution';
 import NameContainer from './Name/NameContainer';
@@ -65,26 +66,25 @@ class EtablissementContainer extends Component {
     if (this.state.redirectToSearchPage) {
       return <Redirect to="/etablissements" />;
     }
-    if (this.state.isFollowersLoading || this.state.isPredecessorsLoading) {
-      return <p />;
-    }
     return (
       <div className="animated fadeIn">
-        <div className="d-flex d-inline-block pt-3">
+        <div className="d-flex pt-3 justify-content-between">
           <Button
             color="primary"
-            className="mt-2 mb-4 mr-3"
+            className="mt-2 mb-4"
             size="lg"
             onClick={this.goToSearchPage}
           >
           Retour
           </Button>
-          <EtablissementStatus
-            date_end={this.state.date_end}
-            date_start={this.state.date_start}
-            id={etablissementId}
-            getData={this.getData}
-          />
+          {!this.state.isLoading ?
+            <EtablissementStatus
+              date_end={this.state.date_end}
+              date_start={this.state.date_start}
+              id={etablissementId}
+              getData={this.getData}
+            /> : <div />}
+          <DeleteInstitution id={etablissementId} />
         </div>
         <Row>
           <Col md="8">
