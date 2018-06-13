@@ -4,6 +4,7 @@ import {
   Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import DeleteInstitution from './DeleteInstitution';
 
 
 class EtablissementStatusModal extends Component {
@@ -101,7 +102,10 @@ class EtablissementStatusModal extends Component {
           </Card>
         </ModalBody>
         <ModalFooter>
-          <p className="mt-2 text-danger">{this.state.errorMessage}</p>
+          <DeleteInstitution id={this.props.id} uai={this.props.uai} />
+          {this.state.errorMessage ?
+            <p className="mt-2 text-danger">{this.state.errorMessage}</p> :
+            <p className="mt-2"> ou </p>}
           <Button
             className="m-1 float-right"
             color="primary"
@@ -114,7 +118,7 @@ class EtablissementStatusModal extends Component {
                 <span className="mx-1"> Modification </span>
               </div> :
               <div>
-              Modifier
+              Modifier le statut
               </div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
@@ -131,10 +135,12 @@ EtablissementStatusModal.propTypes = {
   date_end: PropTypes.string,
   getData: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  uai: PropTypes.string,
 };
 
 EtablissementStatusModal.defaultProps = {
   date_end: null,
+  uai: 'X',
 };
 
 export default EtablissementStatusModal;

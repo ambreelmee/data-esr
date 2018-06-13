@@ -189,7 +189,7 @@ class EvolutionContainer extends Component {
             <em>Aucune évolution enregistré actuellement...</em>
             <Button color="primary" className="float-right" onClick={this.toggleAddModal}>
               <i className="fa fa-plus mr-1" />
-              Ajouter un rattachement
+              Ajouter une évolution
             </Button>
           </CardBody>}
       </Card>

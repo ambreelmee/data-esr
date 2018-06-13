@@ -1,22 +1,33 @@
 import React, { Component } from 'react';
-import {
-  Badge, Button, ButtonGroup, ButtonDropdown, Card, CardBody, CardHeader,
-  DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, ModalFooter, ModalHeader,
-} from 'reactstrap';
+import TagCloud from 'react-tag-cloud';
+import randomColor from 'randomcolor';
+import moment from 'moment';
+
+import { Alert, ButtonGroup, ButtonDropdown, Card, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import { getActiveEntity } from './../methods';
 import NameModal from './NameModal';
 import NameHistoryModal from './NameHistoryModal';
+import EtablissementStatusModal from './EtablissementStatusModal';
 
+const styles = {
+  large: {
+    fontSize: 50,
+    fontWeight: 'bold',
+  },
+  small: {
+    opacity: 0.7,
+    fontSize: 16,
+  },
+};
 
 class NameContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      addModal: false,
-      deleteModal: false,
+      statusModal: false,
       displayDropdown: false,
       editModal: false,
       historyModal: false,
@@ -27,20 +38,10 @@ class NameContainer extends Component {
     this.deleteName = this.deleteName.bind(this);
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getNames = this.getNames.bind(this);
-    this.toggleAddModal = this.toggleAddModal.bind(this);
-    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+    this.toggleStatusModal = this.toggleStatusModal.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleHistoryModal = this.toggleHistoryModal.bind(this);
   }
-
-  componentWillMount() {
-    this.getNames(this.props.etablissement_id);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.getNames(nextProps.etablissement_id);
-  }
-
 
   getNames(etablissementId) {
     this.setState({ isLoading: true });
@@ -82,9 +83,9 @@ class NameContainer extends Component {
       });
   }
 
-  toggleDeleteModal() {
+  toggleStatusModal() {
     this.setState({
-      deleteModal: !this.state.deleteModal,
+      statusModal: !this.state.statusModal,
     });
   }
 
@@ -100,12 +101,6 @@ class NameContainer extends Component {
     });
   }
 
-  toggleAddModal() {
-    this.setState({
-      addModal: !this.state.addModal,
-    });
-  }
-
   displayDropdown() {
     this.setState({
       displayDropdown: !this.state.displayDropdown,
@@ -116,113 +111,76 @@ class NameContainer extends Component {
     if (this.state.isLoading) {
       return <p />;
     }
-    const replacementName = this.state.names ? this.state.names[0] : null;
-    const displayedName = getActiveEntity(this.state.names) ? getActiveEntity(this.state.names) : replacementName;
+    const replacementName = this.props.names ? this.props.names[0] : null;
+    const displayedName = getActiveEntity(this.props.names) ? getActiveEntity(this.props.names) : replacementName;
     return (
-      <Card className="mb-0 mt-2 w-100">
-        <CardHeader>
-          Nom de l&#39;établissement
-          <ButtonGroup className="float-right">
-            <ButtonDropdown
-              id="nameDropdown"
-              isOpen={this.state.displayDropdown}
-              toggle={this.displayDropdown}
-            >
-              <DropdownToggle caret className="p-0" color="light">
-                <i className="icon-settings" />
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem onClick={this.toggleEditModal}>
-                  <i className="fa fa-pencil text-warning" />
-                    Modifier le nom actuel
-                </DropdownItem>
-                {this.state.editModal ?
-                  (<NameModal
-                    date_start={displayedName.date_start}
-                    date_end={displayedName.date_end}
-                    id={displayedName.id}
-                    initials={displayedName.initials}
-                    etablissement_id={this.props.etablissement_id}
-                    getNames={this.getNames}
-                    toggleModal={this.toggleEditModal}
-                    text={displayedName.text}
-                    status={displayedName.status}
-                  />) : <div /> }
-                <DropdownItem onClick={this.toggleAddModal}>
-                  <i className="fa fa-plus text-success" />
-                    Ajouter un nouveau nom
-                </DropdownItem>
-                {this.state.addModal ?
-                  (<NameModal
-                    etablissement_id={this.props.etablissement_id}
-                    getNames={this.getNames}
-                    toggleModal={this.toggleAddModal}
-                  />) : <div /> }
-                <DropdownItem onClick={this.toggleHistoryModal}>
-                  <i className="fa fa-eye text-info" />
-                    Voir l&#39;historique
-                </DropdownItem>
-                {this.state.historyModal ?
-                  <NameHistoryModal
-                    deleteName={this.deleteName}
-                    etablissement_id={this.props.etablissement_id}
-                    getNames={this.getNames}
-                    history={this.state.names}
-                    toggleModal={this.toggleHistoryModal}
+      <Card className="mb-0 mt-2 w-100 text-center" style={{ height: '175px' }}>
+        <Alert color={this.props.date_end ? 'danger' : 'success'}>
+          {this.props.date_end ?
+            `Cet établissement est fermé depuis le ${moment(this.props.date_end).format('LL')}` :
+            `Cet établissement est ouvert depuis le ${moment(this.props.date_start).format('LL')}`}
+        </Alert>
+        <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
+          <ButtonDropdown
+            id="nameDropdown"
+            isOpen={this.state.displayDropdown}
+            toggle={this.displayDropdown}
+          >
+            <DropdownToggle caret className="p-0 text-dark" color="transparent">
+              <i className="icon-settings" />
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={this.toggleHistoryModal}>
+                <i className="fa fa-eye text-info" />
+                  Voir le détail des noms officiels
+              </DropdownItem>
+              {this.state.historyModal ?
+                <NameHistoryModal
+                  deleteName={this.deleteName}
+                  etablissement_id={this.props.etablissement_id}
+                  getData={this.props.getData}
+                  history={this.props.names}
+                  toggleModal={this.toggleHistoryModal}
+                /> : <div />}
+              <DropdownItem>
+                <i className="fa fa-edit text-warning" />
+                  Modifier la liste des noms d&#39;usage
+              </DropdownItem>
+              <DropdownItem onClick={this.toggleStatusModal}>
+                <i className="fa fa-pencil text-danger" />
+                  Modifier le statut de l&#39;établissement
+                {this.state.statusModal ?
+                  <EtablissementStatusModal
+                    id={this.props.etablissement_id}
+                    date_end={this.props.date_end}
+                    date_start={this.props.date_start}
+                    getData={this.props.getData}
+                    toggleModal={this.toggleStatusModal}
+                    uai={this.props.uai}
                   /> : <div />}
-                <DropdownItem onClick={this.toggleDeleteModal}>
-                  <i className="fa fa-close text-danger" />
-                    Supprimer le nom actuel
-                  <Modal isOpen={this.state.deleteModal} toggle={this.toggleDeleteModal} color="danger">
-                    <ModalHeader toggle={this.toggleDeleteModal}>
-                      Suppression du champ
-                    </ModalHeader>
-                    <ModalBody>
-                      Etes-vous sûr de vouloir supprimer ce champ ?
-                    </ModalBody>
-                    <ModalFooter>
-                      <p className="mt-2 text-danger">{this.state.errorMessage}</p>
-                      <Button
-                        className="m-1 float-right"
-                        color="danger"
-                        disabled={this.state.isDeleting}
-                        onClick={!this.state.isDeleting ? () => this.deleteName(displayedName.id, this.props.etablissement_id) : null}
-                      >
-                        {this.state.isDeleting ?
-                          <div>
-                            <i className="fa fa-spinner fa-spin " />
-                            <span className="mx-1"> Suppression </span>
-                          </div> : <div />}
-                        Supprimer
-                      </Button>
-                      <Button color="secondary" onClick={this.toggleDeleteModal}>Annuler</Button>
-                    </ModalFooter>
-                  </Modal>
-                </DropdownItem>
-              </DropdownMenu>
-            </ButtonDropdown>
-          </ButtonGroup>
-        </CardHeader>
-        {displayedName ?
-          <CardBody>
-            {displayedName.status === 'active' ?
-              <Badge color="success" className="float-right"> Actif </Badge> :
-              <Badge color="danger" className="float-right"> Archivé </Badge>}
-            <h2 className="text-center">{`${displayedName.initials} - ${displayedName.text}`}</h2>
-          </CardBody> :
-          <CardBody>
-            <em>Aucun nom enregistrée actuellement...<br /></em>
-            <Button color="primary" className="float-right" onClick={this.toggleAddModal}>
-              <i className="fa fa-plus mr-1" />
-              Ajouter un nom
-            </Button>
-            {this.state.addModal ?
-              (<NameModal
-                etablissement_id={this.props.etablissement_id}
-                getNames={this.getNames}
-                toggleModal={this.toggleAddModal}
-              />) : <div /> }
-          </CardBody>}
+              </DropdownItem>
+            </DropdownMenu>
+          </ButtonDropdown>
+        </ButtonGroup>
+        <TagCloud
+          style={{
+            flex: '1',
+            fontFamily: 'sans-serif',
+            fontSize: 30,
+            color: () => randomColor({
+              hue: 'blue',
+            }),
+            padding: 5,
+          }}
+        >
+          <div id="initials" style={styles.large}>{displayedName.initials}</div>
+          <div id="full-text" >{displayedName.text}</div>
+          <div style={styles.small}>Bravestar</div>
+          <div style={styles.small}>Starcom</div>
+          <div style={styles.small}>Cops</div>
+          <div style={styles.small}>Alfred J. Kwak</div>
+          <div style={styles.small}>Dr Snuggles</div>
+        </TagCloud>
       </Card>
     );
   }
@@ -230,6 +188,17 @@ class NameContainer extends Component {
 
 NameContainer.propTypes = {
   etablissement_id: PropTypes.number.isRequired,
+  date_end: PropTypes.string,
+  date_start: PropTypes.string.isRequired,
+  getData: PropTypes.func.isRequired,
+  names: PropTypes.array.isRequired,
+  synonym: PropTypes.string,
+  uai: PropTypes.string.isRequired
+};
+
+NameContainer.defaultProps = {
+  date_end: '',
+  synonym: null,
 };
 
 export default NameContainer;

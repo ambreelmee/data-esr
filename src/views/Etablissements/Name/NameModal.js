@@ -275,7 +275,7 @@ NameModal.propTypes = {
   date_start: PropTypes.string,
   date_end: PropTypes.string,
   etablissement_id: PropTypes.number,
-  getNames: PropTypes.func,
+  getData: PropTypes.func,
   status: PropTypes.string,
   text: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
@@ -287,7 +287,7 @@ NameModal.defaultProps = {
   date_start: null,
   date_end: null,
   etablissement_id: null,
-  getNames: null,
+  getData: null,
   status: 'active',
   text: null,
 };

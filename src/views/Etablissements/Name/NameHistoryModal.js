@@ -3,16 +3,24 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'react
 import PropTypes from 'prop-types';
 
 import NameHistoryModalRow from './NameHistoryModalRow';
-
+import NameModal from './NameModal';
 
 class NameHistoryModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      addModal: false,
       modal: true,
     };
+    this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggle = this.toggle.bind(this);
+  }
+
+  toggleAddModal() {
+    this.setState({
+      addModal: !this.state.addModal,
+    });
   }
 
   toggle() {
@@ -31,7 +39,7 @@ class NameHistoryModal extends Component {
           date_end={name.date_end}
           date_start={name.date_start}
           etablissement_id={this.props.etablissement_id}
-          getNames={this.props.getNames}
+          getNames={this.props.getData}
           id={name.id}
           initials={name.initials}
           text={name.text}
@@ -43,7 +51,7 @@ class NameHistoryModal extends Component {
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          Historique des noms
+          Detail des noms officiels
         </ModalHeader>
         <ModalBody>
           <Table hover bordered striped responsive size="sm">
@@ -61,6 +69,16 @@ class NameHistoryModal extends Component {
               {this.renderTableRows()}
             </tbody>
           </Table>
+          <Button color="primary" className="float-right" onClick={this.toggleAddModal}>
+            <i className="fa fa-plus mr-1" />
+            Ajouter une évolution
+          </Button>
+          {this.state.addModal ?
+            (<NameModal
+              etablissement_id={this.props.etablissement_id}
+              getData={this.props.getData}
+              toggleModal={this.toggleAddModal}
+            />) : <div /> }
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={this.toggle}>Fermer</Button>
@@ -74,7 +92,7 @@ class NameHistoryModal extends Component {
 NameHistoryModal.propTypes = {
   deleteName: PropTypes.func.isRequired,
   etablissement_id: PropTypes.number.isRequired,
-  getNames: PropTypes.func.isRequired,
+  getData: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };

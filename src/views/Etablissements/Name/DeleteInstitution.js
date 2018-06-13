@@ -59,13 +59,8 @@ class DeleteInstitution extends Component {
     }
     return (
       <div>
-        <Button
-          color="danger"
-          className="mt-2 mb-4"
-          size="lg"
-          onClick={this.toggleModal}
-        >
-        Supprimer
+        <Button color="danger" onClick={this.toggleModal} >
+        Supprimer défintivement
         </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggleModal} color="danger">
           <ModalHeader toggle={this.toggleModal}>
