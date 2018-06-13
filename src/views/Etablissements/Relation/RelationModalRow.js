@@ -12,6 +12,7 @@ class ModalRow extends Component {
       deleteTooltip: false,
       deleteModal: false,
     };
+    this.deleteRelation = this.deleteRelation.bind(this);
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
   }
@@ -28,19 +29,39 @@ class ModalRow extends Component {
     });
   }
 
-
+  deleteRelation() {
+    this.setState({ isDeleting: true });
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/` +
+      `${this.props.id}/${this.props.relationDirection}/${this.props.relationInstitutionId}`,
+      {
+        method: 'DELETE',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')})`,
+        }),
+      },
+    )
+      .then(res => res.json())
+      .then(() => {
+        this.setState({
+          isDeleting: false,
+        });
+        this.props.getRelations(this.props.id, this.props.relationDirection);
+      });
+  }
 
 
   render() {
     return (
-      <tr key={this.props.etablissement_id}>
+      <tr key={this.props.relationInstitutionId}>
         <td>{this.props.etablissement}</td>
         <td>{this.props.category}</td>
         <td>{this.props.date ? moment(this.props.date).format('LL') : ''}</td>
         <td>
           <Button
             color="danger"
-            id={`evolutionsmodal-delete-button-${this.props.etablissement_id}`}
+            id={`evolutionsmodal-delete-button-${this.props.relationInstitutionId}`}
             onClick={this.toggleDeleteModal}
             size="sm"
           >
@@ -60,9 +81,7 @@ class ModalRow extends Component {
                   className="m-1 float-right"
                   color="danger"
                   disabled={this.state.isDeleting}
-                  onClick={!this.state.isDeleting ?
-                    () => this.props.deleteMethod(this.props.etablissement_id, this.props.categoryType) :
-                    null}
+                  onClick={!this.state.isDeleting ? this.deleteRelation : null}
                 >
                   {this.state.isDeleting ?
                     <div>
@@ -77,7 +96,7 @@ class ModalRow extends Component {
           <Tooltip
             placement="bottom"
             isOpen={this.state.deleteTooltip}
-            target={`evolutionsmodal-delete-button-${this.props.etablissement_id}`}
+            target={`evolutionsmodal-delete-button-${this.props.relationInstitutionId}`}
             toggle={this.toggleDeleteToolTip}
           >
           Supprimer la référence
@@ -89,12 +108,12 @@ class ModalRow extends Component {
 
 ModalRow.propTypes = {
   id: PropTypes.number.isRequired,
-  deleteMethod: PropTypes.func.isRequired,
-  etablissement: PropTypes.string.isRequired,
-  etablissement_id: PropTypes.number.isRequired,
-  categoryType: PropTypes.string.isRequired,
-  date: PropTypes.string,
   category: PropTypes.string.isRequired,
+  date: PropTypes.string,
+  etablissement: PropTypes.string.isRequired,
+  getRelations: PropTypes.func.isRequired,
+  relationInstitutionId: PropTypes.number.isRequired,
+  relationDirection: PropTypes.string.isRequired,
 };
 
 ModalRow.defaultProps = {

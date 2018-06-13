@@ -3,7 +3,7 @@ import { Col, Button, Row } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-class ConnectionCategoryContainer extends Component {
+class RelationCategoryContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -21,16 +21,16 @@ class ConnectionCategoryContainer extends Component {
     });
   }
 
-  renderConnections(connectionsList) {
-    return connectionsList.map(connection => (
+  renderRelations(relationList) {
+    return relationList.map(relation => (
       <Button
         style={{ whiteSpace: 'normal' }}
         color="light"
-        key={`connection-${connection.id}`}
-        id={connection.id}
+        key={`relation-${relation.id}`}
+        id={relation.id}
         onClick={this.redirectToInstitution}
       >
-        {connection.name}
+        {relation.name}
       </Button>
     ));
   }
@@ -45,20 +45,20 @@ class ConnectionCategoryContainer extends Component {
           <div className="text-primary"><strong>{this.props.category}</strong></div>
         </Col>
         <Col xs="4" className="mx-auto px-0">
-          {this.renderConnections(this.props.mothers)}
+          {this.renderRelations(this.props.relationUp)}
         </Col>
         <Col xs="4" className="mx-auto px-0">
-          {this.renderConnections(this.props.daughters)}
+          {this.renderRelations(this.props.relationDown)}
         </Col>
       </Row>
     );
   }
 }
 
-ConnectionCategoryContainer.propTypes = {
+RelationCategoryContainer.propTypes = {
   category: PropTypes.string.isRequired,
-  daughters: PropTypes.array.isRequired,
-  mothers: PropTypes.array.isRequired,
+  relationDown: PropTypes.array.isRequired,
+  relationUp: PropTypes.array.isRequired,
 };
 
-export default ConnectionCategoryContainer;
+export default RelationCategoryContainer;

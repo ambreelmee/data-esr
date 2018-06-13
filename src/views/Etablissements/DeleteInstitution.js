@@ -19,12 +19,18 @@ class DeleteInstitution extends Component {
   }
 
   deleteInstitution() {
+    const institution = {
+      is_institution: false,
+      id_esr: this.props.id,
+    };
     this.setState({ isDeleting: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.id}`, {
-      method: 'DELETE',
+    fetch(`${process.env.API_BCE_URL}institutions/${this.props.uai}`, {
+      method: 'PUT',
       headers: new Headers({
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       }),
+      body: JSON.stringify(institution),
     })
       .then((response) => {
         if (response.ok) {
@@ -67,7 +73,8 @@ class DeleteInstitution extends Component {
           </ModalHeader>
           <ModalBody>
             <p className="text-danger">Etes-vous sûr de vouloir supprimer cet établissement ?</p><br />
-            Toutes les données liées à cet établissement seront perdues.<br />
+            Toutes les données liées à cet établissement seront perdues et les mises à jour
+            automatiques avec le référentiel de la BCE ne sera plus assurée.<br />
             Si vous souhaitez seulement déclarer l&#39;établissement comme <strong>fermé</strong>,
              modifiez le bloc qui indique la date d&#39;ouverture à gauche du bouton supprimer
           </ModalBody>
@@ -97,7 +104,11 @@ class DeleteInstitution extends Component {
 
 DeleteInstitution.propTypes = {
   id: PropTypes.number.isRequired,
+  uai: PropTypes.string,
 };
 
+DeleteInstitution.defaultProps = {
+  uai: null,
+};
 
 export default DeleteInstitution;

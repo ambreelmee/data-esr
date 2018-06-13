@@ -6,7 +6,7 @@ import moment from 'moment';
 import AddressContainer from './Address/AddressContainer';
 import DeleteInstitution from './DeleteInstitution';
 import EtablissementStatus from './EtablissementStatus';
-import Evolution from './Evolution/Evolution';
+import EvolutionContainer from './Relation/EvolutionContainer';
 import NameContainer from './Name/NameContainer';
 import LinkContainer from './Link/LinkContainer';
 import TagContainer from './Tag/TagContainer';
@@ -19,6 +19,7 @@ class EtablissementContainer extends Component {
     this.state = {
       isLoading: false,
       redirectToSearchPage: false,
+      uai: null,
     };
     this.goToSearchPage = this.goToSearchPage.bind(this);
     this.getData = this.getData.bind(this);
@@ -45,9 +46,11 @@ class EtablissementContainer extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        const uai = data.institution.codes.find(code => code.category === 'uai' && code.status === 'active');
         this.setState({
           date_end: data.institution.date_end,
           date_start: data.institution.date_start,
+          uai: uai ? uai.content : null,
           isLoading: false,
         });
       });
@@ -84,7 +87,7 @@ class EtablissementContainer extends Component {
               id={etablissementId}
               getData={this.getData}
             /> : <div />}
-          <DeleteInstitution id={etablissementId} />
+          <DeleteInstitution id={etablissementId} uai={this.state.uai} />
         </div>
         <Row>
           <Col md="8">
@@ -95,7 +98,7 @@ class EtablissementContainer extends Component {
           </Col>
           <Col md="4">
             <Row className="mx-1">
-              <Evolution etablissement_id={etablissementId} getData={this.getData} />
+              <EvolutionContainer etablissement_id={etablissementId} getData={this.getData} />
               <TagContainer etablissement_id={etablissementId} />
               <LinkContainer etablissement_id={etablissementId} />
             </Row>

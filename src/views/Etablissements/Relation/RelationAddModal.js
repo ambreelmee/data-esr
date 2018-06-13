@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 
 
-class AddModal extends Component {
+class RelationAddModal extends Component {
   constructor(props) {
     super(props);
 
@@ -16,8 +16,8 @@ class AddModal extends Component {
       date: '',
       dropdown: false,
       errorMessage: '',
-      etablissementId: '',
-      categoryType: '',
+      relationInstitutionId: '',
+      relationType: '',
       categoryId: '',
       closure: false,
       institutions: [],
@@ -53,12 +53,7 @@ class AddModal extends Component {
       if (this.state.closure) {
         this.updateInstitution();
       }
-      this.props.addMethod(
-        this.state.etablissementId,
-        this.state.categoryId,
-        this.state.date,
-        this.state.categoryType,
-      );
+      this.addRelation();
     }
   }
 
@@ -66,12 +61,7 @@ class AddModal extends Component {
     if (this.state.closure) {
       this.updateInstitution();
     }
-    this.props.addMethod(
-      this.state.etablissementId,
-      this.state.categoryId,
-      this.state.date,
-      this.state.categoryType,
-    )
+    this.addRelation();
   }
 
   onSelectorChange(event) {
@@ -102,7 +92,7 @@ class AddModal extends Component {
     const updatedInstitution = {
       date_end: this.state.date,
     };
-    const targetId = this.state.categoryType === 'predecessors' ? this.state.etablissementId : this.props.etablissement_id;
+    const targetId = this.state.relationType === 'predecessors' ? this.state.relationInstitutionId : this.props.institutionId;
     fetch(`${process.env.API_URL_STAGING}institutions/${targetId}`, {
       method: 'PUT',
       headers: new Headers({
@@ -122,6 +112,44 @@ class AddModal extends Component {
         }
       });
   }
+
+  addRelation() {
+    this.setState({ isLoading: true });
+    const newEvolution = {};
+    newEvolution[`${this.state.relationType.slice(0, -1)}`] = {
+      [`${this.state.relationType.slice(0, -1)}_id`]: this.state.relationInstitutionId,
+      institution_connection_category_id: this.state.categoryId,
+      date: this.state.date,
+    };
+    fetch(
+      `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}/${this.state.relationType}`,
+      {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }),
+        body: JSON.stringify(newEvolution),
+      },
+    )
+      .then((res) => {
+        if (res.ok) {
+          res.json().then(() => {
+            this.setState({
+              errorMessage: '',
+              isLoading: false,
+            });
+            this.props.getRelations(this.props.institutionId, this.state.relationType);
+          });
+        } else {
+          this.setState({
+            errorMessage: 'Erreur, merci de vérifier le formulaire',
+            isLoading: false,
+          });
+        }
+      });
+  }
+
 
   resetSearch() {
     this.setState({ searchEntry: '' });
@@ -183,8 +211,8 @@ class AddModal extends Component {
             <Col xs="6">
               {this.props.type === 'évolution' ?
                 <select
-                  id="categoryType"
-                  value={this.state.categoryType}
+                  id="relationType"
+                  value={this.state.relationType}
                   className="form-control form-control-warning"
                   onChange={this.onSelectorChange}
                 >
@@ -193,8 +221,8 @@ class AddModal extends Component {
                   <option value="followers">Successeur</option>
                 </select> :
                 <select
-                  id="categoryType"
-                  value={this.state.categoryType}
+                  id="relationType"
+                  value={this.state.relationType}
                   className="form-control form-control-warning"
                   onChange={this.onSelectorChange}
                 >
@@ -243,10 +271,10 @@ class AddModal extends Component {
                   }}
                 />
                 <select
-                  id="etablissementId"
+                  id="relationInstitutionId"
                   className="form-control"
                   onChange={this.onSelectorChange}
-                  value={this.state.etablissementId}
+                  value={this.state.relationInstitutionId}
                 >
                   <option>2. Choisir...</option>
                   {this.renderInstitutionNameSuggestions()}
@@ -298,14 +326,14 @@ class AddModal extends Component {
   }
 }
 
-AddModal.propTypes = {
-  addMethod: PropTypes.func.isRequired,
-  etablissement_id: PropTypes.number.isRequired,
+RelationAddModal.propTypes = {
+  institutionId: PropTypes.number.isRequired,
   getData: PropTypes.func,
+  getRelations: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
   toggleModal: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
 };
 
 
-export default AddModal;
+export default RelationAddModal;

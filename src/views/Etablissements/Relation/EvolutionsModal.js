@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table, Tooltip } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import ModalRow from './../ModalRow';
+import RelationModalRow from './RelationModalRow';
 
 
 class EvolutionsModal extends Component {
@@ -50,7 +50,7 @@ class EvolutionsModal extends Component {
     if (this.props.predecessors.length > 0) {
       return this.props.predecessors.map(predecessor =>
         (
-          <ModalRow
+          <RelationModalRow
             key={predecessor.evolution.id}
             category={predecessor.evolution.category}
             date={predecessor.evolution.date}
@@ -68,7 +68,7 @@ class EvolutionsModal extends Component {
     if (this.props.followers.length > 0) {
       return this.props.followers.map(follower =>
         (
-          <ModalRow
+          <RelationModalRow
             key={follower.evolution.id}
             category={follower.evolution.category}
             date={follower.evolution.date}

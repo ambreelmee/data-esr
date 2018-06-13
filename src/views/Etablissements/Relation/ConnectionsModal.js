@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table, Tooltip } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import ModalRow from './../ModalRow';
+import RelationModalRow from './RelationModalRow';
 
 
-class ConnectionsModal extends Component {
+class RelationModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       modal: true,
     };
-    this.deleteConnection = this.deleteConnection.bind(this);
     this.toggle = this.toggle.bind(this);
   }
 
@@ -23,41 +22,23 @@ class ConnectionsModal extends Component {
     });
   }
 
-  deleteConnection(etablissement_id, connectionType) {
-    this.setState({ isDeleting: true });
-    fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.id}/${connectionType}/${etablissement_id}`,
-      {
-        method: 'DELETE',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.setState({
-          isDeleting: false,
-        });
-        this.props.getConnections(this.props.id, connectionType);
-      });
-  }
+
 
 
   renderMothersTableRows() {
     if (this.props.mothers.length > 0) {
       return this.props.mothers.map(mother =>
         (
-          <ModalRow
+          <RelationModalRow
             key={mother.connection.id}
             category={mother.connection.category}
             date={mother.connection.date}
-            deleteMethod={this.deleteConnection}
+            getRelations={this.props.getRelations}
             id={this.props.id}
             etablissement={mother.mother.name}
-            etablissement_id={mother.mother.id}
-            categoryType="mothers"
+            relationInstitutionId={mother.mother.id}
+            relationDirection="mothers"
+            toggle={this.toggle}
           />));
     }
     return '';
@@ -67,15 +48,16 @@ class ConnectionsModal extends Component {
     if (this.props.daughters.length > 0) {
       return this.props.daughters.map(daughter =>
         (
-          <ModalRow
+          <RelationModalRow
             key={daughter.connection.id}
             category={daughter.connection.category}
             date={daughter.connection.date}
-            deleteMethod={this.deleteConnection}
+            getRelations={this.props.getRelations}
             id={this.props.id}
             etablissement={daughter.daughter.name}
-            etablissement_id={daughter.daughter.id}
-            categoryType="daughters"
+            relationInstitutionId={daughter.daughter.id}
+            relationDirection="daughters"
+            toggle={this.toggle}
           />));
     }
     return '';
@@ -132,12 +114,12 @@ class ConnectionsModal extends Component {
   }
 }
 
-ConnectionsModal.propTypes = {
+RelationModal.propTypes = {
   daughters: PropTypes.array.isRequired,
   id: PropTypes.number.isRequired,
-  getConnections: PropTypes.func.isRequired,
+  getRelations: PropTypes.func.isRequired,
   mothers: PropTypes.array.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
-export default ConnectionsModal;
+export default RelationModal;

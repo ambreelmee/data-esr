@@ -6,8 +6,8 @@ import {
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
 
-import AddModal from './../AddModal';
-import ConnectionCategoryContainer from './ConnectionCategoryContainer';
+import RelationAddModal from './RelationAddModal';
+import RelationCategoryContainer from './RelationCategoryContainer';
 import ConnectionsModal from './ConnectionsModal';
 
 class ConnectionContainer extends Component {
@@ -23,7 +23,6 @@ class ConnectionContainer extends Component {
       isLoading: false,
       mothers: [],
     };
-    this.addConnection = this.addConnection.bind(this);
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getConnections = this.getConnections.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
@@ -72,6 +71,8 @@ class ConnectionContainer extends Component {
         this.setState({
           [connectionType]: data.connections,
           isLoading: false,
+          connectionsModal: false,
+          addModal: false,
         });
       });
   }
@@ -91,44 +92,6 @@ class ConnectionContainer extends Component {
       connectionsByCategory[daughter.connection.category].daughters.push(daughter.daughter);
     });
     return connectionsByCategory;
-  }
-
-  addConnection(etablissementId, evolutionCategoryId, date, evolutionType) {
-    this.setState({ isLoading: true });
-    const newConnection = {};
-    newConnection[`${evolutionType.slice(0, -1)}`] = {
-      [`${evolutionType.slice(0, -1)}_id`]: etablissementId,
-      institution_connection_category_id: evolutionCategoryId,
-      date,
-    };
-    fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/${evolutionType}`,
-      {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }),
-        body: JSON.stringify(newConnection),
-      },
-    )
-      .then((res) => {
-        if (res.ok) {
-          res.json().then(() => {
-            this.setState({
-              errorMessage: '',
-              isLoading: false,
-            });
-            this.toggleAddModal();
-            this.getConnections(this.props.etablissement_id, evolutionType);
-          });
-        } else {
-          this.setState({
-            errorMessage: 'Erreur, merci de vérifier le formulaire',
-            isLoading: false,
-          });
-        }
-      });
   }
 
   displayDropdown() {
@@ -152,11 +115,11 @@ class ConnectionContainer extends Component {
   renderCategories() {
     const connectionsByCategory = this.getConnectionsByCategory();
     return map(connectionsByCategory, (connection, category) => (
-      <ConnectionCategoryContainer
+      <RelationCategoryContainer
         key={category}
         category={category}
-        daughters={connection.daughters}
-        mothers={connection.mothers}
+        relationDown={connection.daughters}
+        relationUp={connection.mothers}
       />
     ));
   }
@@ -184,10 +147,10 @@ class ConnectionContainer extends Component {
                     Ajouter un nouveau rattachement
                 </DropdownItem>
                 {this.state.addModal ?
-                  <AddModal
-                    etablissement_id={this.props.etablissement_id}
+                  <RelationAddModal
+                    institutionId={this.props.etablissement_id}
                     categories={this.state.connectionCategories}
-                    addMethod={this.addConnection}
+                    getRelations={this.getConnections}
                     toggleModal={this.toggleAddModal}
                     type="rattachement"
                   /> : <div />}
@@ -199,7 +162,7 @@ class ConnectionContainer extends Component {
                   <ConnectionsModal
                     daughters={this.state.daughters}
                     id={this.props.etablissement_id}
-                    getConnections={this.getConnections}
+                    getRelations={this.getConnections}
                     mothers={this.state.mothers}
                     toggleModal={this.toggleConnectionsModal}
                   /> : <div />}

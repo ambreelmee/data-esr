@@ -10,7 +10,7 @@ import { getActiveEntity } from './../methods';
 import Address from './Address';
 import AddressHistoryModal from './AddressHistoryModal';
 import AddressModal from './AddressModal';
-import ConnectionContainer from './../Connection/ConnectionContainer';
+import ConnectionContainer from './../Relation/ConnectionContainer';
 import CodeContainer from './../Code/CodeContainer';
 import LeafletMap from './LeafletMap';
 
