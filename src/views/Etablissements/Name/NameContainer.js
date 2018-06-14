@@ -7,9 +7,9 @@ import { Alert, ButtonGroup, ButtonDropdown, Card, DropdownItem, DropdownMenu, D
 import PropTypes from 'prop-types';
 
 import { getActiveEntity } from './../methods';
-import NameModal from './NameModal';
-import NameHistoryModal from './NameHistoryModal';
 import EtablissementStatusModal from './EtablissementStatusModal';
+import NameHistoryModal from './NameHistoryModal';
+import SynonymsModal from './SynonymsModal';
 
 const styles = {
   large: {
@@ -29,35 +29,16 @@ class NameContainer extends Component {
     this.state = {
       statusModal: false,
       displayDropdown: false,
-      editModal: false,
+      synonymModal: false,
       historyModal: false,
       isLoading: false,
       isDeleting: false,
-      names: [],
     };
     this.deleteName = this.deleteName.bind(this);
     this.displayDropdown = this.displayDropdown.bind(this);
-    this.getNames = this.getNames.bind(this);
     this.toggleStatusModal = this.toggleStatusModal.bind(this);
-    this.toggleEditModal = this.toggleEditModal.bind(this);
+    this.toggleSynonymModal = this.toggleSynonymModal.bind(this);
     this.toggleHistoryModal = this.toggleHistoryModal.bind(this);
-  }
-
-  getNames(etablissementId) {
-    this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}/institution_names`, {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          names: data,
-          isLoading: false,
-        });
-      });
   }
 
   deleteName(nameId, etablissementId) {
@@ -79,7 +60,6 @@ class NameContainer extends Component {
           isDeleting: false,
           deleteModal: false,
         });
-        this.getNames(etablissementId);
       });
   }
 
@@ -95,9 +75,9 @@ class NameContainer extends Component {
     });
   }
 
-  toggleEditModal() {
+  toggleSynonymModal() {
     this.setState({
-      editModal: !this.state.editModal,
+      synonymModal: !this.state.synonymModal,
     });
   }
 
@@ -107,7 +87,18 @@ class NameContainer extends Component {
     });
   }
 
+  renderSynonyms() {
+    if (this.props.synonym) {
+      return this.props.synonym.split(', ').map(synonym => (
+        <div key={synonym} style={styles.small}>{synonym}</div>
+      ));
+    } return <div />;
+  }
+
   render() {
+    const e = document.documentElement;
+    const g = document.getElementsByTagName('body')[0];
+    const width = window.innerWidth || e.clientWidth || g.clientWidth;
     if (this.state.isLoading) {
       return <p />;
     }
@@ -142,10 +133,17 @@ class NameContainer extends Component {
                   history={this.props.names}
                   toggleModal={this.toggleHistoryModal}
                 /> : <div />}
-              <DropdownItem>
+              <DropdownItem onClick={this.toggleSynonymModal}>
                 <i className="fa fa-edit text-warning" />
                   Modifier la liste des noms d&#39;usage
               </DropdownItem>
+              {this.state.synonymModal ?
+                <SynonymsModal
+                  id={this.props.etablissement_id}
+                  getData={this.props.getData}
+                  synonyms={this.props.synonym}
+                  toggleModal={this.toggleSynonymModal}
+                /> : <div />}
               <DropdownItem onClick={this.toggleStatusModal}>
                 <i className="fa fa-pencil text-danger" />
                   Modifier le statut de l&#39;établissement
@@ -162,25 +160,28 @@ class NameContainer extends Component {
             </DropdownMenu>
           </ButtonDropdown>
         </ButtonGroup>
-        <TagCloud
-          style={{
-            flex: '1',
-            fontFamily: 'sans-serif',
-            fontSize: 30,
-            color: () => randomColor({
-              hue: 'blue',
-            }),
-            padding: 5,
-          }}
-        >
-          <div id="initials" style={styles.large}>{displayedName.initials}</div>
-          <div id="full-text" >{displayedName.text}</div>
-          <div style={styles.small}>Bravestar</div>
-          <div style={styles.small}>Starcom</div>
-          <div style={styles.small}>Cops</div>
-          <div style={styles.small}>Alfred J. Kwak</div>
-          <div style={styles.small}>Dr Snuggles</div>
-        </TagCloud>
+        {width > 767 ?
+          <TagCloud
+            style={{
+              flex: '1',
+              fontFamily: 'sans-serif',
+              fontSize: 30,
+              color: () => randomColor({
+                hue: 'blue',
+              }),
+              padding: 5,
+            }}
+          >
+            <div style={displayedName.initials.length > 10 ? '' : styles.large}>{displayedName.initials}</div>
+            {displayedName.initials === displayedName.text ?
+              <div /> :
+              <div style={displayedName.text.length > 20 ? styles.small : ''}>{displayedName.text}</div>}
+            {this.renderSynonyms()}
+          </TagCloud> :
+          <div>
+            <h3>{displayedName.initials}</h3>
+            <h4>{displayedName.text}</h4>
+          </div>}
       </Card>
     );
   }
@@ -193,7 +194,7 @@ NameContainer.propTypes = {
   getData: PropTypes.func.isRequired,
   names: PropTypes.array.isRequired,
   synonym: PropTypes.string,
-  uai: PropTypes.string.isRequired
+  uai: PropTypes.string.isRequired,
 };
 
 NameContainer.defaultProps = {

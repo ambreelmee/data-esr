@@ -93,6 +93,7 @@ class LinkRef extends Component {
   cancelEdition() {
     this.setState({
       displayEditButton: false,
+      cancelTooltip: false,
       content: this.props.content,
     });
   }
