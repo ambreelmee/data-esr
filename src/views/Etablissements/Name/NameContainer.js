@@ -32,33 +32,46 @@ class NameContainer extends Component {
       synonymModal: false,
       historyModal: false,
       isLoading: false,
-      isDeleting: false,
+      date_end: '',
+      date_start: '',
+      uai: '',
+      names: [],
+      synonym: '',
     };
-    this.deleteName = this.deleteName.bind(this);
+
     this.displayDropdown = this.displayDropdown.bind(this);
+    this.getData = this.getData.bind(this);
     this.toggleStatusModal = this.toggleStatusModal.bind(this);
     this.toggleSynonymModal = this.toggleSynonymModal.bind(this);
     this.toggleHistoryModal = this.toggleHistoryModal.bind(this);
   }
 
-  deleteName(nameId, etablissementId) {
-    this.setState({ isDeleting: true });
-    fetch(
-      `${process.env.API_URL_STAGING}institution_names/${nameId}`,
-      {
-        method: 'DELETE',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-        body: JSON.stringify({ name: { id: nameId } }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
+  componentWillMount() {
+    this.getData(this.props.etablissement_id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.getData(nextProps.etablissement_id);
+  }
+
+  getData(etablissementId) {
+    this.setState({ isLoading: true });
+    fetch(`${process.env.API_URL_STAGING}institutions/${etablissementId}`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        const uai = data.institution.codes.find(code => code.category === 'uai' && code.status === 'active');
         this.setState({
-          isDeleting: false,
-          deleteModal: false,
+          date_end: data.institution.date_end,
+          date_start: data.institution.date_start,
+          uai: uai ? uai.content : null,
+          isLoading: false,
+          names: data.institution.names,
+          synonym: data.institution.synonym,
         });
       });
   }
@@ -88,8 +101,8 @@ class NameContainer extends Component {
   }
 
   renderSynonyms() {
-    if (this.props.synonym) {
-      return this.props.synonym.split(', ').map(synonym => (
+    if (this.state.synonym) {
+      return this.state.synonym.split(', ').map(synonym => (
         <div key={synonym} style={styles.small}>{synonym}</div>
       ));
     } return <div />;
@@ -102,14 +115,14 @@ class NameContainer extends Component {
     if (this.state.isLoading) {
       return <p />;
     }
-    const replacementName = this.props.names ? this.props.names[0] : null;
-    const displayedName = getActiveEntity(this.props.names) ? getActiveEntity(this.props.names) : replacementName;
+    const replacementName = this.state.names ? this.state.names[0] : null;
+    const displayedName = getActiveEntity(this.state.names) ? getActiveEntity(this.state.names) : replacementName;
     return (
       <Card className="mb-0 mt-2 w-100 text-center" style={{ height: '175px' }}>
-        <Alert color={this.props.date_end ? 'danger' : 'success'}>
-          {this.props.date_end ?
-            `Cet établissement est fermé depuis le ${moment(this.props.date_end).format('LL')}` :
-            `Cet établissement est ouvert depuis le ${moment(this.props.date_start).format('LL')}`}
+        <Alert color={this.state.date_end ? 'danger' : 'success'}>
+          {this.state.date_end ?
+            `Cet établissement est fermé depuis le ${moment(this.state.date_end).format('LL')}` :
+            `Cet établissement est ouvert depuis le ${moment(this.state.date_start).format('LL')}`}
         </Alert>
         <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
           <ButtonDropdown
@@ -127,10 +140,9 @@ class NameContainer extends Component {
               </DropdownItem>
               {this.state.historyModal ?
                 <NameHistoryModal
-                  deleteName={this.deleteName}
                   etablissement_id={this.props.etablissement_id}
-                  getData={this.props.getData}
-                  history={this.props.names}
+                  getData={this.getData}
+                  history={this.state.names}
                   toggleModal={this.toggleHistoryModal}
                 /> : <div />}
               <DropdownItem onClick={this.toggleSynonymModal}>
@@ -140,8 +152,8 @@ class NameContainer extends Component {
               {this.state.synonymModal ?
                 <SynonymsModal
                   id={this.props.etablissement_id}
-                  getData={this.props.getData}
-                  synonyms={this.props.synonym}
+                  getData={this.getData}
+                  synonyms={this.state.synonym}
                   toggleModal={this.toggleSynonymModal}
                 /> : <div />}
               <DropdownItem onClick={this.toggleStatusModal}>
@@ -150,11 +162,11 @@ class NameContainer extends Component {
                 {this.state.statusModal ?
                   <EtablissementStatusModal
                     id={this.props.etablissement_id}
-                    date_end={this.props.date_end}
-                    date_start={this.props.date_start}
-                    getData={this.props.getData}
+                    date_end={this.state.date_end}
+                    date_start={this.state.date_start}
+                    getData={this.getData}
                     toggleModal={this.toggleStatusModal}
-                    uai={this.props.uai}
+                    uai={this.state.uai}
                   /> : <div />}
               </DropdownItem>
             </DropdownMenu>
@@ -175,7 +187,7 @@ class NameContainer extends Component {
             <div style={displayedName.initials.length > 10 ? '' : styles.large}>{displayedName.initials}</div>
             {displayedName.initials === displayedName.text ?
               <div /> :
-              <div style={displayedName.text.length > 20 ? styles.small : ''}>{displayedName.text}</div>}
+              <div style={displayedName.text.length > 25 ? styles.small : ''}>{displayedName.text}</div>}
             {this.renderSynonyms()}
           </TagCloud> :
           <div>
@@ -189,17 +201,6 @@ class NameContainer extends Component {
 
 NameContainer.propTypes = {
   etablissement_id: PropTypes.number.isRequired,
-  date_end: PropTypes.string,
-  date_start: PropTypes.string.isRequired,
-  getData: PropTypes.func.isRequired,
-  names: PropTypes.array.isRequired,
-  synonym: PropTypes.string,
-  uai: PropTypes.string.isRequired,
-};
-
-NameContainer.defaultProps = {
-  date_end: '',
-  synonym: null,
 };
 
 export default NameContainer;

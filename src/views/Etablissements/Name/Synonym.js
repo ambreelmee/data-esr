@@ -61,7 +61,7 @@ class Synonym extends Component {
             this.setState({
               isDeleting: false,
             });
-            this.props.getData();
+            this.props.getData(this.props.id);
           });
         } else {
           this.setState({
@@ -93,7 +93,7 @@ class Synonym extends Component {
             this.setState({
               isEditing: false,
             });
-            this.props.getData();
+            this.props.getData(this.props.id);
           });
         } else {
           this.setState({

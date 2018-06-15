@@ -13,7 +13,6 @@ class EvolutionsModal extends Component {
       modal: true,
     };
     this.toggle = this.toggle.bind(this);
-    this.deleteEvolution = this.deleteEvolution.bind(this);
   }
 
   toggle() {
@@ -23,29 +22,6 @@ class EvolutionsModal extends Component {
     });
   }
 
-  deleteEvolution(etablissement_id, evolutionType) {
-    this.setState({ isDeleting: true });
-    fetch(
-      `${process.env.API_URL_STAGING}institutions/${this.props.id}/${evolutionType}/${etablissement_id}`,
-      {
-        method: 'DELETE',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.setState({
-          isDeleting: false,
-        });
-        this.props.getInstitutionEvolution(this.props.id);
-      });
-  }
-
-
-
   renderPredecessorsTableRows() {
     if (this.props.predecessors.length > 0) {
       return this.props.predecessors.map(predecessor =>
@@ -54,7 +30,6 @@ class EvolutionsModal extends Component {
             key={predecessor.evolution.id}
             category={predecessor.evolution.category}
             date={predecessor.evolution.date}
-            deleteMethod={this.deleteEvolution}
             id={this.props.id}
             etablissement={predecessor.predecessor.name}
             etablissement_id={predecessor.predecessor.id}
@@ -72,7 +47,6 @@ class EvolutionsModal extends Component {
             key={follower.evolution.id}
             category={follower.evolution.category}
             date={follower.evolution.date}
-            deleteMethod={this.deleteEvolution}
             id={this.props.id}
             etablissement={follower.follower.name}
             etablissement_id={follower.follower.id}
@@ -137,7 +111,7 @@ EvolutionsModal.propTypes = {
   id: PropTypes.number.isRequired,
   followers: PropTypes.array.isRequired,
   predecessors: PropTypes.array.isRequired,
-  getInstitutionEvolution: PropTypes.func.isRequired,
+  getEvolutions: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 

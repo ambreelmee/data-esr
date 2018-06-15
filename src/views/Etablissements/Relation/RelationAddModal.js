@@ -92,7 +92,8 @@ class RelationAddModal extends Component {
     const updatedInstitution = {
       date_end: this.state.date,
     };
-    const targetId = this.state.relationType === 'predecessors' ? this.state.relationInstitutionId : this.props.institutionId;
+    const targetId = this.state.relationType === 'predecessors' ?
+      this.state.relationInstitutionId : this.props.institutionId;
     fetch(`${process.env.API_URL_STAGING}institutions/${targetId}`, {
       method: 'PUT',
       headers: new Headers({
@@ -108,7 +109,7 @@ class RelationAddModal extends Component {
             errorMessage: 'Formulaire est vide ou incomplet',
           });
         } else {
-          this.props.getData();
+          this.props.getRelations(this.props.institutionId, this.state.relationType);
         }
       });
   }
@@ -118,7 +119,7 @@ class RelationAddModal extends Component {
     const newEvolution = {};
     newEvolution[`${this.state.relationType.slice(0, -1)}`] = {
       [`${this.state.relationType.slice(0, -1)}_id`]: this.state.relationInstitutionId,
-      institution_connection_category_id: this.state.categoryId,
+      [`institution_${this.props.type}_category_id`]: this.state.categoryId,
       date: this.state.date,
     };
     fetch(
@@ -138,6 +139,7 @@ class RelationAddModal extends Component {
             this.setState({
               errorMessage: '',
               isLoading: false,
+              modal: false,
             });
             this.props.getRelations(this.props.institutionId, this.state.relationType);
           });
@@ -204,12 +206,12 @@ class RelationAddModal extends Component {
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          Ajouter un{this.props.type === 'évolution' ? 'e ' : ' '}{this.props.type}
+          Ajouter un{this.props.type === 'evolution' ? 'e évolution ' : ' rattachement'}
         </ModalHeader>
         <ModalBody>
           <FormGroup row>
             <Col xs="6">
-              {this.props.type === 'évolution' ?
+              {this.props.type === 'evolution' ?
                 <select
                   id="relationType"
                   value={this.state.relationType}
@@ -296,11 +298,17 @@ class RelationAddModal extends Component {
               />
             </Col>
           </FormGroup>
-          {this.props.type === 'évolution' ?
+          {this.props.type === 'evolution' ?
             <FormGroup check className="checkbox">
-              <Input className="form-check-input" type="checkbox" id="checkbox1" value="closure" onChange={this.toggleClosure} />
+              <Input
+                className="form-check-input"
+                type="checkbox"
+                id="checkbox1"
+                value="closure"
+                onChange={this.toggleClosure}
+              />
               <Label check className="form-check-label" htmlFor="checkbox1">
-                Déclarer l&#39;établissement prédécesseur comme fermé
+                Déclarer l&#39;établissement prédécesseur comme fermé (préciser la date)
               </Label>
             </FormGroup> : <div />}
         </ModalBody>
@@ -316,7 +324,8 @@ class RelationAddModal extends Component {
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Ajout </span>
-              </div> : <div>Ajouter un{this.props.type === 'évolution' ? 'e ' : ' '}{this.props.type}</div>}
+              </div> :
+              <div>Ajouter un{this.props.type === 'evolution' ? 'e évolution' : ' rattachement'}</div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
@@ -327,10 +336,9 @@ class RelationAddModal extends Component {
 }
 
 RelationAddModal.propTypes = {
-  institutionId: PropTypes.number.isRequired,
-  getData: PropTypes.func,
-  getRelations: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
+  institutionId: PropTypes.number.isRequired,
+  getRelations: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
 };

@@ -55,7 +55,7 @@ class EtablissementStatusModal extends Component {
           });
         } else {
           this.toggle();
-          this.props.getData();
+          this.props.getData(this.props.id);
         }
       });
   }

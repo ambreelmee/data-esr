@@ -79,7 +79,7 @@ class NameModal extends Component {
           });
         } else {
           this.toggle();
-          this.props.getNames(this.props.etablissement_id);
+          this.props.getData(this.props.etablissement_id);
         }
       });
   }
@@ -137,7 +137,7 @@ class NameModal extends Component {
       .then(() => {
         this.toggle();
         this.setState({ isLoading: false });
-        this.props.getNames(this.props.etablissement_id);
+        this.props.getData(this.props.etablissement_id);
       });
   }
 

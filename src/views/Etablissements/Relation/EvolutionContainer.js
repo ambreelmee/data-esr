@@ -145,20 +145,19 @@ class EvolutionContainer extends Component {
               <DropdownMenu>
                 <DropdownItem onClick={this.toggleAddModal}>
                   <i className="fa fa-plus text-success" />
-                    Ajouter un nouveau rattachement
+                    Ajouter une nouvel évolution
                 </DropdownItem>
                 {this.state.addModal ?
                   <RelationAddModal
                     institutionId={this.props.etablissement_id}
                     categories={this.state.evolutionCategories}
                     getRelations={this.getEvolutions}
-                    getData={this.props.getData}
                     toggleModal={this.toggleAddModal}
-                    type="rattachement"
+                    type="evolution"
                   /> : <div />}
                 <DropdownItem onClick={this.toggleEvolutionsModal}>
                   <i className="fa fa-eye text-info" />
-                    Voir le détail des rattachements
+                    Voir le détail des évolution
                 </DropdownItem>
                 {this.state.evolutionsModal ?
                   <EvolutionsModal
@@ -199,7 +198,6 @@ class EvolutionContainer extends Component {
 
 EvolutionContainer.propTypes = {
   etablissement_id: PropTypes.number.isRequired,
-  getData: PropTypes.func.isRequired,
 };
 
 export default EvolutionContainer;

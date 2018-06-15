@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Button, Tooltip } from 'reactstrap';
+import { Badge, Button, Modal, ModalBody, ModalFooter, ModalHeader, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -10,13 +10,17 @@ class NameHistoryModalRow extends Component {
     super(props);
 
     this.state = {
+      deleteModal: false,
       deleteTooltip: false,
-      editTooltip: false,
       editModal: false,
+      editTooltip: false,
+      errorMessage: '',
     };
+    this.deleteName = this.deleteName.bind(this);
+    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
-    this.toggleEditToolTip = this.toggleEditToolTip.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
+    this.toggleEditToolTip = this.toggleEditToolTip.bind(this);
   }
 
   toggleDeleteToolTip() {
@@ -31,11 +35,49 @@ class NameHistoryModalRow extends Component {
     });
   }
 
+  toggleDeleteModal() {
+    this.setState({
+      deleteModal: !this.state.deleteModal,
+    });
+  }
+
   toggleEditModal() {
     this.setState({
       editModal: !this.state.editModal,
     });
   }
+
+
+  deleteName() {
+    this.setState({ isDeleting: true });
+    fetch(
+      `${process.env.API_URL_STAGING}institution_names/${this.props.id}`,
+      {
+        method: 'DELETE',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')})`,
+        }),
+        body: JSON.stringify({ name: { id: this.props.id } }),
+      },
+    )
+      .then((res) => {
+        if (res.ok) {
+          res.json().then(() => {
+            this.setState({
+              isDeleting: false,
+              deleteModal: false,
+            });
+            this.props.getData(this.props.etablissement_id);
+          });
+        } else {
+          this.setState({
+            errorMessage: 'impossible de supprimer le nom',
+          });
+        }
+      });
+  }
+
 
   render() {
     return (
@@ -66,7 +108,7 @@ class NameHistoryModalRow extends Component {
                 id={this.props.id}
                 initials={this.props.initials}
                 etablissement_id={this.props.etablissement_id}
-                getNames={this.props.getNames}
+                getData={this.props.getData}
                 toggleModal={this.toggleEditModal}
                 text={this.props.text}
                 status={this.props.status}
@@ -75,7 +117,7 @@ class NameHistoryModalRow extends Component {
             <Button
               color="danger"
               id={`historymodal-delete-button-${this.props.id}`}
-              onClick={() => this.props.deleteName(this.props.id, this.props.etablissement_id)}
+              onClick={this.toggleDeleteModal}
               size="sm"
             >
               <i className="fa fa-close" />
@@ -96,6 +138,31 @@ class NameHistoryModalRow extends Component {
             >
             Supprimer la référence
             </Tooltip>
+            <Modal isOpen={this.state.deleteModal} toggle={this.toggleDeleteModal} color="danger">
+              <ModalHeader toggle={this.toggleDeleteModal}>
+                Suppression du champ
+              </ModalHeader>
+              <ModalBody>
+                Etes-vous sûr de vouloir supprimer ce champ ?
+              </ModalBody>
+              <ModalFooter>
+                <p className="mt-2 text-danger">{this.state.errorMessage}</p>
+                <Button
+                  className="m-1 float-right"
+                  color="danger"
+                  disabled={this.state.isDeleting}
+                  onClick={!this.state.isDeleting ? this.deleteName : null}
+                >
+                  {this.state.isDeleting ?
+                    <div>
+                      <i className="fa fa-spinner fa-spin " />
+                      <span className="mx-1"> Suppression </span>
+                    </div> : <div />}
+                  Supprimer
+                </Button>
+                <Button color="secondary" onClick={this.toggleDeleteModal}>Annuler</Button>
+              </ModalFooter>
+            </Modal>
           </div>
         </td>
       </tr>);
@@ -103,11 +170,10 @@ class NameHistoryModalRow extends Component {
 }
 
 NameHistoryModalRow.propTypes = {
-  deleteName: PropTypes.func.isRequired,
   date_end: PropTypes.string,
   date_start: PropTypes.string,
   etablissement_id: PropTypes.number.isRequired,
-  getNames: PropTypes.func.isRequired,
+  getData: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   initials: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,

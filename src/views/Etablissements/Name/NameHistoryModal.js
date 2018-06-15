@@ -35,11 +35,10 @@ class NameHistoryModal extends Component {
       (
         <NameHistoryModalRow
           key={name.id}
-          deleteName={this.props.deleteName}
           date_end={name.date_end}
           date_start={name.date_start}
           etablissement_id={this.props.etablissement_id}
-          getNames={this.props.getData}
+          getData={this.props.getData}
           id={name.id}
           initials={name.initials}
           text={name.text}
@@ -71,7 +70,7 @@ class NameHistoryModal extends Component {
           </Table>
           <Button color="primary" className="float-right" onClick={this.toggleAddModal}>
             <i className="fa fa-plus mr-1" />
-            Ajouter une évolution
+            Ajouter un nom
           </Button>
           {this.state.addModal ?
             (<NameModal
@@ -90,7 +89,6 @@ class NameHistoryModal extends Component {
 }
 
 NameHistoryModal.propTypes = {
-  deleteName: PropTypes.func.isRequired,
   etablissement_id: PropTypes.number.isRequired,
   getData: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired,

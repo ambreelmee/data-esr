@@ -40,7 +40,7 @@ toggleAddTooltip() {
 
   addSynonym() {
     this.setState({ isAdding: true });
-    const synonym = `${this.props.synonyms}, ${this.state.content}`;
+    const synonym = this.props.synonyms ? `${this.props.synonyms}, ${this.state.content}` : this.state.content;
     fetch(
       `${process.env.API_URL_STAGING}/institutions/${this.props.id}`,
       {
@@ -57,7 +57,7 @@ toggleAddTooltip() {
         this.setState({
           isAdding: false,
         });
-        this.props.getData();
+        this.props.getData(this.props.id);
       });
   }
 
@@ -66,6 +66,7 @@ toggleAddTooltip() {
     const synonymsList = this.props.synonyms.split(', ');
     return synonymsList.map((synonym, index) => (
       <Synonym
+        key={synonym}
         synonymsList={synonymsList}
         id={this.props.id}
         index={index}
@@ -82,7 +83,7 @@ toggleAddTooltip() {
           Noms d&#39;usage
         </ModalHeader>
         <ModalBody>
-          {this.renderSynonyms()}
+          {this.props.synonyms ? this.renderSynonyms() : ''}
           <InputGroup className="mb-3">
             <Input
               id="content"
