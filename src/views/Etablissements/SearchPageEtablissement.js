@@ -36,34 +36,33 @@ class SearchPageEtablissement extends Component {
       return <Redirect to={`/etablissements/${this.props.id}`} />;
     }
     return (
-      <Card className={!this.props.date_end ? 'card-accent-primary' : 'card-accent-danger'}>
-        <CardBody>
-          <div>
-            <Badge color={!this.props.date_end ? 'success' : 'danger'} className="float-right">
-              {!this.props.date_end ? 'Actif' : 'Archivé'}
-            </Badge>
-            <h4>{`${this.props.name.initials} - ${this.props.name.text.toProperCase()}`}</h4>
-            {this.props.codeUAI ?
-              <div className="p-1 d-inline-block text-primary"><strong>{this.props.codeUAI}</strong><br /></div> :
-              <div />}
-            {this.props.address ? <div>{this.props.address.toProperCase()}<br /></div> : <div />}
-            <Button
-              outline
-              id="searchpage-1"
-              className="float-right"
-              color="primary"
-              size="sm"
-              onClick={this.displayInstitutionPage}
-            >
-              <i className="icon-eye mr-1" />
-            Afficher
-            </Button>
-            {this.props.tags.length > 0 ? <div> {this.renderTags()} <br /></div> : <div />}
-            {this.props.date_end ?
-              <span className="text-danger">
-                <strong>fermé depuis le {moment(this.props.date_end).format('LL')}</strong>
-              </span> : <div />}
-          </div>
+      <Card className={`mb-2 rounded w-100 h-100 card-accent-${!this.props.date_end ? 'primary' : 'danger'}`}>
+        <CardBody className="px-3 py-1 d-flex flex-column justify-content-center">
+          <Button
+            color="transparent"
+            className={!this.props.date_end ? 'text-primary' : 'text-danger'}
+            style={{ whiteSpace: 'normal', textAlign: 'left' }}
+            onClick={this.displayInstitutionPage}
+          >
+            <h4 className="mb-0">{this.props.name.initials}
+              {this.props.name.initials === this.props.name.text ? '' : ` - ${this.props.name.text.toProperCase()}`}
+            </h4>
+          </Button><br />
+          {this.props.codeUAI ?
+            <div>
+              <i className="fa fa-th text-secondary mr-1" />
+              <strong>{this.props.codeUAI}</strong><br />
+            </div> : <div />}
+          {this.props.address.length > 1 ?
+            <div>
+              <i className="fa fa-map-marker fa-lg mr-1" />
+              {this.props.address.toProperCase()}<br />
+            </div> : <div />}
+          {this.props.tags.length > 0 ? <div> {this.renderTags()} <br /></div> : <div />}
+          {this.props.date_end ?
+            <span className="text-danger">
+              fermé depuis le {moment(this.props.date_end).format('LL')}
+            </span> : <div />}
         </CardBody>
       </Card>
     );

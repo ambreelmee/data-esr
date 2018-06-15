@@ -58,7 +58,7 @@ class SearchPage extends Component {
   }
 
   getInitialData() {
-    fetch(`${process.env.API_URL_STAGING}institutions`, {
+    fetch(`${process.env.API_URL_STAGING}institutions?page_size=18`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -130,7 +130,7 @@ class SearchPage extends Component {
   search() {
     this.setState({ isLoading: true });
     const params = encodeURI(this.state.searchEntry);
-    fetch(`${process.env.API_URL_STAGING}institutions/search?q=${params}`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/search?q=${params}&page_size=18`, {
       method: 'POST',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -210,9 +210,9 @@ class SearchPage extends Component {
 
   renderInstitutionsCards() {
     return this.state.institutions.map((institution) => {
-      const codeUAI = institution.codes.find(code => code.category === 'UAI' && code.status === 'active');
+      const codeUAI = institution.codes.find(code => code.category === 'uai' && code.status === 'active');
       return (
-        <Col xs="12" md="6" lg="4" key={`institution-${institution.id}`}>
+        <Col xs="12" md="6" lg="4" className="my-1 px-1" key={`institution-${institution.id}`}>
           <SearchPageEtablissement
             address={getActiveEntity(institution.addresses) ?
               getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
