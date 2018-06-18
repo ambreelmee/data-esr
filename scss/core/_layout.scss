@@ -413,6 +413,9 @@ app-root {
 .my-shadow {
   box-shadow: 0px 1px 4px #999;
 }
+.search .form-control:focus {
+    box-shadow: 0 0 0 0 rgba(32, 168, 216, 0.25);
+}
 
 // Institution page
 

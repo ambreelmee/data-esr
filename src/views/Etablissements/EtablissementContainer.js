@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Col, Row } from 'reactstrap';
 import moment from 'moment';
-
+import { Redirect } from 'react-router-dom';
 import AddressContainer from './Address/AddressContainer';
 import EvolutionContainer from './Relation/EvolutionContainer';
 import NameContainer from './Name/NameContainer';
@@ -10,15 +10,40 @@ import TagContainer from './Tag/TagContainer';
 
 
 class EtablissementContainer extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      redirectToSearchPage: false,
+    };
+    this.onBackButtonEvent = this.onBackButtonEvent.bind(this);
+  }
+
+  componentDidMount() {
+    window.onpopstate = this.onBackButtonEvent;
+  }
+
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.match.params.number) {
       this.props.match.params.number = nextProps.match.params.number;
     }
   }
 
+  onBackButtonEvent(event) {
+    event.preventDefault();
+    this.setState({
+      redirectToSearchPage: true,
+    });
+  }
+
+
   render() {
     moment.locale('fr');
     const etablissementId = parseInt(this.props.match.params.number, 10);
+    if (this.state.redirectToSearchPage) {
+      return <Redirect to="/etablissements" />;
+    }
     return (
       <div className="animated fadeIn">
         <Row>

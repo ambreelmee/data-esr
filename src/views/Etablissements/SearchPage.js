@@ -20,6 +20,7 @@ class SearchPage extends Component {
       addTooltip: false,
       csvFile: null,
       error: false,
+      errorMessage: '',
       initialData: [],
       institutions: [],
       isDownloading: false,
@@ -86,6 +87,12 @@ class SearchPage extends Component {
             isLoading: false,
           });
         }
+      })
+      .catch(() => {
+        this.setState({
+          error: true,
+          isLoading: false,
+        });
       });
   }
 
@@ -158,7 +165,7 @@ class SearchPage extends Component {
         } else {
           this.setState({
             error: true,
-            isLoading: false,
+            isSearching: false,
           });
         }
       });
@@ -182,7 +189,18 @@ class SearchPage extends Component {
               isDownloading: false,
             });
           });
+        } else {
+          this.setState({
+            errorMessage: 'impossible de télécharger les données',
+            isDownloading: false
+          });
         }
+      })
+      .catch(() => {
+        this.setState({
+          errorMessage: 'impossible de télécharger les données',
+          isDownloading: false
+        });
       });
   }
 
@@ -203,7 +221,7 @@ class SearchPage extends Component {
 
   renderInstitutionsCards() {
     return this.state.institutions.map((institution) => {
-      const codeUAI = institution.codes.find(code => code.category === 'uai' && code.status === 'active');
+      const codeUAI = institution.codes.find(code => code.category === 'uai');
       return (
         <Col xs="12" md="6" lg="4" className="my-1 px-1" key={`institution-${institution.id}`}>
           <SearchPageEtablissement
@@ -222,8 +240,7 @@ class SearchPage extends Component {
   }
 
   render() {
-    const locale = window.navigator.userLanguage || window.navigator.language;
-    moment.locale(locale);
+    moment.locale('fr');
     if (this.state.error) {
       return <p>Une erreur est survenue</p>;
     }
@@ -233,7 +250,7 @@ class SearchPage extends Component {
           <Col xs="12" md="10" lg="8" className="mx-auto">
             <Form>
               <FormGroup>
-                <InputGroup className="border rounded my-shadow">
+                <InputGroup size="lg" className=" search border rounded my-shadow">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText className="border-0 rounded text-muted">
                       {this.state.isSearching ?
@@ -279,6 +296,7 @@ class SearchPage extends Component {
                     <div><i className="fa fa-spinner fa-spin" /> Chargement</div>}
                 </Button>}
             </div> : <div />}
+          <p className="text-danger">{this.state.errorMessage}</p>
         </Row>
         {this.state.institutions.length === 0 && !this.state.isLoading ?
           <p className="text-center"><em>aucun résultat</em></p> :
