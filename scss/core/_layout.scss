@@ -385,3 +385,39 @@ app-root {
     }
   }
 }
+
+.bckgnd-img {
+  background-image: $bckgnd-img;
+}
+
+// Search page
+
+.float-add{
+  border-radius:50px;
+  bottom:40px;
+  box-shadow: 2px 2px 3px #999;
+  color:#FFF;
+  font-size: 25px;
+  height:60px;
+	position:fixed;
+  right:40px;
+  text-align:center;
+	width:60px;
+  z-index: 2;
+}
+
+.my-float{
+	margin-top:12px;
+}
+
+.my-shadow {
+  box-shadow: 0px 1px 4px #999;
+}
+
+// Institution page
+
+.leaflet-container {
+  height: 500px;
+  width: 100%;
+  margin: 0 auto;
+}

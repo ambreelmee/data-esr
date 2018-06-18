@@ -143,12 +143,12 @@ class NameModal extends Component {
 
   render() {
     if (this.state.redirectToNewInstitutionId) {
-      return <Redirect to={`/etablissements/${this.state.redirectToNewInstitutionId}`} />
+      return <Redirect to={`/etablissements/${this.state.redirectToNewInstitutionId}`} />;
     }
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          {this.props.id ? 'Modifier le nom' : 'Ajouter un nom'}
+          {this.props.id ? 'Modifier le nom' : 'Ajouter un établissement'}
         </ModalHeader>
         <ModalBody>
           Les champs colorés sont obligatoires

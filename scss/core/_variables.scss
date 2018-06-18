@@ -35,6 +35,10 @@ $vine:                                #00bf8f !default;
 $foursquare:                          #1073af !default;
 $vimeo:                               #aad450 !default;
 
+// SearchPage
+
+$bckgnd-img:                          url('../img/fond.png');
+
 // Navbar
 
 $navbar-height:                       55px !default;
@@ -202,7 +206,7 @@ $aside-menu-nav-padding-x:            1rem !default;
 
 // Footer
 
-$footer-height:                       50px !default;
+$footer-height:                       70px !default;
 $footer-bg:                           $gray-100 !default;
 $footer-color:                        $body-color !default;
 $footer-borders: (

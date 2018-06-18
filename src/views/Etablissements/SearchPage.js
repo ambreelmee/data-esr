@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Button, FormGroup, Form, InputGroup, InputGroupAddon,
-  Row, Col, Input, Pagination, PaginationItem, PaginationLink,
+  Button, FormGroup, Form, InputGroup, InputGroupAddon, InputGroupText,
+  Row, Col, Input, Pagination, PaginationItem, PaginationLink, Tooltip,
 } from 'reactstrap';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
@@ -10,21 +10,21 @@ import parse from 'parse-link-header';
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
-import UploadModal from './UploadModal';
 
 class SearchPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      addModal: false,
+      addTooltip: false,
       csvFile: null,
       error: false,
-      initialCsvFile: null,
       initialData: [],
       institutions: [],
       isDownloading: false,
       isLoading: false,
-      redirectToNewInstitution: false,
+      isSearching: false,
       searchEntry: '',
       uploadModal: false,
     };
@@ -34,13 +34,11 @@ class SearchPage extends Component {
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
-    this.redirectToNewInstitution = this.redirectToNewInstitution.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
-    this.toggleUploadModal = this.toggleUploadModal.bind(this);
+    this.toggleAddModal = this.toggleAddModal.bind(this);
+    this.toggleAddTooltip = this.toggleAddTooltip.bind(this);
   }
 
   componentWillMount() {
-    this.setState({ isLoading: true });
     this.getInitialData();
   }
 
@@ -60,6 +58,7 @@ class SearchPage extends Component {
   }
 
   getInitialData() {
+    this.setState({ isLoading: true });
     fetch(`${process.env.API_URL_STAGING}institutions?page_size=18`, {
       method: 'GET',
       headers: new Headers({
@@ -128,8 +127,14 @@ class SearchPage extends Component {
     }
   }
 
+  toggleAddTooltip() {
+    this.setState({
+      addTooltip: !this.state.addTooltip,
+    });
+  }
+
   search() {
-    this.setState({ isLoading: true });
+    this.setState({ isSearching: true });
     const params = encodeURI(this.state.searchEntry);
     fetch(`${process.env.API_URL_STAGING}institutions/search?q=${params}&page_size=18`, {
       method: 'POST',
@@ -143,7 +148,7 @@ class SearchPage extends Component {
           response.json().then((data) => {
             this.setState({
               institutions: data,
-              isLoading: false,
+              isSearching: false,
               last: links.last,
               next: links.next,
               prev: links.prev,
@@ -174,7 +179,6 @@ class SearchPage extends Component {
             const csvFile = URL.createObjectURL(data);
             this.setState({
               csvFile,
-              initialCsvFile: params ? this.state.initialCsvFile : csvFile,
               isDownloading: false,
             });
           });
@@ -182,25 +186,12 @@ class SearchPage extends Component {
       });
   }
 
-  toggleModal() {
-    this.setState({
-      modal: !this.state.modal,
-    });
-  }
-
-  toggleUploadModal() {
-    this.setState({
-      uploadModal: !this.state.uploadModal,
-    });
-  }
-
-  redirectToNewInstitution() {
-    this.setState({ redirectToNewInstitution: true });
+  toggleAddModal() {
+    this.setState({ addModal: !this.state.addModal });
   }
 
   resetSearch() {
     this.setState({
-      csvFile: this.state.initialCsvFile,
       institutions: this.state.initialData,
       searchEntry: '',
       last: this.state.initialLinks.last,
@@ -236,31 +227,23 @@ class SearchPage extends Component {
     if (this.state.error) {
       return <p>Une erreur est survenue</p>;
     }
-    if (this.state.redirectToNewInstitution) {
-      return <NameModal toggleModal={this.toggleModal} />;
-    }
     return (
-      <div>
-        <Row className="pt-5 pb-1">
-          <Col md="6" className="mx-auto">
+      <div className="p-5">
+        <Row>
+          <Col xs="12" md="10" lg="8" className="mx-auto">
             <Form>
               <FormGroup>
-                <InputGroup>
+                <InputGroup className="border rounded my-shadow">
                   <InputGroupAddon addonType="prepend">
-                    <Button
-                      type="button"
-                      color="primary"
-                      onClick={this.onChange}
-                      className="col-xs-1"
-                    >
-                      {this.state.isLoading ?
+                    <InputGroupText className="border-0 rounded text-muted">
+                      {this.state.isSearching ?
                         <i className="fa fa-spinner fa-spin" /> :
                         <i className="fa fa-search" />}
-                    </Button>
+                    </InputGroupText>
                   </InputGroupAddon>
                   <Input
                     id="searchEntry"
-                    className="col-xs-11"
+                    className="col-xs-11 border-0 rounded"
                     type="text"
                     placeholder="Rechercher un établissement..."
                     value={this.state.searchEntry}
@@ -272,50 +255,34 @@ class SearchPage extends Component {
                       e.target.value = val;
                     }}
                   />
-                  <InputGroupAddon addonType="append">
-                    {this.state.searchEntry ?
-                      <Button type="button" color="secondary" onClick={this.resetSearch}>
+                  {this.state.searchEntry ?
+                    <InputGroupAddon addonType="append">
+                      <Button type="button" color="light" className="border-0 rounded" onClick={this.resetSearch}>
                         <i className="fa fa-remove" />
-                      </Button> : <div />}
-                  </InputGroupAddon>
+                      </Button>
+                    </InputGroupAddon> : <div />}
                 </InputGroup>
               </FormGroup>
             </Form>
           </Col>
-          <Col xs="12" md="5" className="px-5 m-1">
-            <Button
-              type="button"
-              color="primary"
-              className="m-1"
-              onClick={this.redirectToNewInstitution}
-            >
-              <i className="fa fa-plus" /> Ajouter un établissement
-            </Button>
-            <Button type="button" color="success" className="m-1" onClick={this.toggleUploadModal}>
-              <i className="fa fa-upload" /> Importer des données (csv)
-            </Button>
-            {this.state.uploadModal ?
-              <UploadModal
-                csvTemplate={this.state.initialCsvFile}
-                toggleModal={this.toggleUploadModal}
-              /> : <div />}
-            {!this.state.isLoading ?
-              <div className="float-right">
-                {this.state.csvFile ?
-                  <a href={this.state.csvFile} download="etablissements.csv">
-                    établissements.csv
-                  </a> :
-                  <Button color="primary" className="rounded ml-1" onClick={this.downloadSearchResults}>
-                    {!this.state.isDownloading ?
-                      <div><i className="fa fa-download" /> Télécharger les résultats</div> :
-                      <div><i className="fa fa-spinner fa-spin" /> Chargement</div>}
-                  </Button>}
-              </div> : <div />}
-          </Col>
+        </Row>
+        <Row className="d-flex flex-row-reverse p-1 mt-2">
+          {!this.state.isSearching ?
+            <div>
+              {this.state.csvFile ?
+                <a href={this.state.csvFile} download="etablissements.csv">
+                  établissements.csv
+                </a> :
+                <Button color="primary" size="sm" className="rounded ml-1" onClick={this.downloadSearchResults}>
+                  {!this.state.isDownloading ?
+                    <div><i className="fa fa-download" /> Télécharger les résultats</div> :
+                    <div><i className="fa fa-spinner fa-spin" /> Chargement</div>}
+                </Button>}
+            </div> : <div />}
         </Row>
         {this.state.institutions.length === 0 && !this.state.isLoading ?
           <p className="text-center"><em>aucun résultat</em></p> :
-          <Row className="px-5"> {this.renderInstitutionsCards()} </Row>}
+          <Row> {this.renderInstitutionsCards()} </Row>}
         <div className="mt-3 d-flex justify-content-center">
           {this.state.institutions.length > 17 ?
             <Pagination>
@@ -365,6 +332,24 @@ class SearchPage extends Component {
                 </PaginationItem> : <div />}
             </Pagination> : <div />}
         </div>
+        <Button
+          type="button"
+          color="primary"
+          className="float-add"
+          id="search-page-add-button"
+          onClick={this.toggleAddModal}
+        >
+          <i className="fa fa-plus my-float" />
+        </Button>
+        <Tooltip
+          isOpen={this.state.addTooltip}
+          target="search-page-add-button"
+          toggle={this.toggleAddToolTip}
+        >
+          Ajouter un établissement
+        </Tooltip>
+        {this.state.addModal ?
+          <NameModal toggleModal={this.toggleAddModal} /> : <div />}
       </div>
     );
   }

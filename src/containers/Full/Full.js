@@ -15,7 +15,7 @@ const Full = props => (
     <div className="app-body">
       <Sidebar {...props} />
       <main className="main">
-        <Container fluid>
+        <Container fluid className="bckgnd-img">
           <Switch>
             <PrivateRoute exact path="/etablissements"component={SearchPage} />
             <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
