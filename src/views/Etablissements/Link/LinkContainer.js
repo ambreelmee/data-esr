@@ -143,7 +143,7 @@ class LinkContainer extends Component {
                 isOpen={this.state.displayDropdown}
                 toggle={this.displayDropdown}
               >
-                <DropdownToggle caret color="primary" id="source-link">
+                <DropdownToggle caret size="sm" color="primary" className="rounded" id="source-link">
                   <i className="fa fa-plus mr-1" />
                   Ajouter un lien
                 </DropdownToggle>

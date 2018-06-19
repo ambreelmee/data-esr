@@ -171,7 +171,7 @@ class CodeContainer extends Component {
                 isOpen={this.state.displayDropdown}
                 toggle={this.displayDropdown}
               >
-                <DropdownToggle caret color="primary" id="source-code">
+                <DropdownToggle size="sm" caret color="primary" className="rounded" id="source-code">
                   <i className="fa fa-plus mr-1" />
                   Ajouter un code
                 </DropdownToggle>

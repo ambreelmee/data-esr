@@ -7,8 +7,7 @@ import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
 import SearchPage from '../../views/Etablissements/SearchPage';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
-import CategoryContainer from '../../views/Category/CategoryContainer';
-import TagCategoryContainer from '../../views/Category/TagCategoryContainer';
+import SubMenuContainer from '../../views/SubMenus/SubMenuContainer';
 
 const Full = props => (
   <div className="app">
@@ -20,12 +19,11 @@ const Full = props => (
           <Switch>
             <PrivateRoute exact path="/etablissements"component={SearchPage} />
             <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
-            <PrivateRoute path="/categories" component={CategoryContainer} />
-            <PrivateRoute path="/liens" component={CategoryContainer} categoryType="link" />
-            <PrivateRoute path="/codes" component={CategoryContainer} categoryType="code" />
-            <PrivateRoute path="/evolutions" component={CategoryContainer} categoryType="institution_evolution" />
-            <PrivateRoute path="/rattachements" component={CategoryContainer} categoryType="institution_connection" />
-            <PrivateRoute path="/caracterisations" component={TagCategoryContainer} />
+            <PrivateRoute path="/liens" component={SubMenuContainer} categoryType="link" />
+            <PrivateRoute path="/codes" component={SubMenuContainer} categoryType="code" />
+            <PrivateRoute path="/evolutions" component={SubMenuContainer} categoryType="institution_evolution" />
+            <PrivateRoute path="/rattachements" component={SubMenuContainer} categoryType="institution_connection" />
+            <PrivateRoute path="/caracterisations" component={SubMenuContainer} />
             <Redirect from="/" to="/etablissements" />
           </Switch>
         </Container>

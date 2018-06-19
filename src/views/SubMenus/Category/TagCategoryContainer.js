@@ -71,9 +71,7 @@ class TagCategoryContainer extends Component {
         <Col xs="12" md="8">
           <Card className="mt-4">
             <CardHeader>
-              <h5>
-                Gestion des <span className="text-primary"><strong>types</strong></span> associés à un établissement
-              </h5>
+              <h5>Nomenclatures</h5>
             </CardHeader>
             <CardBody>
               {this.renderInstitutionCategoryTags()}

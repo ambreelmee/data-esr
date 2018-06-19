@@ -70,39 +70,34 @@ class CategoryContainer extends Component {
       return <p />;
     }
     return (
-      <Row>
-        <Col xs="12" md="6">
-          <Card className="mt-4">
-            <CardHeader>
-              <h5>
-                Gestion des <span className="text-primary">
-                  <strong>{this.props.path.split('/')[1]}</strong>
-                </span> associés à un établissement
-              </h5>
-            </CardHeader>
-            <CardBody>
-              {this.renderCategories()}
-            </CardBody>
-            <CardFooter>
-              <Button color="primary" className="float-right" onClick={this.toggleModal}>
-                <i className="fa fa-plus mr-1" /> Ajouter une catégorie
-              </Button>
-              {this.state.modal ?
-                <CategoryModal
-                  categoryType={this.props.categoryType}
-                  getCategories={this.getCategories}
-                  toggleModal={this.toggleModal}
-                /> : <div /> }
-            </CardFooter>
-          </Card>
-        </Col>
-      </Row>
+      <Col xs="12" md="6">
+        <Card className="mt-4">
+          <CardHeader>
+            <h5>Types de {this.props.name}</h5>
+          </CardHeader>
+          <CardBody>
+            {this.renderCategories()}
+          </CardBody>
+          <CardFooter>
+            <Button color="primary" className="float-right" onClick={this.toggleModal}>
+              <i className="fa fa-plus mr-1" /> Ajouter une catégorie
+            </Button>
+            {this.state.modal ?
+              <CategoryModal
+                categoryType={this.props.categoryType}
+                getCategories={this.getCategories}
+                toggleModal={this.toggleModal}
+              /> : <div /> }
+          </CardFooter>
+        </Card>
+      </Col>
     );
   }
 }
 
 CategoryContainer.propTypes = {
   categoryType: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default CategoryContainer;

@@ -10,6 +10,7 @@ import parse from 'parse-link-header';
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
+import DownloadButton from '../DownloadButton';
 
 class SearchPage extends Component {
   constructor(props) {
@@ -18,18 +19,14 @@ class SearchPage extends Component {
     this.state = {
       addModal: false,
       addTooltip: false,
-      csvFile: null,
       error: false,
-      errorMessage: '',
       initialData: [],
       institutions: [],
-      isDownloading: false,
       isLoading: false,
       isSearching: false,
       searchEntry: '',
       uploadModal: false,
     };
-    this.downloadSearchResults = this.downloadSearchResults.bind(this);
     this.getInstitutionByPage = this.getInstitutionByPage.bind(this);
     this.search = debounce(this.search, 1000);
     this.onChange = this.onChange.bind(this);
@@ -171,39 +168,6 @@ class SearchPage extends Component {
       });
   }
 
-  downloadSearchResults() {
-    this.setState({ isDownloading: true });
-    const params = encodeURI(this.state.searchEntry);
-    fetch(`${process.env.API_URL_STAGING}institutions/search?q=${params}&download=true`, {
-      method: 'POST',
-      headers: new Headers({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          response.blob().then((data) => {
-            const csvFile = URL.createObjectURL(data);
-            this.setState({
-              csvFile,
-              isDownloading: false,
-            });
-          });
-        } else {
-          this.setState({
-            errorMessage: 'impossible de télécharger les données',
-            isDownloading: false
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          errorMessage: 'impossible de télécharger les données',
-          isDownloading: false
-        });
-      });
-  }
-
   toggleAddModal() {
     this.setState({ addModal: !this.state.addModal });
   }
@@ -240,6 +204,7 @@ class SearchPage extends Component {
   }
 
   render() {
+    const params = encodeURI(this.state.searchEntry);
     moment.locale('fr');
     if (this.state.error) {
       return <p>Une erreur est survenue</p>;
@@ -283,21 +248,11 @@ class SearchPage extends Component {
             </Form>
           </Col>
         </Row>
-        <Row className="d-flex flex-row-reverse p-1 mt-2">
-          {!this.state.isSearching ?
-            <div>
-              {this.state.csvFile ?
-                <a href={this.state.csvFile} download="etablissements.csv">
-                  établissements.csv
-                </a> :
-                <Button color="primary" size="sm" className="rounded ml-1" onClick={this.downloadSearchResults}>
-                  {!this.state.isDownloading ?
-                    <div><i className="fa fa-download" /> Télécharger les résultats</div> :
-                    <div><i className="fa fa-spinner fa-spin" /> Chargement</div>}
-                </Button>}
-            </div> : <div />}
-          <p className="text-danger">{this.state.errorMessage}</p>
-        </Row>
+        {!this.state.isSearching && !this.state.isLoading ?
+          <DownloadButton
+            name="etablissements"
+            url={`${process.env.API_URL_STAGING}institutions/search?q=${params}&download=true`}
+          /> : <div />}
         {this.state.institutions.length === 0 && !this.state.isLoading ?
           <p className="text-center"><em>aucun résultat</em></p> :
           <Row> {this.renderInstitutionsCards()} </Row>}

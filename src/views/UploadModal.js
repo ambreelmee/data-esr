@@ -20,6 +20,7 @@ class UploadModal extends Component {
       isLoading: false,
       modal: true,
       name: '',
+      successMessage: '',
     };
 
     this.removeFile = this.removeFile.bind(this);
@@ -50,7 +51,7 @@ class UploadModal extends Component {
     const formData = new FormData();
     formData.append('file', this.state.file);
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/import`, {
+    fetch(this.props.url, {
       method: 'POST',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -59,10 +60,12 @@ class UploadModal extends Component {
     })
       .then((response) => {
         if (response.ok) {
-          this.setState({ isLoading: false });
-          this.toggle();
+          this.setState({
+            isLoading: false,
+            successMessage: 'Les données ont bien été importées',
+          });
         } else {
-          this.setState({ errorMessage: "le fichier n'a pas pu être importé" });
+          response.json().then(error => this.setState({ errorMessage: error.message }));
         }
       });
   }
@@ -82,17 +85,21 @@ class UploadModal extends Component {
 
 
   render() {
+    if (this.state.successMessage) {
+      return (
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+          <ModalBody>{this.state.successMessage}</ModalBody>
+          <ModalFooter><Button color="secondary" onClick={this.toggle}>Fermer</Button></ModalFooter>
+        </Modal>
+      );
+    }
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
-        <ModalHeader toggle={this.toggle}> Importer des données </ModalHeader>
+        <ModalHeader toggle={this.toggle}> Importer des {this.props.name} </ModalHeader>
         <ModalBody>
           <p>
-            Vous pouvez importer directement des données en base à partir d&#39;un fichier <strong>csv</strong>.<br />
-            Les en-têtes des colonnes doivent être identiques en ordre et en dénomination à celle du fichier
-             d&#39;exemple disponible
-            <a href={this.props.csvTemplate} download="template.csv"><strong> ici</strong></a>. <br />
+            Les en-têtes des colonnes doivent être identiques en ordre et en dénomination au format décrit.
           </p>
-
           <div className="position-relative">
             <Input
               id="import"
@@ -113,11 +120,12 @@ class UploadModal extends Component {
                 left: 0,
                 zIndex: 3,
               }}
-              color="success"
+              color="primary"
+              outline
               className="m-1"
               onClick={triggerFileInputClick}
             >
-              <i className="fa fa-file text-white ml-1" /> Choisir un fichier csv
+              <i className="fa fa-file text-primary ml-1" /> Choisir un fichier csv
             </Button>
             {this.state.name ?
               <InputGroup className="ml-1 mt-3" style={{ width: `${this.state.name.length + 9}ch` }}>
@@ -137,12 +145,12 @@ class UploadModal extends Component {
                     toggle={this.toggleCancelToolTip}
                     placement="bottom"
                   >
-                    Annuler les changements
+                    Retirer le fichier
                   </Tooltip>
                 </InputGroupAddon>
               </InputGroup> : <div />}
-            <p className="mt-3">
-              <i className="fa fa-warning text-danger pr-1" />
+            <p className="mt-4">
+              <i className="fa fa-warning pr-1" />
               En cas de conflit avec les données actuellement enregistrées en base,
               les données importées écraseront les données en base sans avertissement supplémentaire,
               <strong>vérifier bien votre fichier avant de sauvegarder</strong>.
@@ -161,7 +169,7 @@ class UploadModal extends Component {
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Chargement </span>
-              </div> : <div>Mettre en base les données</div>}
+              </div> : <div>Valider l&#39;import</div>}
           </Button>
           <Button color="secondary" onClick={this.toggle}>Annuler</Button>
         </ModalFooter>
@@ -171,8 +179,9 @@ class UploadModal extends Component {
 }
 
 UploadModal.propTypes = {
-  csvTemplate: PropTypes.string.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
 };
 
 export default UploadModal;

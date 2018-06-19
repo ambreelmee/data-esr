@@ -242,7 +242,7 @@ class AddressContainer extends Component {
                 </CardBody> :
                 <CardBody>
                   <em>Aucune adresse enregistrée actuellement...</em>
-                  <Button color="primary" className="float-right" onClick={this.toggleAddModal}>
+                  <Button color="primary" size="sm" className="float-right rounded" onClick={this.toggleAddModal}>
                     <i className="fa fa-plus mr-1" />
                     Ajouter une addresse
                   </Button>
