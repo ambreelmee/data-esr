@@ -1,39 +1,35 @@
 import React, { Component } from 'react';
 import { Button, Col, Card, CardHeader, CardFooter, CardBody, Row } from 'reactstrap';
-import PropTypes from 'prop-types';
 
-import Category from './Category';
-import CategoryModal from './CategoryModal';
+import CategoryTag from './CategoryTag';
+import CategoryTagModal from './CategoryTagModal';
 
-class CategoryContainer extends Component {
+class TagCategoryContainer extends Component {
   constructor(props) {
     super(props);
 
     this.toggleModal = this.toggleModal.bind(this);
     this.getCategories = this.getCategories.bind(this);
     this.state = {
-      isLoading: false,
-      categories: [],
+      institution_tags: [],
+      institution_tag_categories: [],
       modal: false,
+      isLoading: false,
     };
   }
 
   componentWillMount() {
-    this.getCategories(this.props.categoryType);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.getCategories(nextProps.categoryType);
+    this.getCategories('institution_tag_categories');
+    this.getCategories('institution_tags');
   }
 
 
-  getCategories(categoryType) {
-    const categories = `${categoryType}_categories`;
+  getCategories(category) {
     this.setState({
       isLoading: true,
       modal: false,
     });
-    fetch(`${process.env.API_URL_STAGING}${categories}`, {
+    fetch(`${process.env.API_URL_STAGING}${category}`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -42,7 +38,7 @@ class CategoryContainer extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({
-          categories: data,
+          [category]: data,
           isLoading: false,
         });
       });
@@ -54,14 +50,15 @@ class CategoryContainer extends Component {
     });
   }
 
-  renderCategories() {
-    return this.state.categories.map(category =>
-      (<Category
-        key={`${this.props.categoryType}-${category.id}`}
-        categoryType={this.props.categoryType}
+  renderInstitutionCategoryTags() {
+    return this.state.institution_tag_categories.map(category =>
+      (<CategoryTag
+        key={`tag-${category.id}`}
         getCategories={this.getCategories}
         id={category.id}
+        origin={category.origin ? category.origin : ''}
         title={category.title}
+        tags={this.state.institution_tags.filter(tag => tag.category === category.title)}
       />));
   }
 
@@ -71,25 +68,22 @@ class CategoryContainer extends Component {
     }
     return (
       <Row>
-        <Col xs="12" md="6">
+        <Col xs="12" md="8">
           <Card className="mt-4">
             <CardHeader>
               <h5>
-                Gestion des <span className="text-primary">
-                  <strong>{this.props.path.split('/')[1]}</strong>
-                </span> associés à un établissement
+                Gestion des <span className="text-primary"><strong>types</strong></span> associés à un établissement
               </h5>
             </CardHeader>
             <CardBody>
-              {this.renderCategories()}
+              {this.renderInstitutionCategoryTags()}
             </CardBody>
             <CardFooter>
-              <Button color="primary" className="float-right" onClick={this.toggleModal}>
+              <Button color="primary" className="float-right" onClick={() => this.toggleModal('institution_tagModal')}>
                 <i className="fa fa-plus mr-1" /> Ajouter une catégorie
               </Button>
               {this.state.modal ?
-                <CategoryModal
-                  categoryType={this.props.categoryType}
+                <CategoryTagModal
                   getCategories={this.getCategories}
                   toggleModal={this.toggleModal}
                 /> : <div /> }
@@ -101,8 +95,4 @@ class CategoryContainer extends Component {
   }
 }
 
-CategoryContainer.propTypes = {
-  categoryType: PropTypes.string.isRequired,
-};
-
-export default CategoryContainer;
+export default TagCategoryContainer;

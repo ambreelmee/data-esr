@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, InputGroup,  Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, InputGroup, Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 
@@ -16,7 +16,6 @@ class CategoryModal extends Component {
     this.addCategory = this.addCategory.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
-    this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
@@ -29,18 +28,9 @@ class CategoryModal extends Component {
     }
   }
 
-  toggle() {
-    const categoryModal = `${this.props.categoryType}Modal`
-    this.props.toggleModal(categoryModal);
-    this.setState({
-      modal: !this.state.modal,
-      errorMessage: '',
-    });
-  }
-
   addCategory() {
     this.setState({ isLoading: true });
-    const newCategory = {}
+    const newCategory = {};
     newCategory[`${this.props.categoryType}_category`] = {
       title: this.state.title,
     };
@@ -52,18 +42,15 @@ class CategoryModal extends Component {
       }),
       body: JSON.stringify(newCategory),
     })
-      .then(res => res.json())
-      .then((data) => {
-        if (data === 'Record not found') {
+      .then((res) => {
+        if (res.ok) {
+          this.setState({ modal: false });
+          this.props.getCategories(this.props.categoryType);
+        } else {
           this.setState({
             errorMessage: 'Formulaire vide ou incomplet',
             isLoading: false,
           });
-        } else {
-          this.toggle();
-          this.setState({ isLoading: false });
-          const category = `${this.props.categoryType}_categories`
-          this.props.getCategories(category);
         }
       });
   }
@@ -71,8 +58,8 @@ class CategoryModal extends Component {
 
   render() {
     return (
-      <Modal isOpen={this.state.modal} toggle={this.toggle}>
-        <ModalHeader toggle={this.toggle}>
+      <Modal isOpen={this.state.modal} toggle={this.props.toggleModal}>
+        <ModalHeader toggle={this.props.toggleModal}>
           Ajouter une catégorie
         </ModalHeader>
         <ModalBody>
@@ -101,7 +88,7 @@ class CategoryModal extends Component {
                 <span className="mx-1"> Ajout </span>
               </div> : <div>Ajouter une catégorie</div>}
           </Button>
-          <Button color="secondary" onClick={this.toggle}>Annuler</Button>
+          <Button color="secondary" onClick={this.props.toggleModal}>Annuler</Button>
         </ModalFooter>
       </Modal>
 
