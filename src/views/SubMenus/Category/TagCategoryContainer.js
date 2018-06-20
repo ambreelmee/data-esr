@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Col, Card, CardHeader, CardFooter, CardBody, Row } from 'reactstrap';
+import { Button, Col, Card, CardHeader, CardFooter, CardBody } from 'reactstrap';
 
 import CategoryTag from './CategoryTag';
 import CategoryTagModal from './CategoryTagModal';
@@ -67,28 +67,30 @@ class TagCategoryContainer extends Component {
       return <p />;
     }
     return (
-      <Row>
-        <Col xs="12" md="8">
-          <Card className="mt-4">
-            <CardHeader>
-              <h5>Nomenclatures</h5>
-            </CardHeader>
-            <CardBody>
-              {this.renderInstitutionCategoryTags()}
-            </CardBody>
-            <CardFooter>
-              <Button color="primary" className="float-right" onClick={() => this.toggleModal('institution_tagModal')}>
-                <i className="fa fa-plus mr-1" /> Ajouter une catégorie
-              </Button>
-              {this.state.modal ?
-                <CategoryTagModal
-                  getCategories={this.getCategories}
-                  toggleModal={this.toggleModal}
-                /> : <div /> }
-            </CardFooter>
-          </Card>
-        </Col>
-      </Row>
+      <Col xs="12" md="7">
+        <Card className="mt-4">
+          <CardHeader>
+            <h5>Nomenclatures</h5>
+          </CardHeader>
+          <CardBody>
+            <div>
+              Les tags qui peuvent être associés à un établissement sont répartis en différent catégories.
+              Cliquer sur le menu déroulant pour faire apparaître l&#39;ensemble des tags associés à une catégorie.
+            </div>
+            {this.renderInstitutionCategoryTags()}
+          </CardBody>
+          <CardFooter>
+            <Button color="primary" className="float-right" onClick={() => this.toggleModal('institution_tagModal')}>
+              <i className="fa fa-plus mr-1" /> Ajouter une catégorie
+            </Button>
+            {this.state.modal ?
+              <CategoryTagModal
+                getCategories={this.getCategories}
+                toggleModal={this.toggleModal}
+              /> : <div /> }
+          </CardFooter>
+        </Card>
+      </Col>
     );
   }
 }

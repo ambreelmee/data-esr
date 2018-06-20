@@ -19,11 +19,22 @@ const Full = props => (
           <Switch>
             <PrivateRoute exact path="/etablissements"component={SearchPage} />
             <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
-            <PrivateRoute path="/liens" component={SubMenuContainer} categoryType="link" />
-            <PrivateRoute path="/codes" component={SubMenuContainer} categoryType="code" />
-            <PrivateRoute path="/evolutions" component={SubMenuContainer} categoryType="institution_evolution" />
-            <PrivateRoute path="/rattachements" component={SubMenuContainer} categoryType="institution_connection" />
-            <PrivateRoute path="/caracterisations" component={SubMenuContainer} />
+            <PrivateRoute path="/liens" component={SubMenuContainer} categoryType="link" routePath="links" />
+            <PrivateRoute path="/codes" component={SubMenuContainer} categoryType="code" routePath="codes" />
+            <PrivateRoute
+              path="/evolutions"
+              component={SubMenuContainer}
+              categoryType="institution_evolution"
+              routePath="evolutions"
+            />
+            <PrivateRoute
+              path="/rattachements"
+              component={SubMenuContainer}
+              categoryType="institution_connection"
+              routePath="connections"
+            />
+            <PrivateRoute path="/caracterisations" component={SubMenuContainer} routePath="taggings" />
+            <PrivateRoute path="/adresses" component={SubMenuContainer} routePath="addresses" />
             <Redirect from="/" to="/etablissements" />
           </Switch>
         </Container>

@@ -11,6 +11,7 @@ import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
 import DownloadButton from '../DownloadButton';
+import UploadModal from '../UploadModal';
 
 class SearchPage extends Component {
   constructor(props) {
@@ -25,15 +26,22 @@ class SearchPage extends Component {
       isLoading: false,
       isSearching: false,
       searchEntry: '',
+      uploadButton: false,
       uploadModal: false,
+      uploadTooltip: false,
     };
     this.getInstitutionByPage = this.getInstitutionByPage.bind(this);
     this.search = debounce(this.search, 1000);
+    this.mouseEnter = this.mouseEnter.bind(this);
+    this.mouseLeave = this.mouseLeave.bind(this);
+    this.mouseLeave = debounce(this.mouseLeave, 800);
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleAddTooltip = this.toggleAddTooltip.bind(this);
+    this.toggleUploadModal = this.toggleUploadModal.bind(this);
+    this.toggleUploadTooltip = this.toggleUploadTooltip.bind(this);
   }
 
   componentWillMount() {
@@ -131,12 +139,6 @@ class SearchPage extends Component {
     }
   }
 
-  toggleAddTooltip() {
-    this.setState({
-      addTooltip: !this.state.addTooltip,
-    });
-  }
-
   search() {
     this.setState({ isSearching: true });
     const params = encodeURI(this.state.searchEntry);
@@ -170,6 +172,26 @@ class SearchPage extends Component {
 
   toggleAddModal() {
     this.setState({ addModal: !this.state.addModal });
+  }
+
+  toggleAddTooltip() {
+    this.setState({ addTooltip: !this.state.addTooltip });
+  }
+
+  toggleUploadModal() {
+    this.setState({ uploadModal: !this.state.uploadModal });
+  }
+
+  toggleUploadTooltip() {
+    this.setState({ uploadTooltip: !this.state.uploadTooltip });
+  }
+
+  mouseEnter() {
+    this.setState({ uploadButton: true });
+  }
+
+  mouseLeave() {
+    this.setState({ uploadButton: false, uploadTooltip: false });
   }
 
   resetSearch() {
@@ -305,24 +327,53 @@ class SearchPage extends Component {
                 </PaginationItem> : <div />}
             </Pagination> : <div />}
         </div>
-        <Button
-          type="button"
-          color="primary"
-          className="float-add"
-          id="search-page-add-button"
-          onClick={this.toggleAddModal}
-        >
-          <i className="fa fa-plus my-float" />
-        </Button>
-        <Tooltip
-          isOpen={this.state.addTooltip}
-          target="search-page-add-button"
-          toggle={this.toggleAddToolTip}
-        >
+        <div className="floating" onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+          <Button
+            className="float-add"
+            color="primary"
+            id="search-page-add-button"
+            onClick={this.toggleAddModal}
+            type="button"
+          >
+            <i id="icon-plus" className="fa fa-plus my-float" />
+          </Button>
+          <Tooltip
+            isOpen={this.state.addTooltip}
+            target="search-page-add-button"
+            toggle={this.toggleAddTooltip}
+            placement="left"
+          >
           Ajouter un établissement
-        </Tooltip>
-        {this.state.addModal ?
-          <NameModal toggleModal={this.toggleAddModal} /> : <div />}
+          </Tooltip>
+          {this.state.addModal ?
+            <NameModal toggleModal={this.toggleAddModal} /> : <div />}
+          {this.state.uploadButton ?
+            <div>
+              <Button
+                className="float-upload"
+                color="success"
+                id="search-page-upload-button"
+                type="button"
+                onClick={this.toggleUploadModal}
+              >
+                <i className="fa fa-upload" />
+              </Button>
+              <Tooltip
+                isOpen={this.state.uploadTooltip}
+                target="search-page-upload-button"
+                toggle={this.toggleUploadTooltip}
+                placement="left"
+              >
+              Importer des établissements
+              </Tooltip>
+            </div> : <div />}
+          {this.state.uploadModal ?
+            <UploadModal
+              name="etablissements"
+              toggleModal={this.toggleUploadModal}
+              url={`${process.env.API_URL_STAGING}institutions/import`}
+            /> : <div />}
+        </div>
       </div>
     );
   }

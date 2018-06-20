@@ -4,6 +4,7 @@ import {
   Modal, ModalBody, ModalFooter, ModalHeader, Tooltip,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import InstitutionsColumnsDescription from './SubMenus/InstitutionsColumnsDescription';
 
 const triggerFileInputClick = () => {
   document.getElementById('import').click();
@@ -100,6 +101,8 @@ class UploadModal extends Component {
           <p>
             Les en-têtes des colonnes doivent être identiques en ordre et en dénomination au format décrit.
           </p>
+          {this.props.name === 'etablissements' ?
+            <InstitutionsColumnsDescription /> : <div />}
           <div className="position-relative">
             <Input
               id="import"

@@ -5,25 +5,35 @@ import CategoryContainer from './Category/CategoryContainer';
 import TagCategoryContainer from './Category/TagCategoryContainer';
 import ImportExport from './ImportExport';
 
+const renderCategories = (categoryType, routePath, name) => {
+  if (categoryType) {
+    return (
+      <CategoryContainer categoryType={categoryType} name={name} />
+    );
+  } if (routePath === 'taggings') {
+    return (<TagCategoryContainer />);
+  }
+  return '';
+};
 
 const SubMenuContainer = (props) => {
   const name = props.path.split('/')[1];
   return (
     <div className="animated fadeIn p-5">
       <h2 className="text-center">
-        Gestion des <span className="text-primary"><strong>{name}</strong></span> associés aux établissements
+        Gestion des <span className="text-primary"><strong>{name}</strong></span>
+        {name === 'adresses' ? ' associées' : ' associés'} aux établissements
       </h2>
       <Row>
-        {props.categoryType ?
-          <CategoryContainer categoryType={props.categoryType} name={name} /> :
-          <TagCategoryContainer />}
-        <ImportExport name={name} />
+        {renderCategories(props.categoryType, props.routePath, name)}
+        <ImportExport name={name} routePath={props.routePath} />
       </Row>
     </div>);
 };
 
 SubMenuContainer.propTypes = {
   categoryType: PropTypes.string,
+  routePath: PropTypes.string.isRequired,
 };
 
 SubMenuContainer.defaultProps = {

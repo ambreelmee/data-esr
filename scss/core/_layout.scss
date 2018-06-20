@@ -392,9 +392,18 @@ app-root {
 
 // Search page
 
+.floating{
+  bottom: 95px;
+  height: 120px;
+  position: fixed;
+  right: 35px;
+  width: 70px;
+  z-index: 3;
+}
+
 .float-add{
   border-radius:50px;
-  bottom:40px;
+  bottom:100px;
   box-shadow: 2px 2px 3px #999;
   color:#FFF;
   font-size: 25px;
@@ -403,6 +412,20 @@ app-root {
   right:40px;
   text-align:center;
 	width:60px;
+  z-index: 2;
+}
+
+.float-upload{
+  border-radius:50px;
+  bottom:170px;
+  box-shadow: 2px 2px 3px #999;
+  color:#FFF;
+  font-size: 15px;
+  height:40px;
+  position:fixed;
+  right:49px;
+  text-align:center;
+  width:40px;
   z-index: 2;
 }
 
