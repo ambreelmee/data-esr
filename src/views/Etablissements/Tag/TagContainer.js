@@ -48,10 +48,12 @@ class TagContainer extends Component {
       .then((data) => {
         const tagsByCategory = {};
         data.map((tag) => {
-          if (!tagsByCategory[tag.tag.category]) {
-            tagsByCategory[tag.tag.category] = [];
+          if (tag.status === 'active') {
+            if (!tagsByCategory[tag.tag.category]) {
+              tagsByCategory[tag.tag.category] = [];
+            }
+            tagsByCategory[tag.tag.category].push(tag);
           }
-          tagsByCategory[tag.tag.category].push(tag);
           return tagsByCategory;
         });
         this.setState({

@@ -1,6 +1,9 @@
+import 'moment/locale/fr';
 import React, { Component } from 'react';
 import { Col, Row } from 'reactstrap';
 import moment from 'moment';
+
+
 import { Redirect } from 'react-router-dom';
 import AddressContainer from './Address/AddressContainer';
 import EvolutionContainer from './Relation/EvolutionContainer';

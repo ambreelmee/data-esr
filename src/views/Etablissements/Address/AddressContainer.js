@@ -138,7 +138,7 @@ class AddressContainer extends Component {
         </Col>
         <Col md="4">
           <Row>
-            <Card className="mb-0 mt-2">
+            <Card className="mb-0 mt-2 w-100">
               <CardHeader>
                 Adresse de l&#39;établissement
                 <ButtonGroup className="float-right">

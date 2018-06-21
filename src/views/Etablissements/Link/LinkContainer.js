@@ -30,12 +30,12 @@ class LinkContainer extends Component {
       emptyCategories:[],
       isLoading: false,
       links: [],
-      redirectToCategories: false,
+      redirectToLinks: false,
     };
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getLinks = this.getLinks.bind(this);
     this.getCategoryLinks = this.getCategoryLinks.bind(this);
-    this.redirectToCategories = this.redirectToCategories.bind(this);
+    this.redirectToLinks = this.redirectToLinks.bind(this);
   }
 
   componentWillMount() {
@@ -87,9 +87,9 @@ class LinkContainer extends Component {
     }
   }
 
-  redirectToCategories() {
+  redirectToLinks() {
     this.setState({
-      redirectToCategories: !this.state.redirectToCategories,
+      redirectToLinks: !this.state.redirectToLinks,
     });
   }
 
@@ -125,8 +125,8 @@ class LinkContainer extends Component {
     if (this.state.isLoading) {
       return <p />;
     }
-    if (this.state.redirectToCategories) {
-      return <Redirect to="/categories" />;
+    if (this.state.redirectToLinks) {
+      return <Redirect to="/liens" />;
     }
     return (
       <Card className="mt-2 w-100">
@@ -149,7 +149,7 @@ class LinkContainer extends Component {
                 </DropdownToggle>
                 <DropdownMenu>
                   {this.renderDropDownItems()}
-                  <DropdownItem onClick={this.redirectToCategories}>
+                  <DropdownItem onClick={this.redirectToLinks}>
                     Gérer les liens...
                   </DropdownItem>
                 </DropdownMenu>

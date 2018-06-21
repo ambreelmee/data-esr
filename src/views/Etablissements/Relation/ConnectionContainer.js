@@ -152,7 +152,7 @@ class ConnectionContainer extends Component {
                     categories={this.state.connectionCategories}
                     getRelations={this.getConnections}
                     toggleModal={this.toggleAddModal}
-                    type="rattachement"
+                    type="connection"
                   /> : <div />}
                 <DropdownItem onClick={this.toggleConnectionsModal}>
                   <i className="fa fa-eye text-info" />

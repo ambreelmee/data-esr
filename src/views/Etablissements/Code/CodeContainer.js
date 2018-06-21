@@ -32,7 +32,7 @@ class CodeContainer extends Component {
     };
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getCodes = this.getCodes.bind(this);
-    this.redirectToCategories = this.redirectToCategories.bind(this);
+    this.redirectToCodes = this.redirectToCodes.bind(this);
   }
 
   componentWillMount() {
@@ -92,9 +92,9 @@ class CodeContainer extends Component {
     }
   }
 
-  redirectToCategories() {
+  redirectToCodes() {
     this.setState({
-      redirectToCategories: !this.state.redirectToCategories,
+      redirectToCodes: !this.state.redirectToCodes,
     });
   }
 
@@ -153,8 +153,8 @@ class CodeContainer extends Component {
     if (this.state.isLoading) {
       return <p />;
     }
-    if (this.state.redirectToCategories) {
-      return <Redirect to="/categories" />;
+    if (this.state.redirectToCodes) {
+      return <Redirect to="/codes" />;
     }
     return (
       <Card className="mt-2 w-100">
@@ -177,7 +177,7 @@ class CodeContainer extends Component {
                 </DropdownToggle>
                 <DropdownMenu>
                   {this.renderDropDownItems()}
-                  <DropdownItem onClick={this.redirectToCategories}>
+                  <DropdownItem onClick={this.redirectToCodes}>
                     Gérer les codes...
                   </DropdownItem>
                 </DropdownMenu>

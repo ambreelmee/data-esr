@@ -22,6 +22,7 @@ class SearchPage extends Component {
       addTooltip: false,
       error: false,
       initialData: [],
+      initialresults: null,
       institutions: [],
       isLoading: false,
       isSearching: false,
@@ -29,6 +30,7 @@ class SearchPage extends Component {
       uploadButton: false,
       uploadModal: false,
       uploadTooltip: false,
+      results: null,
     };
     this.getInstitutionByPage = this.getInstitutionByPage.bind(this);
     this.search = debounce(this.search, 1000);
@@ -74,11 +76,13 @@ class SearchPage extends Component {
       .then((response) => {
         if (response.ok) {
           const links = parse(response.headers.get('Link'));
+          console.log(response.headers.get('Link'))
           response.json().then((data) => {
             this.setState({
               initialData: data,
               institutions: data,
               initialLinks: links,
+              initialResults: response.headers.get('Count'),
               isLoading: false,
               last: links.last,
               next: links.next,
@@ -158,6 +162,7 @@ class SearchPage extends Component {
               last: links.last,
               next: links.next,
               prev: links.prev,
+              results: response.headers.get('Count'),
               self: links.self,
             });
           });
@@ -201,6 +206,7 @@ class SearchPage extends Component {
       last: this.state.initialLinks.last,
       next: this.state.initialLinks.next,
       prev: this.state.initialLinks.prev,
+      results: this.state.initialResults,
       self: this.state.initialLinks.self,
     });
   }

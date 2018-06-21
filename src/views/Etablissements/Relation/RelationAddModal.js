@@ -193,15 +193,14 @@ class RelationAddModal extends Component {
     }
     return this.state.institutions.map(institution => (
       <option key={`institution-${institution.id}`} value={institution.id}>
-        {institution.names.find(name => name.status === 'active') ?
-        institution.names.find(name => name.status === 'active').text : ''}
+        {institution.names[0].text}
       </option>));
   }
 
 
   render() {
     if (this.state.categoryId === 'redirect') {
-      return <Redirect to="/categories" />;
+      return <Redirect to={this.props.type === 'evolution' ? '/evolutions' : '/rattachements'} />;
     }
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>
@@ -242,7 +241,9 @@ class RelationAddModal extends Component {
               >
                 <option value="0">Catégorie</option>
                 {this.renderCategories()}
-                <option value="redirect">Gérer les {this.props.type}...</option>
+                <option value="redirect">
+                  Gérer les {this.props.type === 'evolution' ? 'évolution...' : 'rattachements...'}
+                </option>
               </select>
             </Col>
             <Col xs="12" className="mx-auto mt-3">

@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import {
-  Button, ButtonDropdown, ButtonGroup, Col, DropdownItem, DropdownMenu, DropdownToggle,
-  FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
-} from 'reactstrap';
+import { Button, Col, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
-import Redirect from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 class TagAddModal extends Component {
   constructor(props) {
@@ -13,13 +10,12 @@ class TagAddModal extends Component {
     this.state = {
       date_start: null,
       date_end: null,
-      displayDropdown: false,
       errorMessage: '',
       isLoading: false,
       modal: true,
       categoryId: null,
       tagCategories: [],
-      tagId : null,
+      tagId: null,
       tags: [],
       status: 'active',
     };
@@ -32,7 +28,7 @@ class TagAddModal extends Component {
 
   componentWillMount() {
     this.getCategoryTags();
-    this.getTags()
+    this.getTags();
   }
 
   onChange(event) {
@@ -153,7 +149,7 @@ class TagAddModal extends Component {
 
   render() {
     if (this.state.categoryId === 'redirect') {
-      return <Redirect to="/categories" />;
+      return <Redirect to="/caracterisations" />;
     }
     return (
       <Modal isOpen={this.state.modal} toggle={this.toggle}>

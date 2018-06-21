@@ -35,6 +35,12 @@ const ColumnsDescription = props => (
         </div>
       </ListGroupItem>}
     <ListGroupItem className="d-flex align-items-center">
+      <h6 className="text-primary m-0"><strong>Content</strong></h6>
+      <div className="ml-2">
+        contenu du {props.singularName}
+      </div>
+    </ListGroupItem>
+    <ListGroupItem className="d-flex align-items-center">
       <h6 className="text-secondary m-0"><strong>DateCreation</strong></h6>
       {props.singularName === 'lien' ?
         <div className="ml-2">

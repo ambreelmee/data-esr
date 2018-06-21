@@ -76,7 +76,6 @@ SearchPageEtablissement.propTypes = {
   }).isRequired,
   address: PropTypes.string.isRequired,
   codeUAI: PropTypes.string.isRequired,
-  date_start: PropTypes.string.isRequired,
   date_end: PropTypes.string,
   id: PropTypes.number.isRequired,
   tags: PropTypes.array.isRequired,
