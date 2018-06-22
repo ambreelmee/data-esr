@@ -163,6 +163,7 @@ class AddressContainer extends Component {
                           address_2={displayedAddress.address_2}
                           business_name={displayedAddress.business_name}
                           city={displayedAddress.city}
+                          city_code={displayedAddress.city_code}
                           country={displayedAddress.country}
                           date_start={displayedAddress.date_start}
                           date_end={displayedAddress.date_end}
@@ -234,6 +235,7 @@ class AddressContainer extends Component {
                     address_2={displayedAddress.address_2}
                     business_name={displayedAddress.business_name}
                     city={displayedAddress.city}
+                    city_code={displayedAddress.city_code}
                     id={displayedAddress.id}
                     phone={displayedAddress.phone}
                     status={displayedAddress.status}

@@ -12,7 +12,8 @@ const Address = props => (
     <i className="fa fa-map-marker fa-lg mr-1" />
     <strong>{props.address_1}</strong>{props.address_2 ? ` (${props.address_2})` : ''}
     <strong>{`, ${props.zip_code} ${props.city}`}</strong>
-    {props.phone ? <span><br /><i className="icon-phone pr-1" /></span> : <span />}{props.phone}
+    {props.city_code ? <span><br />Code commune: </span> : <span />}{props.city_code}
+    {props.phone ? <span><br /><i className="fa fa-phone pr-1" /></span> : <span />}{props.phone}
   </div>);
 
 Address.propTypes = {
@@ -20,6 +21,7 @@ Address.propTypes = {
   address_2: PropTypes.string,
   business_name: PropTypes.string,
   city: PropTypes.string.isRequired,
+  city_code: PropTypes.string,
   phone: PropTypes.string,
   status: PropTypes.string.isRequired,
   zip_code: PropTypes.string.isRequired,
@@ -28,6 +30,7 @@ Address.propTypes = {
 Address.defaultProps = {
   address_2: null,
   business_name: null,
+  city_code: null,
   phone: null,
 };
 

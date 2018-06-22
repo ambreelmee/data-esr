@@ -45,6 +45,7 @@ class AddressHistoryModalRow extends Component {
         <td>{this.props.address_2}</td>
         <td>{this.props.zip_code}</td>
         <td>{this.props.city}</td>
+        <td>{this.props.city_code}</td>
         <td>{this.props.country}</td>
         <td>{this.props.phone}</td>
         <td>{this.props.date_start ? moment(this.props.date_start).format('LL') : ''}</td>
@@ -72,6 +73,7 @@ class AddressHistoryModalRow extends Component {
                 address_2={this.props.address_2}
                 business_name={this.props.business_name}
                 city={this.props.city}
+                city_code={this.props.city_code}
                 country={this.props.country}
                 date_start={this.props.date_start}
                 date_end={this.props.date_end}
@@ -116,6 +118,7 @@ AddressHistoryModalRow.propTypes = {
   address_2: PropTypes.string,
   business_name: PropTypes.string,
   city: PropTypes.string.isRequired,
+  city_code: PropTypes.string,
   country: PropTypes.string.isRequired,
   date_end: PropTypes.string,
   date_start: PropTypes.string,
@@ -129,8 +132,9 @@ AddressHistoryModalRow.propTypes = {
 };
 
 AddressHistoryModalRow.defaultProps = {
-  business_name: '',
   address_2: '',
+  business_name: '',
+  city_code: '',
   date_end: '',
   date_start: '',
   phone: '',

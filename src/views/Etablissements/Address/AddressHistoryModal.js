@@ -31,6 +31,7 @@ class AddressHistoryModal extends Component {
           address_2={address.address_2}
           business_name={address.business_name}
           city={address.city}
+          city_code={address.city_code}
           country={address.country}
           deleteAddress={this.props.deleteAddress}
           date_end={address.date_end}
@@ -59,6 +60,7 @@ class AddressHistoryModal extends Component {
                 <th>Champ adresse 2</th>
                 <th>Code postale</th>
                 <th>Ville</th>
+                <th>Code commune</th>
                 <th>Pays</th>
                 <th>Téléphone</th>
                 <th>Début</th>

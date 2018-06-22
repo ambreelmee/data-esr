@@ -17,6 +17,7 @@ class AddressModal extends Component {
       address_2: this.props.address_2,
       business_name: this.props.business_name,
       city: this.props.city,
+      city_code: this.props.city_code,
       country: this.props.country,
       date_start: this.props.date_start,
       date_end: this.props.date_end,
@@ -62,6 +63,7 @@ class AddressModal extends Component {
       address_2: this.state.address_2,
       business_name: this.state.business_name,
       city: this.state.city,
+      city_code: this.state.city_code,
       country: this.state.country,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
@@ -96,6 +98,7 @@ class AddressModal extends Component {
       address_2: this.state.address_2,
       business_name: this.state.business_name,
       city: this.state.city,
+      city_code: this.state.city_code,
       country: this.state.country,
       date_start: this.state.date_start,
       date_end: this.state.date_end,
@@ -198,6 +201,19 @@ class AddressModal extends Component {
                 </Row>
                 <Row>
                   <Col md="5">
+                    <FormGroup>
+                      <Label>Code commune</Label>
+                      <Input
+                        id="city_code"
+                        type="text"
+                        required
+                        value={this.state.city_code ? this.state.city_code : ''}
+                        placeholder={this.state.city_code ? this.state.city_code : 'Commune'}
+                        onChange={this.onChange}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md="5">
                     <FormGroup className="was-validated">
                       <Label>Pays</Label>
                       <Input
@@ -211,16 +227,22 @@ class AddressModal extends Component {
                       />
                     </FormGroup>
                   </Col>
-                  <Col md="7">
-                    <FormGroup>
-                      <Label>Téléphone</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={this.state.phone ? this.state.phone : ''}
-                        placeholder={this.state.phone ? this.state.phone : '06...'}
-                        onChange={this.onChange}
-                      />
+                </Row>
+                <Row>
+                  <Col>
+                    <FormGroup row>
+                      <Col md="4">
+                        <Label>Téléphone</Label>
+                      </Col>
+                      <Col md="8">
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={this.state.phone ? this.state.phone : ''}
+                          placeholder={this.state.phone ? this.state.phone : '06...'}
+                          onChange={this.onChange}
+                        />
+                      </Col>
                     </FormGroup>
                   </Col>
                 </Row>
