@@ -44,6 +44,16 @@ export default {
         url: '/rattachements',
         icon: 'fa fa-arrows-alt',
         class: 'pl-3',
+      },
+      {
+        name: 'Mises à jour',
+        url: '/mises-a-jour',
+        icon: 'fa fa-bell',
+        class: 'pl-3',
+        badge: {
+          variant: 'danger',
+          text: 'new',
+        },
       }],
   }],
 };

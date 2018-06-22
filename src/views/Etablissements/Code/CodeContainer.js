@@ -28,7 +28,7 @@ class CodeContainer extends Component {
       displayDropdown: false,
       categoriesWithoutCode: [],
       isLoading: false,
-      codes: {},
+      codes: [],
     };
     this.displayDropdown = this.displayDropdown.bind(this);
     this.getCodes = this.getCodes.bind(this);
