@@ -36,7 +36,6 @@ class SearchPage extends Component {
     this.search = debounce(this.search, 1000);
     this.mouseEnter = this.mouseEnter.bind(this);
     this.mouseLeave = this.mouseLeave.bind(this);
-    this.mouseLeave = debounce(this.mouseLeave, 800);
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
@@ -196,7 +195,7 @@ class SearchPage extends Component {
   }
 
   mouseLeave() {
-    this.setState({ uploadButton: false, uploadTooltip: false });
+    this.setState({ uploadButton: false });
   }
 
   resetSearch() {
@@ -333,7 +332,11 @@ class SearchPage extends Component {
                 </PaginationItem> : <div />}
             </Pagination> : <div />}
         </div>
-        <div className="floating" onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+        <div
+          className="floating"
+          onMouseEnter={this.mouseEnter}
+          onMouseLeave={this.mouseLeave}
+        >
           <Button
             className="float-add"
             color="primary"
@@ -368,6 +371,7 @@ class SearchPage extends Component {
                 isOpen={this.state.uploadTooltip}
                 target="search-page-upload-button"
                 toggle={this.toggleUploadTooltip}
+                delay={{ show: 100, hide: 0 }}
                 placement="left"
               >
               Importer des établissements
