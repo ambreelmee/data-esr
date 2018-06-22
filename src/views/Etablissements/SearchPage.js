@@ -75,13 +75,14 @@ class SearchPage extends Component {
       .then((response) => {
         if (response.ok) {
           const links = parse(response.headers.get('Link'));
-          console.log(response.headers.get('Link'))
+          const count = response.headers.get('Count');
           response.json().then((data) => {
             this.setState({
               initialData: data,
               institutions: data,
               initialLinks: links,
-              initialResults: response.headers.get('Count'),
+              initialResults: count,
+              results: count,
               isLoading: false,
               last: links.last,
               next: links.next,
@@ -275,11 +276,14 @@ class SearchPage extends Component {
             </Form>
           </Col>
         </Row>
-        {!this.state.isSearching && !this.state.isLoading ?
-          <DownloadButton
-            name="etablissements"
-            url={`${process.env.API_URL_STAGING}institutions/search?q=${params}&download=true`}
-          /> : <div />}
+        <div className="d-flex justify-content-between">
+          {!this.state.isSearching && !this.state.isLoading ?
+            <DownloadButton
+              name="etablissements"
+              url={`${process.env.API_URL_STAGING}institutions/search?q=${params}&download=true`}
+            /> : <div />}
+          <div className="text-primary mt-3">{this.state.results > 0 ? `${this.state.results} établissements` : ''}</div>
+        </div>
         {this.state.institutions.length === 0 && !this.state.isLoading ?
           <p className="text-center"><em>aucun résultat</em></p> :
           <Row> {this.renderInstitutionsCards()} </Row>}
