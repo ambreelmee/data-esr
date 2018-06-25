@@ -4,9 +4,13 @@ const getActiveEntity = entities =>
   entities.find(entity => entity.status === 'active');
 
 const getActiveEntities = entities =>
-  entities.filter(entity => entity.status === 1);
+  entities.filter(entity => entity.status === 'active');
 
 const getArchivedEntities = entities =>
   entities.filter(entity => entity.status === 'archived');
+
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
 
 export { getFormattedAddress, getActiveEntity, getActiveEntities, getArchivedEntities };

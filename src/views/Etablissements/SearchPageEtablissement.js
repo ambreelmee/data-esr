@@ -4,9 +4,6 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-String.prototype.toProperCase = function () {
-    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-};
 
 class SearchPageEtablissement extends Component {
   constructor(props) {

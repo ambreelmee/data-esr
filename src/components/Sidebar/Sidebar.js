@@ -75,8 +75,6 @@ class Sidebar extends Component {
 
     // nav link
     const navLink = (item, key, classes) => {
-      console.log(item.name)
-      console.log(conflictToSolve)
       const url = item.url ? item.url : '';
       return (
         <NavItem key={key} className={classes.item}>

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Row } from 'reactstrap';
+import { Button } from 'reactstrap';
 import PropTypes from 'prop-types';
-
 
 class DownloadButton extends Component {
   constructor(props) {

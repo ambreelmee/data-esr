@@ -8,7 +8,7 @@ import PrivateRoute from '../../PrivateRoute';
 import SearchPage from '../../views/Etablissements/SearchPage';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
 import SubMenuContainer from '../../views/SubMenus/SubMenuContainer';
-import Update from '../../views/SubMenus/Update';
+import Update from '../../views/SubMenus/Update/Update';
 
 const Full = props => (
   <div className="app">
