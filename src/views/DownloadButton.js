@@ -20,7 +20,10 @@ class DownloadButton extends Component {
   }
 
   downloadSearchResults() {
-    this.setState({ isDownloading: true });
+    this.setState({
+      isDownloading: true,
+      errorMessage: '',
+    });
     fetch(this.props.url, {
       method: 'POST',
       headers: new Headers({

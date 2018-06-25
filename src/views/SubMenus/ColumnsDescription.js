@@ -18,28 +18,48 @@ const ColumnsDescription = props => (
       </div>
     </ListGroupItem>
     {props.singularName === 'caracterisation' ?
-      <ListGroupItem className="d-flex align-items-center">
-        <h6 className="text-primary m-0">
-          <strong>TagCategoryID</strong>
-        </h6>
-        <div className="ml-2">
-          identifiant du tag appliqué à l&#39;établissement
-        </div>
-      </ListGroupItem> :
-      <ListGroupItem className="d-flex align-items-center">
-        <h6 className="text-primary m-0">
-          <strong>{props.routePath}CategoryID</strong>
-        </h6>
-        <div className="ml-2">
-          identifiant du type de {props.singularName}
-        </div>
-      </ListGroupItem>}
-    <ListGroupItem className="d-flex align-items-center">
-      <h6 className="text-primary m-0"><strong>Content</strong></h6>
-      <div className="ml-2">
-        contenu du {props.singularName}
-      </div>
-    </ListGroupItem>
+      <div>
+        <ListGroupItem className="d-flex align-items-center">
+          <h6 className="text-primary m-0">
+            <strong>TagID</strong>
+          </h6>
+          <div className="ml-2">
+            identifiant du tag appliqué à l&#39;établissement
+          </div>
+        </ListGroupItem>
+        <ListGroupItem className="d-flex align-items-center">
+          <h6 className="text-primary m-0">
+            <strong>Tag</strong>
+          </h6>
+          <div className="ml-2">
+            nom du tag appliqué à l&#39;établissement
+          </div>
+        </ListGroupItem>
+      </div> :
+      <div>
+        <ListGroupItem className="d-flex align-items-center">
+          <h6 className="text-primary m-0"><strong>Content</strong></h6>
+          <div className="ml-2">
+            contenu du {props.singularName}
+          </div>
+        </ListGroupItem>
+        <ListGroupItem className="d-flex align-items-center">
+          <h6 className="text-primary m-0">
+            <strong>{props.routePath}CategoryID</strong>
+          </h6>
+          <div className="ml-2">
+            identifiant du type de {props.singularName}
+          </div>
+        </ListGroupItem>
+        <ListGroupItem className="d-flex align-items-center">
+          <h6 className="text-primary m-0">
+            <strong>{props.routePath}Category</strong>
+          </h6>
+          <div className="ml-2">
+            nom du type de {props.singularName}
+          </div>
+        </ListGroupItem>
+      </div>}
     <ListGroupItem className="d-flex align-items-center">
       <h6 className="text-secondary m-0"><strong>DateCreation</strong></h6>
       {props.singularName === 'lien' ?

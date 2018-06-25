@@ -32,6 +32,14 @@ const RelationsColumnsDescription = props => (
       </div>
     </ListGroupItem>
     <ListGroupItem className="d-flex align-items-center">
+      <h6 className="text-primary m-0">
+        <strong>{props.routePath}Category</strong>
+      </h6>
+      <div className="ml-2">
+        nom du type de {props.singularName}
+      </div>
+    </ListGroupItem>
+    <ListGroupItem className="d-flex align-items-center">
       <h6 className="text-secondary m-0"><strong>Date</strong></h6>
       <div className="ml-2">
         Date de {props.singularName}
