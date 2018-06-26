@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Alert } from 'reactstrap';
-import PropTypes from 'prop-types';
+import { Alert, Button } from 'reactstrap';
 
 import InstitutionConflictContainer from './InstitutionConflictContainer';
 
@@ -34,6 +33,16 @@ const fakeData = [
         category: 'uai',
       },
     ],
+    date_end: '',
+    date_start: '',
+    daughters: [],
+    followers: [],
+    links: [],
+    mothers: [],
+    names: [],
+    predecessors: [],
+    synonym: '',
+    tags: [],
   },
   {
     id: 220,
@@ -55,21 +64,36 @@ const fakeData = [
         category: null,
       }],
     codes: [],
+    date_end: '',
+    date_start: '',
+    daughters: [],
+    followers: [],
+    links: [],
+    mothers: [],
+    names: [],
+    predecessors: [],
+    synonym: '',
+    tags: [],
   },
 ];
 
-class Update extends Component {
+class UpdateContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       institutions: [],
       isLoading: false,
+      visible: true,
     };
+    this.onDismiss = this.onDismiss.bind(this);
   }
-
   componentWillMount() {
     this.getAllConflicts();
+  }
+
+  onDismiss() {
+    this.setState({ visible: false });
   }
 
   getAllConflicts() {
@@ -108,8 +132,20 @@ class Update extends Component {
     return this.state.institutions.map(institution => (
       <InstitutionConflictContainer
         key={institution.id}
-        conflict={institution}
-      />))
+        addresses={institution.addresses}
+        codes={institution.codes}
+        date_end={institution.date_end}
+        date_start={institution.date_start}
+        daughters={institution.daughters}
+        followers={institution.followers}
+        id={institution.id}
+        links={institution.links}
+        mothers={institution.mothers}
+        names={institution.names}
+        predecessors={institution.predecessors}
+        synonym={institution.synonym}
+        tags={institution.tags}
+      />));
   }
 
   render() {
@@ -121,23 +157,29 @@ class Update extends Component {
     }
     return (
       <div className="animated fadeIn p-5">
-        <h2 className="text-center">
+        <h2 className="text-center mb-5">
           Gestion des <span className="text-primary"><strong>mises à jour </strong></span>
           des établissements
         </h2>
+        <Alert color="info" className="mb-3" isOpen={this.state.visible} toggle={this.onDismiss}>
+          <div className="alert-heading"><strong>Il y a 32 mises à jour en attente !</strong></div>
+          En <strong><span className="text-danger">rouge</span></strong> apparaissent les valeurs
+          actuellement enregistrées dans la base et en <strong><span className="text-success">vert</span></strong> les
+          nouvelles valeurs détectées. Le reste des champs est masqué par défaut.
+          Pour les faire apparaître cliquer sur le
+          bouton <Button className="rounded" size="sm" outline color="secondary">
+            <i className="fa fa-chevron-down" /></Button> à gauche de chaque bloc.<br />
+
+          Vous pouvez modifier ces valeurs avant de valider la mise à jour, soit sous
+          forme d&#39;une nouvelle entrée qui archivera l&#39;entrée actuelle mais conservera les informations telles
+          quelles, soit en modifiant directement l&#39;entrée actuelle. <br />
+          Vous pouvez également rejeter une mise à jour, celle-ci n&#39;apparaîtra alors plus dans votre fil.
+        </Alert>
         {this.state.institutions.length === 0 ?
           <Alert className="m-5" color="success">Aucune mise à jour pour le moment !</Alert> :
-          <div className="mt-5">{this.renderInstitutionConflicts()}</div>}
+          <div>{this.renderInstitutionConflicts()}</div>}
       </div>);
   }
 }
 
-Update.propTypes = {
-  categoryType: PropTypes.string,
-};
-
-Update.defaultProps = {
-  categoryType: null,
-};
-
-export default Update;
+export default UpdateContainer;

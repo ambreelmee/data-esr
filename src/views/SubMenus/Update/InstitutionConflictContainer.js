@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Alert, Card, CardHeader } from 'reactstrap';
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
-
-import { getActiveEntity, getActiveEntities } from '../../Etablissements/methods';
-import ResourceConflictContainer from './ResourceConflictContainer';
+import { Redirect } from 'react-router-dom';
+import { getActiveEntity } from '../../Etablissements/methods';
+import ResourceConflictTable from './ResourceConflictTable';
 
 class InstitutionConflictContainer extends Component {
   constructor(props) {
@@ -13,7 +13,9 @@ class InstitutionConflictContainer extends Component {
     this.state = {
       institution: {},
       isLoading: false,
+      redirectToInstitution: false,
     };
+    this.redirectToInstitution = this.redirectToInstitution.bind(this);
   }
 
   componentWillMount() {
@@ -22,7 +24,7 @@ class InstitutionConflictContainer extends Component {
 
   getInstitution() {
     this.setState({ isLoading: true });
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.conflict.id}`, {
+    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.id}`, {
       method: 'GET',
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -51,20 +53,41 @@ class InstitutionConflictContainer extends Component {
       });
   }
 
+  redirectToInstitution() {
+    this.setState({ redirectToInstitution: true });
+  }
+
   renderResources() {
-    return map(this.state.institution, (resource, key) => {
-      const conflict = this.props.conflict[key]
-      if (conflict && conflict.length > 0) {
-        const current = conflict[0].category ?
-          resource.find(item => item.status === 'active' && item.category === conflict[0].category) :
-          getActiveEntity(resource)
+    return map(this.state.institution, (currentValues, resourceName) => {
+      const resourceMatchingConflict = this.props[resourceName];
+      if (resourceMatchingConflict && resourceMatchingConflict.length > 0) {
+        const hasCategory = Boolean(resourceMatchingConflict[0].category);
+        if (hasCategory) {
+          return currentValues.filter(currentValue => currentValue.status === 'active')
+            .map((currentValue) => {
+              const categoryMatchingConflict = resourceMatchingConflict.filter(conflict => (
+                conflict.category === currentValue.category));
+              if (categoryMatchingConflict.length > 0) {
+                return (
+                  <ResourceConflictTable
+                    id={currentValue.id}
+                    key={currentValue.id}
+                    category={currentValue.category}
+                    conflict={categoryMatchingConflict}
+                    current={currentValue}
+                    resource={resourceName}
+                  />);
+              }
+            });
+        }
+        const CurrentValue = getActiveEntity(currentValues);
         return (
-          <ResourceConflictContainer
-            key={current.id}
-            id={current.id}
-            current={current}
-            conflict={conflict}
-            resource={key}
+          <ResourceConflictTable
+            id={CurrentValue.id}
+            key={CurrentValue.id}
+            conflict={resourceMatchingConflict}
+            current={CurrentValue}
+            resource={resourceName}
           />);
       }
     });
@@ -75,13 +98,16 @@ class InstitutionConflictContainer extends Component {
     if (this.state.isLoading) {
       return <p />;
     }
+    if (this.state.redirectToInstitution) {
+      return <Redirect to={`/etablissements/${this.props.id}`} />;
+    }
     if (this.state.error) {
       return <Alert color="danger">Impossible de charger les données. Veuillez réessayer ultérieurement </Alert>;
     }
     const name = getActiveEntity(this.state.institution.names);
     return (
       <Card>
-        <CardHeader>
+        <CardHeader className="btn text-left" onClick={this.redirectToInstitution}>
           <h4 className="text-primary">{name.initials}
             {name.initials === name.text ? '' : ` - ${name.text.toProperCase()}`}
           </h4>
@@ -92,7 +118,19 @@ class InstitutionConflictContainer extends Component {
 }
 
 InstitutionConflictContainer.propTypes = {
-  conflict: PropTypes.object.isRequired,
+  addresses: PropTypes.array.isRequired,
+  codes: PropTypes.array.isRequired,
+  date_end: PropTypes.string.isRequired,
+  date_start: PropTypes.string.isRequired,
+  daughters: PropTypes.array.isRequired,
+  followers: PropTypes.array.isRequired,
+  id: PropTypes.string.isRequired,
+  links: PropTypes.array.isRequired,
+  mothers: PropTypes.array.isRequired,
+  names: PropTypes.array.isRequired,
+  predecessors: PropTypes.array.isRequired,
+  synonym: PropTypes.string.isRequired,
+  tags: PropTypes.array.isRequired,
 };
 
 

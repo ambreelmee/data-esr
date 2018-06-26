@@ -8,7 +8,7 @@ import PrivateRoute from '../../PrivateRoute';
 import SearchPage from '../../views/Etablissements/SearchPage';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
 import SubMenuContainer from '../../views/SubMenus/SubMenuContainer';
-import Update from '../../views/SubMenus/Update/Update';
+import UpdateContainer from '../../views/SubMenus/Update/UpdateContainer';
 
 const Full = props => (
   <div className="app">
@@ -36,7 +36,7 @@ const Full = props => (
             />
             <PrivateRoute path="/caracterisations" component={SubMenuContainer} routePath="taggings" />
             <PrivateRoute path="/adresses" component={SubMenuContainer} routePath="addresses" />
-            <PrivateRoute path="/mises-a-jour" component={Update} />
+            <PrivateRoute path="/mises-a-jour" component={UpdateContainer} />
             <Redirect from="/" to="/etablissements" />
           </Switch>
         </Container>
