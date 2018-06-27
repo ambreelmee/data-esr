@@ -61,6 +61,26 @@ class InstitutionConflictContainer extends Component {
     return map(this.state.institution, (currentValues, resourceName) => {
       const resourceMatchingConflict = this.props[resourceName];
       if (resourceMatchingConflict && resourceMatchingConflict.length > 0) {
+        if (typeof currentValues === 'string') {
+          return (
+            <ResourceConflictTable
+              id={CurrentValues}
+              key={CurrentValues}
+              conflict={resourceMatchingConflict}
+              current={CurrentValues}
+              resource={resourceName}
+            />);
+        }
+        if (currentValues === null) {
+          return (
+            <ResourceConflictTable
+              id_etablissement={this.props.id}
+              key={resourceMatchingConflict[0].field_name}
+              conflict={resourceMatchingConflict}
+              current=''
+              resource={resourceName}
+            />);
+        }
         const hasCategory = Boolean(resourceMatchingConflict[0].category);
         if (hasCategory) {
           return currentValues.filter(currentValue => currentValue.status === 'active')
@@ -71,6 +91,7 @@ class InstitutionConflictContainer extends Component {
                 return (
                   <ResourceConflictTable
                     id={currentValue.id}
+                    id_etablissement={this.props.id}
                     key={currentValue.id}
                     category={currentValue.category}
                     conflict={categoryMatchingConflict}
@@ -84,6 +105,7 @@ class InstitutionConflictContainer extends Component {
         return (
           <ResourceConflictTable
             id={CurrentValue.id}
+            id_etablissement={this.props.id}
             key={CurrentValue.id}
             conflict={resourceMatchingConflict}
             current={CurrentValue}
@@ -120,16 +142,16 @@ class InstitutionConflictContainer extends Component {
 InstitutionConflictContainer.propTypes = {
   addresses: PropTypes.array.isRequired,
   codes: PropTypes.array.isRequired,
-  date_end: PropTypes.string.isRequired,
-  date_start: PropTypes.string.isRequired,
+  date_end: PropTypes.array.isRequired,
+  date_start: PropTypes.array.isRequired,
   daughters: PropTypes.array.isRequired,
   followers: PropTypes.array.isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   links: PropTypes.array.isRequired,
   mothers: PropTypes.array.isRequired,
   names: PropTypes.array.isRequired,
   predecessors: PropTypes.array.isRequired,
-  synonym: PropTypes.string.isRequired,
+  synonym: PropTypes.array.isRequired,
   tags: PropTypes.array.isRequired,
 };
 

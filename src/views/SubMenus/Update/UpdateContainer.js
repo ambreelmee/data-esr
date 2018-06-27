@@ -32,16 +32,33 @@ const fakeData = [
         date: '2018-06-05',
         category: 'uai',
       },
+      {
+        current_value: '48643518',
+        new_value: '4894322',
+        field_name: 'content',
+        source: 'bce',
+        date: '2018-06-05',
+        category: 'uai',
+      },
     ],
-    date_end: '',
-    date_start: '',
+    date_end: [
+      {
+        current_value: null,
+        new_value: '2018-06-05',
+        field_name: 'date_end',
+        source: 'bce',
+        date: '2018-04-05',
+        category: null,
+      },
+    ],
+    date_start: [],
     daughters: [],
     followers: [],
     links: [],
     mothers: [],
     names: [],
     predecessors: [],
-    synonym: '',
+    synonym: [],
     tags: [],
   },
   {
@@ -64,15 +81,15 @@ const fakeData = [
         category: null,
       }],
     codes: [],
-    date_end: '',
-    date_start: '',
+    date_end: [],
+    date_start: [],
     daughters: [],
     followers: [],
     links: [],
     mothers: [],
     names: [],
     predecessors: [],
-    synonym: '',
+    synonym: [],
     tags: [],
   },
 ];
@@ -82,14 +99,14 @@ class UpdateContainer extends Component {
     super(props);
 
     this.state = {
-      institutions: [],
+      institutions: fakeData,
       isLoading: false,
       visible: true,
     };
     this.onDismiss = this.onDismiss.bind(this);
   }
   componentWillMount() {
-    this.getAllConflicts();
+    // this.getAllConflicts();
   }
 
   onDismiss() {
@@ -115,14 +132,14 @@ class UpdateContainer extends Component {
           });
         } else {
           this.setState({
-            error: true,
+            institutions: fakeData,
             isLoading: false,
           });
         }
       })
       .catch(() => {
         this.setState({
-          error: true,
+          institutions: fakeData,
           isLoading: false,
         });
       });
