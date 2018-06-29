@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-class CategoryTag extends Component {
+class Tag extends Component {
   constructor(props) {
     super(props);
 
@@ -124,8 +124,11 @@ class CategoryTag extends Component {
 
   render() {
     return (
-      <InputGroup className="mt-3">
-        <Col xs="4" className="pr-0">
+      <InputGroup className="mt-3 justify-content-end">
+        <div className="btn btn-outline-secondary plus-drag px-2">
+          <i className="fa fa-arrows-v plus-drag" />
+        </div>
+        <Col xs="3" className="p-0">
           <Input
             id="shortLabel"
             type="text"
@@ -229,16 +232,16 @@ class CategoryTag extends Component {
   }
 }
 
-CategoryTag.propTypes = {
+Tag.propTypes = {
   getTag: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   longLabel: PropTypes.string.isRequired,
   shortLabel: PropTypes.string,
 };
 
-CategoryTag.defaultProps = {
+Tag.defaultProps = {
   shortLabel: '',
 }
 
 
-export default CategoryTag;
+export default Tag;

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Col, Card, CardHeader, CardFooter, CardBody } from 'reactstrap';
+import { Button, Col, Card, CardHeader, CardFooter } from 'reactstrap';
 import PropTypes from 'prop-types';
-import Category from './Category';
 import CategoryModal from './CategoryModal';
+import CategoryCardBody from './CategoryCardBody';
 
 class CategoryContainer extends Component {
   constructor(props) {
@@ -52,17 +52,6 @@ class CategoryContainer extends Component {
     });
   }
 
-  renderCategories() {
-    return this.state.categories.map(category =>
-      (<Category
-        key={`${this.props.categoryType}-${category.id}`}
-        categoryType={this.props.categoryType}
-        getCategories={this.getCategories}
-        id={category.id}
-        title={category.title}
-      />));
-  }
-
   render() {
     if (this.state.isLoading) {
       return <p />;
@@ -73,9 +62,11 @@ class CategoryContainer extends Component {
           <CardHeader>
             <h5>Types de {this.props.name}</h5>
           </CardHeader>
-          <CardBody>
-            {this.renderCategories()}
-          </CardBody>
+          <CategoryCardBody
+            categories={this.state.categories}
+            categoryType={this.props.categoryType}
+            getCategories={this.getCategories}
+          />
           <CardFooter>
             <Button color="primary" className="float-right" onClick={this.toggleModal}>
               <i className="fa fa-plus mr-1" /> Ajouter une catégorie

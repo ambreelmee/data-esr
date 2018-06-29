@@ -4,9 +4,8 @@ import {
   ModalHeader, ModalFooter, Tooltip,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-
-import Tag from './Tag';
-import TagModal from './TagModal'
+import CategoryTagDragnDrop from './CategoryTagDragnDrop';
+import TagModal from './TagModal';
 
 class CategoryTag extends Component {
   constructor(props) {
@@ -153,21 +152,7 @@ class CategoryTag extends Component {
   collapse() {
     this.setState({
       collapse: !this.state.collapse,
-    })
-  }
-
-  renderTags() {
-    if (this.props.tags.length >0) {
-      return this.props.tags.map(tag =>
-        <Tag
-          key={tag.id}
-          getTag={this.props.getCategories}
-          id={tag.id}
-          longLabel={tag.long_label}
-          shortLabel={tag.short_label}
-        />
-      )}
-      return <p>Aucun label dans cette catégorie</p>
+    });
   }
 
   render() {
@@ -300,7 +285,9 @@ class CategoryTag extends Component {
               size="sm"
               onClick={this.collapse}
             >
-              <i className="fa fa-chevron-down" />
+              {this.state.collapse ?
+                <i className="fa fa-chevron-up" /> :
+                <i className="fa fa-chevron-down" />}
             </Button>
             <Tooltip
               isOpen={this.state.showMoreTooltip}
@@ -311,9 +298,13 @@ class CategoryTag extends Component {
             </Tooltip>
           </InputGroup>
         </Col>
-        <Collapse isOpen={this.state.collapse} className="ml-4 pl-4">
-          {this.renderTags()}
-        </Collapse>
+        {this.state.collapse ?
+          <Collapse isOpen={this.state.collapse} className="ml-4">
+            <CategoryTagDragnDrop
+              tags={this.props.tags}
+              getCategories={this.props.getCategories}
+            />
+          </Collapse> : <div />}
       </InputGroup>
     );
   }

@@ -21,7 +21,7 @@ class Category extends Component {
     };
     this.cancelEdition = this.cancelEdition.bind(this);
     this.deleteCategory = this.deleteCategory.bind(this);
-    this.onChange = this.onChange.bind(this);
+    this.deleteCategory = this.deleteCategory.bind(this);
     this.modifyCurrentCategory = this.modifyCurrentCategory.bind(this);
     this.toggleCancelToolTip = this.toggleCancelToolTip.bind(this);
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
@@ -35,7 +35,6 @@ class Category extends Component {
       [event.target.id]: event.target.value,
     });
   }
-
 
   deleteCategory() {
     this.setState({ isDeleting: true });
@@ -60,7 +59,7 @@ class Category extends Component {
 
   modifyCurrentCategory() {
     this.setState({ isEditing: true });
-    const modifiedCategory = {}
+    const modifiedCategory = {};
     modifiedCategory[`${this.props.categoryType}_category`] = {
       id: this.props.id,
       title: this.state.title,
@@ -118,10 +117,12 @@ class Category extends Component {
     });
   }
 
-
   render() {
     return (
-      <InputGroup className="mb-3">
+      <InputGroup id={this.props.title} className="p-2 m-1">
+        <div className="btn btn-outline-secondary plus-drag px-2">
+          <i className="fa fa-arrows-v plus-drag" />
+        </div>
         <Input
           id="title"
           type="text"

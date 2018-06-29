@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Col, Card, CardHeader, CardFooter, CardBody } from 'reactstrap';
-
 import CategoryTag from './CategoryTag';
 import CategoryTagModal from './CategoryTagModal';
 
@@ -22,7 +21,6 @@ class TagCategoryContainer extends Component {
     this.getCategories('institution_tag_categories');
     this.getCategories('institution_tags');
   }
-
 
   getCategories(category) {
     this.setState({
