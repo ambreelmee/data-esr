@@ -8,7 +8,7 @@ const fakeData = [
     id: 219,
     addresses: [
       {
-        current_value: '12 rue des bois',
+        current_value: '193  AVENUE PAUL MULLER',
         new_value: '20 avenue jean jaures',
         field_name: 'address_1',
         source: 'bce',
@@ -16,7 +16,7 @@ const fakeData = [
         category: null,
       },
       {
-        current_value: '75012',
+        current_value: '54602',
         new_value: '75020',
         field_name: 'zip_code',
         source: 'bce',

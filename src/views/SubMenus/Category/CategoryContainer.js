@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Col, Card, CardHeader, CardFooter, CardBody, Row } from 'reactstrap';
+import { Button, Col, Card, CardHeader, CardFooter, CardBody } from 'reactstrap';
 import PropTypes from 'prop-types';
-
 import Category from './Category';
 import CategoryModal from './CategoryModal';
 
@@ -25,7 +24,6 @@ class CategoryContainer extends Component {
   componentWillReceiveProps(nextProps) {
     this.getCategories(nextProps.categoryType);
   }
-
 
   getCategories(categoryType) {
     const categories = `${categoryType}_categories`;

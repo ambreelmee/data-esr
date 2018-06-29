@@ -64,10 +64,10 @@ class InstitutionConflictContainer extends Component {
         if (typeof currentValues === 'string') {
           return (
             <ResourceConflictTable
-              id={CurrentValues}
-              key={CurrentValues}
+              id={currentValues}
+              key={currentValues}
               conflict={resourceMatchingConflict}
-              current={CurrentValues}
+              current={currentValues}
               resource={resourceName}
             />);
         }
@@ -77,7 +77,7 @@ class InstitutionConflictContainer extends Component {
               id_etablissement={this.props.id}
               key={resourceMatchingConflict[0].field_name}
               conflict={resourceMatchingConflict}
-              current=''
+              current="null"
               resource={resourceName}
             />);
         }
@@ -128,7 +128,7 @@ class InstitutionConflictContainer extends Component {
     }
     const name = getActiveEntity(this.state.institution.names);
     return (
-      <Card>
+      <Card id={`card-${this.props.id}`}>
         <CardHeader className="btn text-left" onClick={this.redirectToInstitution}>
           <h4 className="text-primary">{name.initials}
             {name.initials === name.text ? '' : ` - ${name.text.toProperCase()}`}

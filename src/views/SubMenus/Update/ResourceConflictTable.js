@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Button, ButtonDropdown, ButtonGroup, CardBody, DropdownItem, DropdownMenu, DropdownToggle, Input, Table } from 'reactstrap';
+import { Button, ButtonDropdown, ButtonGroup, CardBody, DropdownItem, DropdownMenu, DropdownToggle, Input, Table, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
+
+import WarningTooltip from './WarningTooltip';
 
 const ResourceTranslation = {
   addresses: 'adresses',
@@ -26,9 +28,11 @@ class ResourceConflictTable extends Component {
     this.state = {
       isLoading: false,
       displayDropdown: false,
+      displayWarning: false,
       renderFullTable: false,
     };
     this.displayDropdown = this.displayDropdown.bind(this);
+    this.displayWarning = this.displayWarning.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggleFullTable = this.toggleFullTable.bind(this);
   }
@@ -47,24 +51,34 @@ class ResourceConflictTable extends Component {
     });
   }
 
+  displayWarning() {
+    this.setState({
+      displayWarning: !this.state.displayWarning,
+    });
+  }
+
   renderRows() {
     if (typeof this.props.current === 'string') {
       const fieldName = this.props.conflict[0].field_name;
+      const id = `${fieldName}-${this.props.id_etablissement}`;
       return (
         <tr key={fieldName}>
           <td style={{ width: '18%', verticalAlign: 'middle' }}>{fieldName}</td>
           <td style={{ width: '33%', verticalAlign: 'middle' }} className="text-danger">
-            {this.props.current ? this.props.current : <em>non renseigné</em>}
+            {this.props.current}
           </td>
           <td style={{ width: '33%', verticalAlign: 'middle' }}>
             <Input
-              id={fieldName}
-              type="text"
+              id={id}
               className="text-success"
-              value={this.state[fieldName] ? this.state[fieldName] : this.props.conflict[0].new_value}
               onChange={this.onChange}
+              type="text"
+              value={this.state[id] ? this.state[id] : this.props.conflict[0].new_value}
             />
           </td>
+          {this.props.conflict[0].current_value === this.props.current ||
+            (this.props.conflict[0].current_value === null && this.props.current === 'null') ? <div /> :
+          <WarningTooltip boundary={`card-${this.props.id_etablissement}`} target={id} />}
           <td style={{ width: '16%', verticalAlign: 'middle' }} className="text-right">
             {this.props.conflict[0].source}
           </td>
@@ -72,20 +86,23 @@ class ResourceConflictTable extends Component {
     }
     return map(this.props.current, (currentValue, fieldName) => {
       const conflictValue = this.props.conflict.find(item => item.field_name === fieldName);
+      const id = `${fieldName}-${this.props.id_etablissement}`;
       if (conflictValue) {
         return (
           <tr key={fieldName}>
             <td style={{ width: '18%', verticalAlign: 'middle' }}>{fieldName}</td>
             <td style={{ width: '33%', verticalAlign: 'middle' }} className="text-danger">{currentValue}</td>
-            <td style={{ width: '33%', verticalAlign: 'middle' }}>
+            <td id={`${this.props.id_etablissement}-${fieldName}`} style={{ width: '33%', verticalAlign: 'middle' }}>
               <Input
-                id={fieldName}
+                id={id}
                 type="text"
                 className="text-success"
-                value={this.state[fieldName] ? this.state[fieldName] : conflictValue.new_value}
+                value={this.state[id] ? this.state[id] : conflictValue.new_value}
                 onChange={this.onChange}
               />
             </td>
+            {conflictValue.current_value === currentValue ? <div /> :
+            <WarningTooltip boundary={`card-${this.props.id_etablissement}`} target={id} />}
             <td style={{ width: '16%', verticalAlign: 'middle' }} className="text-right">
               {conflictValue.source}
             </td>
@@ -97,19 +114,22 @@ class ResourceConflictTable extends Component {
   renderFullTable() {
     return map(this.props.current, (currentValue, fieldName) => {
       const conflictValue = this.props.conflict.find(item => item.field_name === fieldName);
+      const id = `${fieldName}-${this.props.id_etablissement}`;
       return (
         <tr key={fieldName}>
           <td style={{ width: '18%', verticalAlign: 'middle' }}>{fieldName}</td>
           <td style={{ width: '33%', verticalAlign: 'middle' }} className="text-danger">{currentValue}</td>
-          <td style={{ width: '33%', verticalAlign: 'middle' }}>
+          <td id={`${this.props.id_etablissement}-${fieldName}`} style={{ width: '33%', verticalAlign: 'middle' }}>
             <Input
-              id={fieldName}
-              type="text"
               className="text-success"
-              value={this.state[fieldName] ? this.state[fieldName] : conflictValue ? conflictValue.new_value : ''}
+              id={id}
               onChange={this.onChange}
+              type="text"
+              value={this.state[id] ? this.state[id] : conflictValue ? conflictValue.new_value : ''}
             />
           </td>
+          {!conflictValue || conflictValue.current_value === currentValue ? <div /> :
+          <WarningTooltip boundary={`card-${this.props.id_etablissement}`} target={id} />}
           <td style={{ width: '16%', verticalAlign: 'middle' }} className="text-right">
             {conflictValue ? this.props.conflict[0].source : ''}
           </td>
@@ -127,12 +147,12 @@ class ResourceConflictTable extends Component {
         <h5 className="text-primary">
           {resourceName}{this.props.category ? ` ${this.props.category}` : ''}
         </h5>
-        <div className="d-flex align-items-end">
+        <div className="d-flex align-items-end justify-content-end">
           {typeof this.props.current === 'string' ? <div /> :
-            <Button className="rounded m-2" size="sm" outline color="secondary" onClick={this.toggleFullTable}>
-              <i className={`fa fa-chevron-${this.state.renderFullTable ? 'up' : 'down'}`} />
-            </Button>}
-          <Table hover responsive size="sm" className="mb-0">
+          <Button className="rounded m-2" size="sm" outline color="secondary" onClick={this.toggleFullTable}>
+            <i className={`fa fa-chevron-${this.state.renderFullTable ? 'up' : 'down'}`} />
+          </Button>}
+          <Table hover size="sm" className="mb-0" style={{ width: '90%' }}>
             <tbody>
               {this.state.renderFullTable ? this.renderFullTable() : this.renderRows()}
             </tbody>
@@ -152,7 +172,7 @@ class ResourceConflictTable extends Component {
                   size="sm"
                   className="rounded m-1"
                   color="success"
-                  >
+                >
                   Valider
                 </DropdownToggle>
                 <DropdownMenu>
@@ -174,9 +194,9 @@ class ResourceConflictTable extends Component {
 ResourceConflictTable.propTypes = {
   category: PropTypes.string,
   conflict: PropTypes.array.isRequired,
-  current:PropTypes.oneOfType([
+  current: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.object
+    PropTypes.object,
   ]).isRequired,
   id: PropTypes.number,
   id_etablissement: PropTypes.number.isRequired,
@@ -184,7 +204,7 @@ ResourceConflictTable.propTypes = {
 };
 
 ResourceConflictTable.defaultProps = {
-  category : '',
+  category: '',
   id: 0,
 }
 
