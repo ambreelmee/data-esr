@@ -38,7 +38,6 @@ class SearchPage extends Component {
     this.mouseLeave = this.mouseLeave.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
-    this.resetSearch = this.resetSearch.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleAddTooltip = this.toggleAddTooltip.bind(this);
     this.toggleUploadModal = this.toggleUploadModal.bind(this);
@@ -199,7 +198,7 @@ class SearchPage extends Component {
     this.setState({ uploadButton: false });
   }
 
-  resetSearch() {
+  resetSearch = () => {
     this.setState({
       institutions: this.state.initialData,
       searchEntry: '',

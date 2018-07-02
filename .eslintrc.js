@@ -18,4 +18,5 @@ module.exports = {
       "max-len": [1, 120, 2, {ignoreComments: true}],
       "import/no-named-as-default": 0,
     },
+    "parser": "babel-eslint",
 };

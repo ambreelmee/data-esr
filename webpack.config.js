@@ -41,6 +41,7 @@ module.exports = (env = {}) => ({
           options: {
             cacheDirectory: true,
             presets: ['react', 'env'],
+            plugins: ['transform-class-properties'],
           },
         },
       },
