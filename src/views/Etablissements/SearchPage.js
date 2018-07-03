@@ -6,7 +6,8 @@ import {
 import debounce from 'lodash/debounce';
 import moment from 'moment';
 import parse from 'parse-link-header';
-
+import { connect } from 'react-redux';
+import { institutionsFetchData } from '../../actions/institutions';
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
@@ -46,6 +47,7 @@ class SearchPage extends Component {
 
   componentWillMount() {
     this.getInitialData();
+    this.props.fetchData(`${process.env.API_URL_STAGING}institutions?page_size=18`)
   }
 
   onClick(event) {
@@ -392,4 +394,18 @@ class SearchPage extends Component {
   }
 }
 
-export default SearchPage;
+const mapStateToProps = (state) => {
+    return {
+        institutions: state.institutions,
+        hasErrored: state.institutionsHasErrored,
+        isLoading: state.institutionsIsLoading
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchData: (url) => dispatch(institutionsFetchData(url))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchPage);
