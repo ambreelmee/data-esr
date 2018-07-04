@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import {
   Button, FormGroup, Form, InputGroup, InputGroupAddon, InputGroupText,
-  Row, Col, Input, Pagination, PaginationItem, PaginationLink, Tooltip,
+  Row, Col, Input, Tooltip,
 } from 'reactstrap';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
 import parse from 'parse-link-header';
 import { connect } from 'react-redux';
-import { institutionsFetchData } from '../../actions/institutions';
+import PropTypes from 'prop-types';
+import { institutionsFetchData, onPageClick } from '../../actions/institutions';
 import { getActiveEntity, getFormattedAddress } from './methods';
 import SearchPageEtablissement from './SearchPageEtablissement';
 import NameModal from './Name/NameModal';
 import DownloadButton from '../DownloadButton';
 import UploadModal from '../UploadModal';
+import SearchPagination from './Search/SearchPagination';
 
 class SearchPage extends Component {
   constructor(props) {
@@ -38,7 +40,6 @@ class SearchPage extends Component {
     this.mouseEnter = this.mouseEnter.bind(this);
     this.mouseLeave = this.mouseLeave.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.onClick = this.onClick.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleAddTooltip = this.toggleAddTooltip.bind(this);
     this.toggleUploadModal = this.toggleUploadModal.bind(this);
@@ -50,14 +51,6 @@ class SearchPage extends Component {
     this.props.fetchData(`${process.env.API_URL_STAGING}institutions?page_size=18`)
   }
 
-  onClick(event) {
-    event.persist();
-    if (this.state[event.target.id]) {
-      this.getInstitutionByPage(this.state[event.target.id]);
-    } else {
-      this.getInstitutionByPage();
-    }
-  }
 
   onChange(event) {
     event.preventDefault();
@@ -213,7 +206,7 @@ class SearchPage extends Component {
   }
 
   renderInstitutionsCards() {
-    return this.state.institutions.map((institution) => {
+    return this.props.institutions.map((institution) => {
       const codeUAI = institution.codes.find(code => code.category === 'uai');
       return (
         <Col xs="12" md="6" lg="4" className="my-1 px-1" key={`institution-${institution.id}`}>
@@ -237,6 +230,9 @@ class SearchPage extends Component {
     moment.locale('fr');
     if (this.state.error) {
       return <p>Une erreur est survenue</p>;
+    }
+    if (this.props.isLoading) {
+      return <p>attend un peu </p>
     }
     return (
       <div className="p-5">
@@ -278,64 +274,19 @@ class SearchPage extends Component {
           </Col>
         </Row>
         <div className="d-flex justify-content-between">
-          {!this.state.isSearching && !this.state.isLoading ?
+          {!this.state.isSearching && !this.props.isLoading ?
             <DownloadButton
               name="etablissements"
               url={`${process.env.API_URL_STAGING}institutions/search?q=${params}&download=true`}
             /> : <div />}
-          <div className="text-primary mt-3">{this.state.results > 0 ? `${this.state.results} établissements` : ''}</div>
+          <div className="text-primary mt-3">{this.props.count > 0 ? `${this.props.count} établissements` : ''}</div>
         </div>
-        {this.state.institutions.length === 0 && !this.state.isLoading ?
+        {this.props.institutions.length === 0 && !this.props.isLoading ?
           <p className="text-center"><em>aucun résultat</em></p> :
           <Row> {this.renderInstitutionsCards()} </Row>}
         <div className="mt-3 d-flex justify-content-center">
-          {this.state.institutions.length > 17 ?
-            <Pagination>
-              {this.state.self && this.state.self.page_number !== '1' &&
-                this.state.prev && this.state.prev.page_number !== '1' ?
-                  <PaginationItem>
-                    <PaginationLink id="first" onClick={this.onClick}>
-                      1
-                    </PaginationLink>
-                  </PaginationItem> : <div />}
-              {this.state.self && parseInt(this.state.self.page_number, 10) > 2 ?
-                <PaginationItem disabled>
-                  <PaginationLink>
-                    ...
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.prev ?
-                <PaginationItem>
-                  <PaginationLink id="prev" onClick={this.onClick}>
-                    {this.state.prev.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.self && this.state.institutions.length > 0 ?
-                <PaginationItem active>
-                  <PaginationLink id="self" onClick={this.onClick}>
-                    {this.state.self.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.next && this.state.next.page_number !== this.state.last.page_number ?
-                <PaginationItem>
-                  <PaginationLink id="next" onClick={this.onClick}>
-                    {this.state.next.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-              {this.state.last &&
-                parseInt(this.state.last.page_number, 10) - parseInt(this.state.self.page_number, 10) > 2 ?
-                  <PaginationItem disabled>
-                    <PaginationLink>
-                      ...
-                    </PaginationLink>
-                  </PaginationItem> : <div /> }
-              {this.state.last && this.state.self.page_number !== this.state.last.page_number ?
-                <PaginationItem>
-                  <PaginationLink id="last" onClick={this.onClick}>
-                    {this.state.last.page_number}
-                  </PaginationLink>
-                </PaginationItem> : <div />}
-            </Pagination> : <div />}
+          {this.state.institutions.length > 17 && !this.props.isLoading ?
+            <SearchPagination {...this.props.links} onClick={this.props.onPageClick} /> : <div />}
         </div>
         <div
           className="floating"
@@ -394,18 +345,33 @@ class SearchPage extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        institutions: state.institutions,
-        hasErrored: state.institutionsHasErrored,
-        isLoading: state.institutionsIsLoading
-    };
+const mapStateToProps = state => ({
+  count: state.search.countResults,
+  institutions: state.search.institutionsResults,
+  links: state.search.linksResults,
+  hasErrored: state.search.institutionsHasErrored,
+  isLoading: state.search.institutionsIsLoading,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchData: url => dispatch(institutionsFetchData(url)),
+  onPageClick: url => dispatch(onPageClick(url)),
+});
+
+SearchPage.propTypes = {
+  count: PropTypes.string,
+  institutions: PropTypes.array,
+  links: PropTypes.object,
+  hasErrored: PropTypes.bool,
+  isLoading: PropTypes.bool,
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchData: (url) => dispatch(institutionsFetchData(url))
-    };
+SearchPage.defaultProps = {
+  count: '0',
+  hasErrored: false,
+  institutions: [],
+  isLoading: false,
+  links: {},
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchPage);
