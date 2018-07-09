@@ -6,9 +6,10 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { institutionsSearch, resetSearchAndDisplayFirstPage } from '../../actions/search';
+import { getActiveInstitution } from '../../actions/institution';
 import AddressContainer from '../../views/Institutions/Address/AddressContainer';
 import EvolutionContainer from '../../views/Institutions/Relation/EvolutionContainer';
-import NameContainer from '../../views/Institutions/Name/NameContainer';
+import NameContainer from './NameContainer';
 import LinkContainer from '../../views/Institutions/Link/LinkContainer';
 import TagContainer from '../../views/Institutions/Tag/TagContainer';
 import SearchBar from '../../views/Institutions/Search/SearchBar';
@@ -22,6 +23,11 @@ class InstitutionContainer extends Component {
       redirectToSearchPage: false,
     };
     this.onBackButtonEvent = this.onBackButtonEvent.bind(this);
+  }
+
+  componentWillMount() {
+    const institutionId = parseInt(this.props.match.params.number, 10);
+    this.props.getActiveInstitution(institutionId);
   }
 
   componentDidMount() {
@@ -45,9 +51,12 @@ class InstitutionContainer extends Component {
 
   render() {
     moment.locale('fr');
-    const etablissementId = parseInt(this.props.match.params.number, 10);
+    const institutionId = parseInt(this.props.match.params.number, 10);
     if (this.state.redirectToSearchPage) {
       return <Redirect to="/etablissements" />;
+    }
+    if (this.props.isLoading) {
+      return <p />;
     }
     return (
       <div className="animated fadeIn">
@@ -61,15 +70,15 @@ class InstitutionContainer extends Component {
         <Row>
           <Col md="8">
             <Row>
-              <NameContainer etablissement_id={etablissementId} />
+              <NameContainer getActiveInstitution={this.props.getActiveInstitution} />
             </Row>
-            <AddressContainer etablissement_id={etablissementId} />
+            <AddressContainer etablissement_id={institutionId} />
           </Col>
           <Col md="4">
             <Row className="mx-1">
-              <EvolutionContainer etablissement_id={etablissementId} />
-              <TagContainer etablissement_id={etablissementId} />
-              <LinkContainer etablissement_id={etablissementId} />
+              <EvolutionContainer etablissement_id={institutionId} />
+              <TagContainer etablissement_id={institutionId} />
+              <LinkContainer etablissement_id={institutionId} />
             </Row>
           </Col>
         </Row>
@@ -81,14 +90,18 @@ class InstitutionContainer extends Component {
 const mapStateToProps = state => ({
   isSearching: state.search.isSearching,
   searchValue: state.search.searchValue,
+  isLoading: state.activeInstitution.isLoading,
 });
 
 const mapDispatchToProps = dispatch => ({
-  search: event => dispatch(institutionsSearch(event)),
+  getActiveInstitution: id => dispatch(getActiveInstitution(id)),
   resetSearch: () => dispatch(resetSearchAndDisplayFirstPage()),
+  search: event => dispatch(institutionsSearch(event)),
 });
 
 InstitutionContainer.propTypes = {
+  getActiveInstitution: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
   isSearching: PropTypes.bool,
   resetSearch: PropTypes.func.isRequired,
   search: PropTypes.func.isRequired,
@@ -96,6 +109,7 @@ InstitutionContainer.propTypes = {
 };
 
 InstitutionContainer.defaultProps = {
+  isLoading: true,
   isSearching: false,
   searchValue: '',
 };

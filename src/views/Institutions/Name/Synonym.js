@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import {
-  InputGroup, InputGroupAddon, Input, Button, Tooltip, Modal,
-  ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { InputGroup, InputGroupAddon, Input, Button, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
-
+import DeleteModal from '../DeleteModal';
 
 class Synonym extends Component {
   constructor(props) {
@@ -17,7 +14,6 @@ class Synonym extends Component {
       displayEditButton: false,
       editTooltip: false,
       errorMessage: '',
-      isDeleting: false,
       isEditing: false,
       modal: false,
     };
@@ -40,69 +36,18 @@ class Synonym extends Component {
 
 
   deleteSynonym() {
-    this.setState({ isDeleting: true });
     const modifiedList = this.props.synonymsList;
     modifiedList.splice(this.props.index, 1);
     const synonym = modifiedList.join(', ');
-    fetch(
-      `${process.env.API_URL_STAGING}/institutions/${this.props.id}`,
-      {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-        body: JSON.stringify({ institution: { synonym } }),
-      },
-    )
-      .then((res) => {
-        if (res.ok) {
-          res.json().then(() => {
-            this.setState({
-              isDeleting: false,
-            });
-            this.props.getData(this.props.id);
-          });
-        } else {
-          this.setState({
-            errorMessage: 'impossible de supprimer le champ',
-          });
-        }
-      });
+    this.props.updateSynonymList(this.props.url, synonym);
   }
 
   editSynonym() {
-    this.setState({ isEditing: true });
     const modifiedList = this.props.synonymsList;
     modifiedList[this.props.index] = this.state.content;
     const synonym = modifiedList.join(', ');
-    fetch(
-      `${process.env.API_URL_STAGING}/institutions/${this.props.id}`,
-      {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-        body: JSON.stringify({ institution: { synonym } }),
-      },
-    )
-      .then((res) => {
-        if (res.ok) {
-          res.json().then(() => {
-            this.setState({
-              isEditing: false,
-            });
-            this.props.getData(this.props.id);
-          });
-        } else {
-          this.setState({
-            errorMessage: 'impossible de modifier le champ',
-          });
-        }
-      });
+    this.props.updateSynonymList(this.props.url, synonym);
   }
-
 
   cancelEdition() {
     this.setState({
@@ -200,31 +145,13 @@ class Synonym extends Component {
           >
             Supprimer le nom d&#39;usage
           </Tooltip>
-          <Modal isOpen={this.state.modal} toggle={this.toggleModal} color="danger">
-            <ModalHeader toggle={this.toggleModal}>
-              Suppression du champ
-            </ModalHeader>
-            <ModalBody>
-              Etes-vous sûr de vouloir supprimer ce champ ?
-            </ModalBody>
-            <ModalFooter>
-              <p className="mt-2 text-danger">{this.state.errorMessage}</p>
-              <Button
-                className="m-1 float-right"
-                color="danger"
-                disabled={this.state.isDeleting}
-                onClick={!this.state.isDeleting ? this.deleteSynonym : null}
-              >
-                {this.state.isDeleting ?
-                  <div>
-                    <i className="fa fa-spinner fa-spin " />
-                    <span className="mx-1"> Suppression </span>
-                  </div> : <div />}
-                Supprimer
-              </Button>
-              <Button color="secondary" onClick={this.toggleModal}>Annuler</Button>
-            </ModalFooter>
-          </Modal>
+          <DeleteModal
+            toggleModal={this.toggleModal}
+            isLoading={this.props.isLoading}
+            hasErrored={this.props.hasErrored}
+            modal={this.state.modal}
+            deleteMethod={this.deleteSynonym}
+          />
         </InputGroup>
       </div>
     );
@@ -233,10 +160,18 @@ class Synonym extends Component {
 
 Synonym.propTypes = {
   content: PropTypes.string.isRequired,
-  getData: PropTypes.func.isRequired,
+  hasErrored: PropTypes.bool,
   id: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
+  isLoading: PropTypes.bool,
   synonymsList: PropTypes.array.isRequired,
+  updateSynonymList: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
+};
+
+Synonym.defaultProps = {
+  hasErrored: false,
+  isLoading: false,
 };
 
 

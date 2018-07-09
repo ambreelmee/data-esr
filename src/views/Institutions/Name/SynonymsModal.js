@@ -9,13 +9,11 @@ class SynonymsModal extends Component {
     super(props);
 
     this.state = {
+      addTooltip: false,
       content: '',
-      modal: true,
-      isAdding: false,
     };
     this.addSynonym = this.addSynonym.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.toggle = this.toggle.bind(this);
     this.toggleAddTooltip = this.toggleAddTooltip.bind(this);
   }
 
@@ -25,61 +23,36 @@ class SynonymsModal extends Component {
     });
   }
 
-toggleAddTooltip() {
+  toggleAddTooltip() {
     this.setState({
       addTooltip: !this.state.addTooltip,
     });
   }
 
-  toggle() {
-    this.props.toggleModal();
-    this.setState({
-      modal: !this.state.modal,
-    });
-  }
-
   addSynonym() {
-    this.setState({ isAdding: true });
     const synonym = this.props.synonyms ? `${this.props.synonyms}, ${this.state.content}` : this.state.content;
-    fetch(
-      `${process.env.API_URL_STAGING}/institutions/${this.props.id}`,
-      {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-        body: JSON.stringify({ institution: { synonym } }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.setState({
-          isAdding: false,
-        });
-        this.props.getData(this.props.id);
-      });
+    this.props.updateSynonymList(this.props.url, synonym);
   }
-
 
   renderSynonyms() {
     const synonymsList = this.props.synonyms.split(', ');
     return synonymsList.map((synonym, index) => (
       <Synonym
         key={synonym}
-        synonymsList={synonymsList}
-        id={this.props.id}
-        index={index}
         content={synonym}
-        getData={this.props.getData}
+        id={this.props.institutionId}
+        index={index}
+        synonymsList={synonymsList}
+        updateSynonymList={this.props.updateSynonymList}
+        url={this.props.url}
       />
     ));
   }
 
   render() {
     return (
-      <Modal isOpen={this.state.modal} toggle={this.toggle}>
-        <ModalHeader toggle={this.toggle}>
+      <Modal isOpen={this.props.modal} toggle={this.props.toggleModal}>
+        <ModalHeader toggle={this.props.toggleModal}>
           Noms d&#39;usage
         </ModalHeader>
         <ModalBody>
@@ -93,20 +66,20 @@ toggleAddTooltip() {
               placeholder="Ajouter un nom d'usage"
             />
             <Button
-              id={`add-button-${this.props.id}`}
+              id={`add-button-${this.props.institutionId}`}
               color="success"
               outline
               size="sm"
               onClick={this.addSynonym}
               disabled={this.state.content === ''}
             >
-              {this.state.isAdding ?
+              {this.props.isLoading ?
                 <i className="fa fa fa-spinner text-success fa-spin" /> :
                 <i className="fa fa-check" />}
             </Button>
             <Tooltip
               isOpen={this.state.addTooltip}
-              target={`add-button-${this.props.id}`}
+              target={`add-button-${this.props.institutionId}`}
               toggle={this.toggleAddTooltip}
             >
               Ajouter un nouveau nom d&#39;usage
@@ -114,7 +87,9 @@ toggleAddTooltip() {
           </InputGroup>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={this.toggle}>Fermer</Button>
+          {this.props.hasErrored ?
+            <p className="text-danger">Une erreur est survenue</p> : <div />}
+          <Button color="secondary" onClick={this.props.toggleModal}>Fermer</Button>
         </ModalFooter>
       </Modal>
 
@@ -123,14 +98,19 @@ toggleAddTooltip() {
 }
 
 SynonymsModal.propTypes = {
-  id: PropTypes.number.isRequired,
-  getData: PropTypes.func.isRequired,
+  updateSynonymList: PropTypes.func.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  institutionId: PropTypes.number.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  modal: PropTypes.bool,
   synonyms: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
 };
 
 SynonymsModal.defaultProps = {
   synonyms: '',
+  modal: true,
 };
 
 export default SynonymsModal;

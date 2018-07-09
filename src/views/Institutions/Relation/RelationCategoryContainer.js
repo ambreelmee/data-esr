@@ -37,6 +37,7 @@ class RelationCategoryContainer extends Component {
 
   render() {
     if (this.state.redirectToInstitution) {
+      console.log(this.state.selectedInstitution)
       return <Redirect to={`/etablissements/${this.state.selectedInstitution}`} />;
     }
     return (

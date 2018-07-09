@@ -35,7 +35,7 @@ class SearchBar extends Component {
       return <Redirect to="/etablissements" />
     }
     return (
-      <div className="p-3">
+      <div className="pt-3 pb-1">
         <Row>
           <Col xs="12" md="10" lg="8" className="mx-auto">
             <Form>

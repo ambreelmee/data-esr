@@ -4,7 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  institutionsFetchData, institutionsSearch, onPageClick,
+  searchFetchData, institutionsSearch, onPageClick,
   resetSearchAndDisplayFirstPage,
 } from '../../actions/search';
 import { getActiveEntity, getFormattedAddress } from '../../views/Institutions/methods';
@@ -89,7 +89,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchData: url => dispatch(institutionsFetchData(url)),
+  fetchData: url => dispatch(searchFetchData(url)),
   onPageClick: url => dispatch(onPageClick(url)),
   search: event => dispatch(institutionsSearch(event)),
   resetSearch: () => dispatch(resetSearchAndDisplayFirstPage()),

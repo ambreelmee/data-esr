@@ -1,43 +1,43 @@
 
-export function institutionsHasErrored(bool) {
+export function searchHasErrored(bool) {
   return {
-    type: 'INSTITUTIONS_HAS_ERRORED',
+    type: 'SEARCH_HAS_ERRORED',
     hasErrored: bool,
   };
 }
-export function institutionsIsLoading(bool) {
+export function searchIsLoading(bool) {
   return {
-    type: 'INSTITUTIONS_IS_LOADING',
+    type: 'SEARCH_IS_LOADING',
     isLoading: bool,
   };
 }
-export function institutionsFetchHeaderSuccessFirstCall(headers) {
+export function searchFetchHeaderSuccessFirstCall(headers) {
   return {
-    type: 'INSTITUTIONS_FETCH_HEADER_SUCCESS_FIRST_CALL',
+    type: 'SEARCH_FETCH_HEADER_SUCCESS_FIRST_CALL',
     headers,
   };
 }
-export function institutionsFetchHeaderSuccess(headers) {
+export function searchFetchHeaderSuccess(headers) {
   return {
-    type: 'INSTITUTIONS_FETCH_HEADER_SUCCESS',
+    type: 'SEARCH_FETCH_HEADER_SUCCESS',
     headers,
   };
 }
-export function institutionsFetchDataSuccessFirstCall(institutions) {
+export function searchFetchDataSuccessFirstCall(institutions) {
   return {
-    type: 'INSTITUTIONS_FETCH_DATA_SUCCESS_FIRST_CALL',
+    type: 'SEARCH_FETCH_DATA_SUCCESS_FIRST_CALL',
     institutions,
   };
 }
-export function institutionsFetchDataSuccess(institutions) {
+export function searchFetchDataSuccess(institutions) {
   return {
-    type: 'INSTITUTIONS_FETCH_DATA_SUCCESS',
+    type: 'SEARCH_FETCH_DATA_SUCCESS',
     institutions,
   };
 }
-export function institutionsFetchData(url) {
+export function searchFetchData(url) {
   return (dispatch) => {
-    dispatch(institutionsIsLoading(true));
+    dispatch(searchIsLoading(true));
     fetch(url, {
       method: 'GET',
       headers: new Headers({
@@ -48,17 +48,17 @@ export function institutionsFetchData(url) {
         if (!response.ok) {
           throw Error(response.statusText);
         }
-        dispatch(institutionsFetchHeaderSuccessFirstCall(response.headers));
-        dispatch(institutionsFetchHeaderSuccess(response.headers));
+        dispatch(searchFetchHeaderSuccessFirstCall(response.headers));
+        dispatch(searchFetchHeaderSuccess(response.headers));
         return response;
       })
       .then(response => response.json())
       .then((institutions) => {
-        dispatch(institutionsFetchDataSuccessFirstCall(institutions));
-        dispatch(institutionsFetchDataSuccess(institutions));
-        dispatch(institutionsIsLoading(false));
+        dispatch(searchFetchDataSuccessFirstCall(institutions));
+        dispatch(searchFetchDataSuccess(institutions));
+        dispatch(searchIsLoading(false));
       })
-      .catch(() => dispatch(institutionsHasErrored(true)));
+      .catch(() => dispatch(searchHasErrored(true)));
   };
 }
 export function resetSearchAndDisplayFirstPage() {
@@ -71,7 +71,7 @@ export function onPageClick(url) {
     if (url === 'first') {
       dispatch(resetSearchAndDisplayFirstPage());
     } else {
-      dispatch(institutionsIsLoading(true));
+      dispatch(searchIsLoading(true));
       fetch(url, {
         method: url.includes('search') ? 'POST' : 'GET',
         headers: new Headers({
@@ -82,13 +82,13 @@ export function onPageClick(url) {
           if (!response.ok) {
             throw Error(response.statusText);
           }
-          dispatch(institutionsFetchHeaderSuccess(response.headers));
+          dispatch(searchFetchHeaderSuccess(response.headers));
           return response;
         })
         .then(response => response.json())
-        .then(institutions => dispatch(institutionsFetchDataSuccess(institutions)))
-        .catch(() => dispatch(institutionsHasErrored(true)));
-      dispatch(institutionsIsLoading(false));
+        .then(institutions => dispatch(searchFetchDataSuccess(institutions)))
+        .catch(() => dispatch(searchHasErrored(true)));
+      dispatch(searchIsLoading(false));
     }
   };
 }
@@ -98,9 +98,9 @@ export function searchValue(value) {
     searchValue: value,
   };
 }
-export function institutionsIsSearching(bool) {
+export function isSearching(bool) {
   return {
-    type: 'INSTITUTIONS_IS_SEARCHING',
+    type: 'SEARCH_IS_SEARCHING',
     isSearching: bool,
   };
 }
@@ -108,7 +108,7 @@ export function institutionsSearch(value) {
   const searchInput = encodeURI(value);
   return (dispatch) => {
     dispatch(searchValue(value));
-    dispatch(institutionsIsSearching(true));
+    dispatch(isSearching(true));
     fetch(`${process.env.API_URL_STAGING}institutions/search?q=${searchInput}&page_size=18`, {
       method: 'POST',
       headers: new Headers({
@@ -119,13 +119,13 @@ export function institutionsSearch(value) {
         if (!response.ok) {
           throw Error(response.statusText);
         }
-        dispatch(institutionsIsSearching(false));
-        dispatch(institutionsFetchHeaderSuccess(response.headers));
+        dispatch(isSearching(false));
+        dispatch(searchFetchHeaderSuccess(response.headers));
         return response;
       })
       .then(response => response.json())
-      .then(institutions => dispatch(institutionsFetchDataSuccess(institutions)))
-      .catch(() => dispatch(institutionsHasErrored(true)));
+      .then(institutions => dispatch(searchFetchDataSuccess(institutions)))
+      .catch(() => dispatch(searchHasErrored(true)));
   };
 }
 
