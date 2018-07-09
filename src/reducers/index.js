@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import search from './institutions';
+import search from './search';
 
 export default combineReducers({
   search,

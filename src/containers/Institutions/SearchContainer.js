@@ -6,17 +6,19 @@ import PropTypes from 'prop-types';
 import {
   institutionsFetchData, institutionsSearch, onPageClick,
   resetSearchAndDisplayFirstPage,
-} from '../../actions/institutions';
-import { getActiveEntity, getFormattedAddress } from './methods';
-import SearchPageEtablissement from './SearchPageEtablissement';
-import DownloadButton from '../DownloadButton';
-import SearchPagination from './Search/SearchPagination';
-import AddInstitutionButtons from './AddInstitutionButtons';
-import SearchBar from './Search/SearchBar';
+} from '../../actions/search';
+import { getActiveEntity, getFormattedAddress } from '../../views/Institutions/methods';
+import SearchPageEtablissement from '../../views/Institutions/Search/SearchPageEtablissement';
+import DownloadButton from '../../views/Institutions/DownloadButton';
+import SearchPagination from '../../views/Institutions/Search/SearchPagination';
+import AddInstitutionButtons from '../../views/Institutions/AddInstitutionButtons';
+import SearchBar from '../../views/Institutions/Search/SearchBar';
 
 class SearchContainer extends Component {
   componentWillMount() {
-    this.props.fetchData(`${process.env.API_URL_STAGING}institutions?page_size=18`);
+    if (!this.props.searchValue) {
+      this.props.fetchData(`${process.env.API_URL_STAGING}institutions?page_size=18`);
+    }
   }
 
   renderInstitutionsCards() {

@@ -2,17 +2,19 @@ import 'moment/locale/fr';
 import React, { Component } from 'react';
 import { Col, Row } from 'reactstrap';
 import moment from 'moment';
-
-
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import AddressContainer from './Address/AddressContainer';
-import EvolutionContainer from './Relation/EvolutionContainer';
-import NameContainer from './Name/NameContainer';
-import LinkContainer from './Link/LinkContainer';
-import TagContainer from './Tag/TagContainer';
+import PropTypes from 'prop-types';
+import { institutionsSearch, resetSearchAndDisplayFirstPage } from '../../actions/search';
+import AddressContainer from '../../views/Institutions/Address/AddressContainer';
+import EvolutionContainer from '../../views/Institutions/Relation/EvolutionContainer';
+import NameContainer from '../../views/Institutions/Name/NameContainer';
+import LinkContainer from '../../views/Institutions/Link/LinkContainer';
+import TagContainer from '../../views/Institutions/Tag/TagContainer';
+import SearchBar from '../../views/Institutions/Search/SearchBar';
 
 
-class EtablissementContainer extends Component {
+class InstitutionContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -49,6 +51,13 @@ class EtablissementContainer extends Component {
     }
     return (
       <div className="animated fadeIn">
+        <SearchBar
+          isSearching={this.props.isSearching}
+          resetSearch={this.props.resetSearch}
+          search={this.props.search}
+          searchPage={false}
+          searchValue={this.props.searchValue}
+        />
         <Row>
           <Col md="8">
             <Row>
@@ -69,4 +78,26 @@ class EtablissementContainer extends Component {
   }
 }
 
-export default EtablissementContainer;
+const mapStateToProps = state => ({
+  isSearching: state.search.isSearching,
+  searchValue: state.search.searchValue,
+});
+
+const mapDispatchToProps = dispatch => ({
+  search: event => dispatch(institutionsSearch(event)),
+  resetSearch: () => dispatch(resetSearchAndDisplayFirstPage()),
+});
+
+InstitutionContainer.propTypes = {
+  isSearching: PropTypes.bool,
+  resetSearch: PropTypes.func.isRequired,
+  search: PropTypes.func.isRequired,
+  searchValue: PropTypes.string,
+};
+
+InstitutionContainer.defaultProps = {
+  isSearching: false,
+  searchValue: '',
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(InstitutionContainer);

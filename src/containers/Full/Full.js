@@ -5,10 +5,10 @@ import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
-import SearchContainer from '../../views/Etablissements/SearchContainer';
-import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
-import SubMenuContainer from '../../views/SubMenus/SubMenuContainer';
-import UpdateContainer from '../../views/SubMenus/Update/UpdateContainer';
+import SearchContainer from '../Institutions/SearchContainer';
+import InstitutionContainer from '../Institutions/InstitutionContainer';
+import SubMenuContainer from '../../views/Institutions/SubMenus/SubMenuContainer';
+import UpdateContainer from '../../views/Institutions/SubMenus/Update/UpdateContainer';
 
 const Full = props => (
   <div className="app">
@@ -19,7 +19,7 @@ const Full = props => (
         <Container fluid className="bckgnd-img h-100 pb-3">
           <Switch>
             <PrivateRoute exact path="/etablissements"component={SearchContainer} />
-            <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
+            <PrivateRoute path="/etablissements/:number" component={InstitutionContainer} />
             <PrivateRoute path="/liens" component={SubMenuContainer} categoryType="link" routePath="links" />
             <PrivateRoute path="/codes" component={SubMenuContainer} categoryType="code" routePath="codes" />
             <PrivateRoute

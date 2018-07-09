@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { downloadData } from '../actions/institutions';
+import { downloadData } from '../../actions/search';
 
 const DownloadButton = props => (
   <div className="d-flex flex-row-reverse mt-2">

@@ -7,7 +7,7 @@ import DownloadButton from '../DownloadButton';
 import RelationsColumnsDescription from './RelationsColumnsDescription';
 import UploadModal from '../UploadModal';
 
-const getSingular = name => name.substring(0, name.length - 1)
+const getSingular = name => name.substring(0, name.length - 1);
 
 class ImportExport extends Component {
   constructor(props) {
@@ -18,8 +18,6 @@ class ImportExport extends Component {
     };
     this.toggle = this.toggle.bind(this);
   }
-
-
 
   toggle() {
     this.setState({

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Tooltip } from 'reactstrap';
 import NameModal from './Name/NameModal';
-import UploadModal from '../UploadModal';
+import UploadModal from './UploadModal';
 
 class AddInstitutionButtons extends Component {
   constructor(props) {

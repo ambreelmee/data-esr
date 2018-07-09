@@ -3,7 +3,7 @@ import { Alert, Card, CardHeader } from 'reactstrap';
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
 import { Redirect } from 'react-router-dom';
-import { getActiveEntity } from '../../Etablissements/methods';
+import { getActiveEntity } from '../../methods';
 import ResourceConflictTable from './ResourceConflictTable';
 
 class InstitutionConflictContainer extends Component {

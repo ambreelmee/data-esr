@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Button, ButtonDropdown, ButtonGroup, CardBody, DropdownItem, DropdownMenu, DropdownToggle, Input, Table, Tooltip } from 'reactstrap';
+import {
+  Button, ButtonDropdown, ButtonGroup, CardBody, DropdownItem,
+  DropdownMenu, DropdownToggle, Input, Table,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
 
