@@ -5,7 +5,7 @@ import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
-import SearchPage from '../../views/Etablissements/SearchPage';
+import SearchContainer from '../../views/Etablissements/SearchContainer';
 import EtablissementContainer from '../../views/Etablissements/EtablissementContainer';
 import SubMenuContainer from '../../views/SubMenus/SubMenuContainer';
 import UpdateContainer from '../../views/SubMenus/Update/UpdateContainer';
@@ -18,7 +18,7 @@ const Full = props => (
       <main className="main">
         <Container fluid className="bckgnd-img h-100 pb-3">
           <Switch>
-            <PrivateRoute exact path="/etablissements"component={SearchPage} />
+            <PrivateRoute exact path="/etablissements"component={SearchContainer} />
             <PrivateRoute path="/etablissements/:number" component={EtablissementContainer} />
             <PrivateRoute path="/liens" component={SubMenuContainer} categoryType="link" routePath="links" />
             <PrivateRoute path="/codes" component={SubMenuContainer} categoryType="code" routePath="codes" />

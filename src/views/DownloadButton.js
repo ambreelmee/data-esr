@@ -1,81 +1,50 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button } from 'reactstrap';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { downloadData } from '../actions/institutions';
 
-class DownloadButton extends Component {
-  constructor(props) {
-    super(props);
+const DownloadButton = props => (
+  <div className="d-flex flex-row-reverse mt-2">
+    <div>
+      {props.file ?
+        <a href={props.file} download={`${props.name}.csv`}>
+          {props.name}.csv
+        </a> :
+        <Button color="primary" outline className="rounded ml-1" onClick={() => props.downloadData(props.url)}>
+          {!props.isLoading ?
+            <div><i className="fa fa-download" /> Télécharger les {props.name}</div> :
+            <div><i className="fa fa-spinner fa-spin" /> Chargement</div>}
+        </Button>}
+    </div>
+    <p className="text-danger mb-0">{props.hasErrored ? 'impossible de télécharger les données' : ''}</p>
+  </div>
+);
 
-    this.state = {
-      csvFile: null,
-      errorMessage: '',
-      isDownloading: false,
-    };
-    this.downloadSearchResults = this.downloadSearchResults.bind(this);
-  }
 
-  componentWillReceiveProps() {
-    this.setState({ csvFile: null });
-  }
+const mapStateToProps = state => ({
+  file: state.search.downloadFile,
+  hasErrored: state.search.downloadHasErrored,
+  isLoading: state.search.downloadIsLoading,
+});
 
-  downloadSearchResults() {
-    this.setState({
-      isDownloading: true,
-      errorMessage: '',
-    });
-    fetch(this.props.url, {
-      method: 'POST',
-      headers: new Headers({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          response.blob().then((data) => {
-            const csvFile = URL.createObjectURL(data);
-            this.setState({
-              csvFile,
-              isDownloading: false,
-            });
-          });
-        } else {
-          this.setState({
-            errorMessage: 'impossible de télécharger les données',
-            isDownloading: false,
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          errorMessage: 'impossible de télécharger les données',
-          isDownloading: false,
-        });
-      });
-  }
-
-  render() {
-    return (
-      <div className="d-flex flex-row-reverse mt-2">
-        <div>
-          {this.state.csvFile ?
-            <a href={this.state.csvFile} download={`${this.props.name}.csv`}>
-              {this.props.name}.csv
-            </a> :
-            <Button color="primary" outline className="rounded ml-1" onClick={this.downloadSearchResults}>
-              {!this.state.isDownloading ?
-                <div><i className="fa fa-download" /> Télécharger les {this.props.name}</div> :
-                <div><i className="fa fa-spinner fa-spin" /> Chargement</div>}
-            </Button>}
-        </div>
-        <p className="text-danger mb-0">{this.state.errorMessage}</p>
-      </div>
-    );
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  downloadData: url => dispatch(downloadData(url)),
+});
 
 DownloadButton.propTypes = {
+  downloadData: PropTypes.func.isRequired,
+  file: PropTypes.string,
+  hasErrored: PropTypes.bool,
+  isLoading: PropTypes.bool,
   name: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
 };
 
-export default DownloadButton;
+DownloadButton.defaultProps = {
+  file: null,
+  hasErrored: false,
+  isLoading: false,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DownloadButton);

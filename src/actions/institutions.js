@@ -98,12 +98,17 @@ export function searchValue(value) {
     searchValue: value,
   };
 }
-export function onSearchInputChange(event) {
-  const searchInput = encodeURI(event.target.value);
+export function institutionsIsSearching(bool) {
+  return {
+    type: 'INSTITUTIONS_IS_SEARCHING',
+    isSearching: bool,
+  };
+}
+export function institutionsSearch(value) {
+  const searchInput = encodeURI(value);
   return (dispatch) => {
-    event.preventDefault();
-    dispatch(searchValue(event.target.value));
-    dispatch(institutionsIsLoading(true));
+    dispatch(searchValue(value));
+    dispatch(institutionsIsSearching(true));
     fetch(`${process.env.API_URL_STAGING}institutions/search?q=${searchInput}&page_size=18`, {
       method: 'POST',
       headers: new Headers({
@@ -114,12 +119,54 @@ export function onSearchInputChange(event) {
         if (!response.ok) {
           throw Error(response.statusText);
         }
-        dispatch(institutionsIsLoading(false));
+        dispatch(institutionsIsSearching(false));
         dispatch(institutionsFetchHeaderSuccess(response.headers));
         return response;
       })
       .then(response => response.json())
       .then(institutions => dispatch(institutionsFetchDataSuccess(institutions)))
       .catch(() => dispatch(institutionsHasErrored(true)));
+  };
+}
+
+export function downloadHasErrored(bool) {
+  return {
+    type: 'DOWNLOAD_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function downloadIsLoading(bool) {
+  return {
+    type: 'DOWNLOAD_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function downloadSuccess(file) {
+  return {
+    type: 'DOWNLOAD_SUCCESS',
+    file,
+  };
+}
+export function downloadData(url) {
+  return (dispatch) => {
+    dispatch(downloadIsLoading(true));
+    fetch(url, {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.blob())
+      .then((file) => {
+        dispatch(downloadSuccess(URL.createObjectURL(file)));
+        dispatch(downloadIsLoading(false));
+      })
+      .catch(() => dispatch(downloadHasErrored(true)));
   };
 }

@@ -4,20 +4,19 @@ import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 const SearchPagination = props => (
   <Pagination>
-    {props.self && props.self.page_number !== '1' &&
-      props.prev && props.prev.page_number !== '1' ?
-        <PaginationItem>
-          <PaginationLink id="first" onClick={() => props.onClick('first')}>
-            1
-          </PaginationLink>
-        </PaginationItem> : <div />}
+    {props.self && props.self.page_number !== '1' ?
+      <PaginationItem>
+        <PaginationLink id="first" onClick={() => props.onClick('first')}>
+          1
+        </PaginationLink>
+      </PaginationItem> : <div />}
     {props.self && parseInt(props.self.page_number, 10) > 2 ?
       <PaginationItem disabled>
         <PaginationLink>
           ...
         </PaginationLink>
       </PaginationItem> : <div />}
-    {props.prev ?
+    {props.prev && props.prev.page_number !== '1' ?
       <PaginationItem>
         <PaginationLink id="prev" onClick={() => props.onClick(props.prev.url)}>
           {props.prev.page_number}

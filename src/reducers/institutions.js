@@ -1,12 +1,18 @@
 import parse from 'parse-link-header';
 
 
-export function search(state = [], action) {
+export default function search(state = [], action) {
   switch (action.type) {
     case 'INSTITUTIONS_HAS_ERRORED':
       return { ...state, hasErrored: action.hasErrored };
     case 'INSTITUTIONS_IS_LOADING':
       return { ...state, isLoading: action.isLoading };
+    case 'INSTITUTIONS_IS_SEARCHING':
+      return {
+        ...state,
+        isSearching: action.isSearching,
+        downloadFile: null,
+      };
     case 'INSTITUTIONS_FETCH_DATA_SUCCESS_FIRST_CALL':
       return { ...state, institutions: action.institutions };
     case 'INSTITUTIONS_FETCH_DATA_SUCCESS':
@@ -26,13 +32,20 @@ export function search(state = [], action) {
     case 'RESET_SEARCH_AND_DISPLAY_FIRST_PAGE':
       return {
         ...state,
-        linksResults: state.search.links,
-        countResults: state.search.count,
-        institutionsResults: state.search.institutions,
+        linksResults: state.links,
+        countResults: state.count,
+        institutionsResults: state.institutions,
         searchValue: '',
-      }
+        downloadFile: null,
+      };
     case 'SEARCH_VALUE':
-      return {...state, searchValue: action.searchValue };
+      return { ...state, searchValue: action.searchValue };
+    case 'DOWNLOAD_HAS_ERRORED':
+      return { ...state, downloadHasErrored: action.hasErrored };
+    case 'DOWNLOAD_IS_LOADING':
+      return { ...state, downloadIsLoading: action.isLoading };
+    case 'DOWNLOAD_SUCCESS':
+      return { ...state, downloadFile: action.file };
     default:
       return state;
   }
