@@ -12,7 +12,7 @@ export default function activeInstitution(state = [], action) {
     case 'SYNONYM_IS_LOADING':
       return { ...state, synonymIsLoading: action.isLoading };
     case 'SYNONYM_SUCCESS':
-      return { ...state, institution: { ...state.institution, synonym: action.synonym } };
+      return { ...state, institution: action.institution.institution };
     default:
       return state;
   }

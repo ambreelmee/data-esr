@@ -54,15 +54,15 @@ export function synonymIsLoading(bool) {
     isLoading: bool,
   };
 }
-export function synonymSuccess(synonym) {
+export function synonymSuccess(institution) {
   return {
     type: 'SYNONYM_SUCCESS',
-    synonym,
+    institution,
   };
 }
 export function updateSynonymList(url, synonym) {
   return (dispatch) => {
-    dispatch(synonymHasErrored(true));
+    dispatch(synonymIsLoading(true));
     fetch(url, {
       method: 'PUT',
       headers: new Headers({
@@ -78,9 +78,9 @@ export function updateSynonymList(url, synonym) {
         return response;
       })
       .then(response => response.json())
-      .then((synonymResponse) => {
-        dispatch(synonymSuccess(synonymResponse));
-        dispatch(synonymHasErrored(false));
+      .then((institution) => {
+        dispatch(synonymSuccess(institution));
+        dispatch(synonymIsLoading(false));
       })
       .catch(() => dispatch(synonymHasErrored(true)));
   };

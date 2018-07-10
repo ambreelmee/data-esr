@@ -27,7 +27,9 @@ class InstitutionContainer extends Component {
 
   componentWillMount() {
     const institutionId = parseInt(this.props.match.params.number, 10);
-    this.props.getActiveInstitution(institutionId);
+    if (!this.props.activeInstitution || this.props.activeInstitution.id !== institutionId) {
+      this.props.getActiveInstitution(institutionId);
+    }
   }
 
   componentDidMount() {
@@ -70,7 +72,7 @@ class InstitutionContainer extends Component {
         <Row>
           <Col md="8">
             <Row>
-              <NameContainer getActiveInstitution={this.props.getActiveInstitution} />
+              <NameContainer getActiveInstitution={this.props.getActiveInstitution}/>
             </Row>
             <AddressContainer etablissement_id={institutionId} />
           </Col>
@@ -88,6 +90,7 @@ class InstitutionContainer extends Component {
 }
 
 const mapStateToProps = state => ({
+  activeInstitution: state.activeInstitution.institution,
   isSearching: state.search.isSearching,
   searchValue: state.search.searchValue,
   isLoading: state.activeInstitution.isLoading,
@@ -100,6 +103,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 InstitutionContainer.propTypes = {
+  activeInstitution: PropTypes.number,
   getActiveInstitution: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
   isSearching: PropTypes.bool,
@@ -109,6 +113,7 @@ InstitutionContainer.propTypes = {
 };
 
 InstitutionContainer.defaultProps = {
+  activeInstitution: undefined,
   isLoading: true,
   isSearching: false,
   searchValue: '',

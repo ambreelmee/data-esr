@@ -21,7 +21,10 @@ class SearchBar extends Component {
   onChange(event) {
     const searchValue = event.target.value;
     event.preventDefault();
-    this.setState({ searchValue });
+    this.setState({
+      searchValue,
+      changed: true,
+     });
     this.search(searchValue);
   }
 
@@ -31,8 +34,8 @@ class SearchBar extends Component {
   }
 
   render() {
-    if (this.props.searchValue && !this.props.searchPage) {
-      return <Redirect to="/etablissements" />
+    if (this.props.searchValue && !this.props.searchPage && this.state.changed) {
+      return <Redirect to="/etablissements" />;
     }
     return (
       <div className="pt-3 pb-1">
