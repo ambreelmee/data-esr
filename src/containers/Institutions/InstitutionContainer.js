@@ -72,7 +72,7 @@ class InstitutionContainer extends Component {
         <Row>
           <Col md="8">
             <Row>
-              <NameContainer getActiveInstitution={this.props.getActiveInstitution}/>
+              <NameContainer getActiveInstitution={this.props.getActiveInstitution} />
             </Row>
             <AddressContainer etablissement_id={institutionId} />
           </Col>
@@ -103,7 +103,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 InstitutionContainer.propTypes = {
-  activeInstitution: PropTypes.number,
+  activeInstitution: PropTypes.object,
   getActiveInstitution: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
   isSearching: PropTypes.bool,

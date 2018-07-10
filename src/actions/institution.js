@@ -54,9 +54,9 @@ export function synonymIsLoading(bool) {
     isLoading: bool,
   };
 }
-export function synonymSuccess(institution) {
+export function institutionFetchSuccess(institution) {
   return {
-    type: 'SYNONYM_SUCCESS',
+    type: 'INSTITUTION_FETCH_SUCCESS',
     institution,
   };
 }
@@ -79,9 +79,81 @@ export function updateSynonymList(url, synonym) {
       })
       .then(response => response.json())
       .then((institution) => {
-        dispatch(synonymSuccess(institution));
+        dispatch(institutionFetchSuccess(institution));
         dispatch(synonymIsLoading(false));
       })
       .catch(() => dispatch(synonymHasErrored(true)));
+  };
+}
+export function deleteContentIsLoading(bool) {
+  return {
+    type: 'DELETE_CONTENT_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function deleteContentHasErrored(bool) {
+  return {
+    type: 'DELETE_CONTENT_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function deleteContent(url, institutionId) {
+  return (dispatch) => {
+    dispatch(deleteContentIsLoading(true));
+    fetch(url, {
+      method: 'DELETE',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then(() => {
+        dispatch(deleteContentIsLoading(false));
+        dispatch(getActiveInstitution(institutionId));
+      })
+      .catch(() => dispatch(deleteContentHasErrored(true)));
+  };
+}
+export function addContentIsLoading(bool) {
+  return {
+    type: 'ADD_CONTENT_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function addContentHasErrored(bool) {
+  return {
+    type: 'ADD_CONTENT_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function addContent(url, jsonBody) {
+  return (dispatch) => {
+    dispatch(addContentIsLoading(true));
+    fetch(url, {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+      body: jsonBody,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((institution) => {
+        dispatch(addContentIsLoading(false));
+        dispatch(institutionFetchSuccess(institution));
+      })
+      .catch(() => dispatch(addContentHasErrored(true)));
   };
 }

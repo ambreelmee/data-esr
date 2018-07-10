@@ -34,7 +34,6 @@ class Synonym extends Component {
     });
   }
 
-
   deleteSynonym() {
     const modifiedList = this.props.synonymsList;
     modifiedList.splice(this.props.index, 1);

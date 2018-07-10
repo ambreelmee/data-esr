@@ -8,8 +8,9 @@ import PropTypes from 'prop-types';
 import { updateSynonymList } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import EtablissementStatusModal from '../../views/Institutions/Name/EtablissementStatusModal';
-import NameHistoryModal from '../../views/Institutions/Name/NameHistoryModal';
+import TableModal from '../../views/Institutions/TableModal';
 import SynonymsModal from '../../views/Institutions/Name/SynonymsModal';
+import NameModal from '../../views/Institutions/Name/NameModal';
 
 const styles = {
   large: {
@@ -27,6 +28,7 @@ class NameContainer extends Component {
     super(props);
 
     this.state = {
+      addModal: false,
       statusModal: false,
       displayDropdown: false,
       synonymModal: false,
@@ -35,6 +37,7 @@ class NameContainer extends Component {
 
     this.displayDropdown = this.displayDropdown.bind(this);
     this.toggleStatusModal = this.toggleStatusModal.bind(this);
+    this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleSynonymModal = this.toggleSynonymModal.bind(this);
     this.toggleHistoryModal = this.toggleHistoryModal.bind(this);
   }
@@ -43,6 +46,11 @@ class NameContainer extends Component {
     this.props.getActiveInstitution(nextProps.institutionId);
   }
 
+  toggleAddModal() {
+    this.setState({
+      addModal: !this.state.addModal,
+    });
+  }
 
   toggleStatusModal() {
     this.setState({
@@ -104,10 +112,19 @@ class NameContainer extends Component {
                   Voir le détail des noms officiels
               </DropdownItem>
               {this.state.historyModal ?
-                <NameHistoryModal
-                  etablissement_id={this.props.institutionId}
-                  getData={this.props.getActiveInstitution}
-                  history={this.props.names}
+                <TableModal
+                  addModal={this.state.addModal}
+                  component={
+                    <NameModal
+                      institutionId={this.props.institutionId}
+                      toggleModal={this.toggleAddModal}
+                    />}
+                  deleteUrl={`${process.env.API_URL_STAGING}institution_names/`}
+                  institutionId={this.props.institutionId}
+                  content={this.props.names}
+                  modal={this.state.historyModal}
+                  tableHeader={['Sigle', 'Nom complet', 'Début', 'Fin', 'Statut', 'Action']}
+                  toggleAddModal={this.toggleAddModal}
                   toggleModal={this.toggleHistoryModal}
                 /> : <div />}
               <DropdownItem onClick={this.toggleSynonymModal}>
@@ -195,6 +212,7 @@ NameContainer.propTypes = {
 NameContainer.defaultProps = {
   dateEnd: '',
   dateStart: '',
+  deleteModal: false,
   synonym: '',
   synonymHasErrored: false,
   synonymIsLoading: false,
