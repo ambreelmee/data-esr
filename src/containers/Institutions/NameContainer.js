@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import TagCloud from 'react-tag-cloud';
-import randomColor from 'randomcolor';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Alert, ButtonGroup, ButtonDropdown, Card, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
@@ -11,17 +9,8 @@ import EtablissementStatusModal from '../../views/Institutions/Name/Etablissemen
 import TableModal from '../../views/Institutions/TableModal';
 import SynonymsModal from '../../views/Institutions/Name/SynonymsModal';
 import NameModal from '../../views/Institutions/Name/NameModal';
+import SynonymBox from '../../views/Institutions/Name/SynonymBox';
 
-const styles = {
-  large: {
-    fontSize: 50,
-    fontWeight: 'bold',
-  },
-  small: {
-    opacity: 0.7,
-    fontSize: 16,
-  },
-};
 
 class NameContainer extends Component {
   constructor(props) {
@@ -74,14 +63,6 @@ class NameContainer extends Component {
     this.setState({
       displayDropdown: !this.state.displayDropdown,
     });
-  }
-
-  renderSynonyms() {
-    if (this.props.synonym) {
-      return this.props.synonym.split(', ').map(synonym => (
-        <div key={synonym} style={styles.small}>{synonym}</div>
-      ));
-    } return <div />;
   }
 
   render() {
@@ -158,23 +139,11 @@ class NameContainer extends Component {
           </ButtonDropdown>
         </ButtonGroup>
         {width > 767 ?
-          <TagCloud
-            style={{
-              flex: '1',
-              fontFamily: 'sans-serif',
-              fontSize: 30,
-              color: () => randomColor({
-                hue: 'blue',
-              }),
-              padding: 5,
-            }}
-          >
-            <div style={displayedName.initials.length > 10 ? '' : styles.large}>{displayedName.initials}</div>
-            {displayedName.initials === displayedName.text ?
-              <div /> :
-              <div style={displayedName.text.length > 25 ? styles.small : ''}>{displayedName.text}</div>}
-            {this.renderSynonyms()}
-          </TagCloud> :
+          <SynonymBox
+            initials={displayedName.initials}
+            text={displayedName.text}
+            synonym={this.props.synonym}
+          /> :
           <div>
             <h3>{displayedName.initials}</h3>
             <h4>{displayedName.text}</h4>
