@@ -167,6 +167,54 @@ export function downloadData(url) {
         dispatch(downloadSuccess(URL.createObjectURL(file)));
         dispatch(downloadIsLoading(false));
       })
-      .catch(() => dispatch(downloadHasErrored(true)));
+      .catch(() => {
+        dispatch(downloadHasErrored(true));
+        dispatch(downloadIsLoading(false));
+      });
+  };
+}
+export function createInstitutionHasErrored(bool) {
+  return {
+    type: 'CREATE_INSTITUTION_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function createInstitutionIsLoading(bool) {
+  return {
+    type: 'CREATE_INSTITUTION_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function toggleAddModal() {
+  return {
+    type: 'TOGGLE_ADD_MODAL',
+  };
+}
+export function createInstitution(jsonBody) {
+  return (dispatch) => {
+    dispatch(createInstitutionIsLoading(true));
+    fetch(`${process.env.API_URL_STAGING}institutions/`, {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      }),
+      body: jsonBody,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then(() => {
+        dispatch(createInstitutionIsLoading(false));
+        dispatch(toggleAddModal());
+      })
+      .catch(() => {
+        dispatch(createInstitutionHasErrored(true));
+        dispatch(createInstitutionIsLoading(false));
+      });
   };
 }

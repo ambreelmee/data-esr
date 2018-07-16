@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch } from 'react-router-dom';
-import { compose, createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { fromJS } from 'immutable';
 // Styles
 // Import Flag Icons Set
 import 'flag-icon-css/css/flag-icon.min.css';

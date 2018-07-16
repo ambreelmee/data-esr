@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Tooltip } from 'reactstrap';
+import PropTypes from 'prop-types';
 import NameModal from './Name/NameModal';
 import UploadModal from './UploadModal';
 
@@ -8,7 +9,6 @@ class AddInstitutionButtons extends Component {
     super(props);
 
     this.state = {
-      addModal: false,
       addTooltip: false,
       uploadButton: false,
       uploadModal: false,
@@ -16,14 +16,9 @@ class AddInstitutionButtons extends Component {
     };
     this.mouseEnter = this.mouseEnter.bind(this);
     this.mouseLeave = this.mouseLeave.bind(this);
-    this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleAddTooltip = this.toggleAddTooltip.bind(this);
     this.toggleUploadModal = this.toggleUploadModal.bind(this);
     this.toggleUploadTooltip = this.toggleUploadTooltip.bind(this);
-  }
-
-  toggleAddModal() {
-    this.setState({ addModal: !this.state.addModal });
   }
 
   toggleAddTooltip() {
@@ -57,7 +52,7 @@ class AddInstitutionButtons extends Component {
           className="float-add"
           color="primary"
           id="search-page-add-button"
-          onClick={this.toggleAddModal}
+          onClick={this.props.toggleModal}
           type="button"
         >
           <i id="icon-plus" className="fa fa-plus my-float" />
@@ -70,8 +65,14 @@ class AddInstitutionButtons extends Component {
         >
         Ajouter un établissement
         </Tooltip>
-        {this.state.addModal ?
-          <NameModal toggleModal={this.toggleAddModal} /> : <div />}
+        {this.props.modal ?
+          <NameModal
+            createInstitution={this.props.createInstitution}
+            hasErrored={this.props.hasErrored}
+            isLoading={this.props.isLoading}
+            modal={this.props.modal}
+            toggleModal={this.props.toggleModal}
+          /> : <div />}
         {this.state.uploadButton ?
           <div>
             <Button
@@ -103,5 +104,13 @@ class AddInstitutionButtons extends Component {
     );
   }
 }
+
+AddInstitutionButtons.propTypes = {
+  toggleModal: PropTypes.func.isRequired,
+  createInstitution: PropTypes.func.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  modal: PropTypes.bool.isRequired,
+};
 
 export default AddInstitutionButtons;

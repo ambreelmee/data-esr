@@ -15,6 +15,8 @@ class TableModal extends Component {
           component={this.props.component}
           deleteUrl={`${this.props.deleteUrl}/${contentItem.id}`}
           institutionId={this.props.institutionId}
+          modal={this.props.editModal}
+          toggleModal={this.props.toggleEditModal}
         />));
   }
 
@@ -53,12 +55,14 @@ class TableModal extends Component {
 TableModal.propTypes = {
   addModal: PropTypes.bool.isRequired,
   component: PropTypes.object.isRequired,
-  deleteUrl: PropTypes.string.isRequired,
-  institutionId: PropTypes.number.isRequired,
   content: PropTypes.array.isRequired,
+  deleteUrl: PropTypes.string.isRequired,
+  editModal: PropTypes.bool.isRequired,
+  institutionId: PropTypes.number.isRequired,
   modal: PropTypes.bool.isRequired,
   tableHeader: PropTypes.array.isRequired,
   toggleAddModal: PropTypes.func.isRequired,
+  toggleEditModal: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 

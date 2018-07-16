@@ -5,19 +5,17 @@ import moment from 'moment';
 
 import DeleteModalContainer from '../../containers/Institutions/DeleteModalContainer';
 
-class NameHistoryModalRow extends Component {
+class TableRow extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       deleteTooltip: false,
       deleteModal: false,
-      editModal: false,
       editTooltip: false,
     };
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
-    this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleEditToolTip = this.toggleEditToolTip.bind(this);
   }
 
@@ -39,11 +37,6 @@ class NameHistoryModalRow extends Component {
     });
   }
 
-  toggleEditModal() {
-    this.setState({
-      editModal: !this.state.editModal,
-    });
-  }
 
   render() {
     return (
@@ -62,13 +55,16 @@ class NameHistoryModalRow extends Component {
             <Button
               color="info"
               id={`historymodal-edit-button-${this.props.id}`}
-              onClick={this.toggleEditModal}
+              onClick={this.props.toggleModal}
               size="sm"
             >
               <i className="fa fa-pencil" />
             </Button>
-            {this.state.editModal ?
-              React.cloneElement(this.props.component, { ...this.props, toggleModal: this.toggleEditModal }) : ''}
+            {this.props.modal ?
+              React.cloneElement(
+                this.props.component,
+                { ...this.props, toggleModal: this.props.toggleModal, modal: this.props.modal }
+              ) : ''}
             <Button
               color="danger"
               id={`historymodal-delete-button-${this.props.id}`}
@@ -106,7 +102,7 @@ class NameHistoryModalRow extends Component {
   }
 }
 
-NameHistoryModalRow.propTypes = {
+TableRow.propTypes = {
   component: PropTypes.object.isRequired,
   date_end: PropTypes.string,
   date_start: PropTypes.string,
@@ -114,13 +110,15 @@ NameHistoryModalRow.propTypes = {
   id: PropTypes.number.isRequired,
   initials: PropTypes.string.isRequired,
   institutionId: PropTypes.number.isRequired,
+  modal: PropTypes.bool.isRequired,
   status: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
+  toggleModal: PropTypes.func.isRequired,
 };
 
-NameHistoryModalRow.defaultProps = {
+TableRow.defaultProps = {
   date_end: '',
   date_start: '',
 };
 
-export default NameHistoryModalRow;
+export default TableRow;

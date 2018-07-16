@@ -21,6 +21,20 @@ export default function activeInstitution(state = [], action) {
       return { ...state, addContentHasErrored: action.hasErrored };
     case 'ADD_CONTENT_IS_LOADING':
       return { ...state, addContentIsLoading: action.isLoading };
+    case 'TOGGLE_EDIT_MODAL':
+      return {
+        ...state,
+        addContentHasErrored: false,
+        addContentIsLoading: false,
+        editModal: !state.editModal,
+      };
+    case 'TOGGLE_ADD_MODAL':
+      return {
+        ...state,
+        addContentHasErrored: false,
+        addContentIsLoading: false,
+        addModal: !state.addModal,
+      };
     default:
       return state;
   }

@@ -38,7 +38,10 @@ export function getActiveInstitution(institutionId) {
         dispatch(institutionFetchDataSuccess(institution));
         dispatch(institutionIsLoading(false));
       })
-      .catch(() => dispatch(institutionHasErrored(true)));
+      .catch(() => {
+        dispatch(institutionHasErrored(true));
+        dispatch(institutionIsLoading(false));
+      })
   };
 }
 
@@ -82,7 +85,10 @@ export function updateSynonymList(url, synonym) {
         dispatch(institutionFetchSuccess(institution));
         dispatch(synonymIsLoading(false));
       })
-      .catch(() => dispatch(synonymHasErrored(true)));
+      .catch(() => {
+        dispatch(synonymHasErrored(true));
+        dispatch(synonymIsLoading(false));
+      })
   };
 }
 export function deleteContentIsLoading(bool) {
@@ -118,7 +124,10 @@ export function deleteContent(url, institutionId) {
         dispatch(deleteContentIsLoading(false));
         dispatch(getActiveInstitution(institutionId));
       })
-      .catch(() => dispatch(deleteContentHasErrored(true)));
+      .catch(() => {
+        dispatch(deleteContentHasErrored(true));
+        dispatch(deleteContentIsLoading(false));
+      })
   };
 }
 export function addContentIsLoading(bool) {
@@ -133,13 +142,24 @@ export function addContentHasErrored(bool) {
     hasErrored: bool,
   };
 }
-export function addContent(url, jsonBody) {
+export function toggleAddModal() {
+  return {
+    type: 'TOGGLE_ADD_MODAL',
+  };
+}
+export function toggleEditModal() {
+  return {
+    type: 'TOGGLE_EDIT_MODAL',
+  };
+}
+export function addContent(url, jsonBody, method) {
   return (dispatch) => {
     dispatch(addContentIsLoading(true));
     fetch(url, {
-      method: 'POST',
+      method,
       headers: new Headers({
         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
       }),
       body: jsonBody,
     })
@@ -154,6 +174,9 @@ export function addContent(url, jsonBody) {
         dispatch(addContentIsLoading(false));
         dispatch(institutionFetchSuccess(institution));
       })
-      .catch(() => dispatch(addContentHasErrored(true)));
+      .catch(() => {
+        dispatch(addContentHasErrored(true));
+        dispatch(addContentIsLoading(false));
+      })
   };
 }

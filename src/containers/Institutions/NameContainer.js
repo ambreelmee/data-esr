@@ -3,9 +3,9 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { Alert, ButtonGroup, ButtonDropdown, Card, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { updateSynonymList } from '../../actions/institution';
+import { updateSynonymList, addContent, toggleAddModal, toggleEditModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import EtablissementStatusModal from '../../views/Institutions/Name/EtablissementStatusModal';
+import StatusModal from '../../views/Institutions/Name/StatusModal';
 import TableModal from '../../views/Institutions/TableModal';
 import SynonymsModal from '../../views/Institutions/Name/SynonymsModal';
 import NameModal from '../../views/Institutions/Name/NameModal';
@@ -17,7 +17,6 @@ class NameContainer extends Component {
     super(props);
 
     this.state = {
-      addModal: false,
       statusModal: false,
       displayDropdown: false,
       synonymModal: false,
@@ -26,19 +25,14 @@ class NameContainer extends Component {
 
     this.displayDropdown = this.displayDropdown.bind(this);
     this.toggleStatusModal = this.toggleStatusModal.bind(this);
-    this.toggleAddModal = this.toggleAddModal.bind(this);
     this.toggleSynonymModal = this.toggleSynonymModal.bind(this);
     this.toggleHistoryModal = this.toggleHistoryModal.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.props.getActiveInstitution(nextProps.institutionId);
-  }
-
-  toggleAddModal() {
-    this.setState({
-      addModal: !this.state.addModal,
-    });
+    if (nextProps.institutionId !== this.props.institutionId) {
+      this.props.getActiveInstitution(nextProps.institutionId);
+    }
   }
 
   toggleStatusModal() {
@@ -94,18 +88,23 @@ class NameContainer extends Component {
               </DropdownItem>
               {this.state.historyModal ?
                 <TableModal
-                  addModal={this.state.addModal}
+                  addModal={this.props.addModal}
                   component={
                     <NameModal
+                      addContent={this.props.addContent}
+                      hasErrored={this.props.addContentHasErrored}
                       institutionId={this.props.institutionId}
-                      toggleModal={this.toggleAddModal}
+                      isLoading={this.props.addContentIsLoading}
+                      toggleModal={this.props.toggleAddModal}
                     />}
                   deleteUrl={`${process.env.API_URL_STAGING}institution_names/`}
-                  institutionId={this.props.institutionId}
                   content={this.props.names}
+                  editModal={this.props.editModal}
+                  institutionId={this.props.institutionId}
                   modal={this.state.historyModal}
                   tableHeader={['Sigle', 'Nom complet', 'Début', 'Fin', 'Statut', 'Action']}
-                  toggleAddModal={this.toggleAddModal}
+                  toggleAddModal={this.props.toggleAddModal}
+                  toggleEditModal={this.props.toggleEditModal}
                   toggleModal={this.toggleHistoryModal}
                 /> : <div />}
               <DropdownItem onClick={this.toggleSynonymModal}>
@@ -127,12 +126,17 @@ class NameContainer extends Component {
                 <i className="fa fa-pencil text-danger" />
                   Modifier le statut de l&#39;établissement
                 {this.state.statusModal ?
-                  <EtablissementStatusModal
-                    id={this.props.institutionId}
+                  <StatusModal
+                    addContent={this.props.addContent}
+                    hasErrored={this.props.addContentHasErrored}
+                    institutionId={this.props.institutionId}
+                    isLoading={this.props.addContentIsLoading}
                     date_end={this.props.dateEnd}
                     date_start={this.props.dateStart}
                     getData={this.props.getActiveInstitution}
+                    modal={this.state.statusModal}
                     toggleModal={this.toggleStatusModal}
+                    uai={this.props.uai ? this.props.uai.content : 'X'}
                   /> : <div />}
               </DropdownItem>
             </DropdownMenu>
@@ -153,38 +157,58 @@ class NameContainer extends Component {
   }
 }
 const mapStateToProps = state => ({
+  addContentHasErrored: state.activeInstitution.addContentHasErrored,
+  addContentIsLoading: state.activeInstitution.addContentIsLoading,
+  addModal: state.activeInstitution.addModal,
   institutionId: state.activeInstitution.institution.id,
   dateEnd: state.activeInstitution.institution.date_end,
   dateStart: state.activeInstitution.institution.date_start,
+  editModal: state.activeInstitution.editModal,
   names: state.activeInstitution.institution.names,
   synonym: state.activeInstitution.institution.synonym,
   synonymHasErrored: state.activeInstitution.synonymHasErrored,
   synonymIsLoading: state.activeInstitution.synonymIsLoading,
+  uai: state.activeInstitution.institution.codes.find(code => code.category === 'uai'),
 });
 
 const mapDispatchToProps = dispatch => ({
   updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
+  addContent: (url, jsonBody, method) => dispatch(addContent(url, jsonBody, method)),
+  toggleAddModal: () => dispatch(toggleAddModal()),
+  toggleEditModal: () => dispatch(toggleEditModal()),
 });
 
 NameContainer.propTypes = {
-  updateSynonymList: PropTypes.func.isRequired,
+  addContent: PropTypes.func.isRequired,
+  addContentHasErrored: PropTypes.bool,
+  addContentIsLoading: PropTypes.bool,
+  addModal: PropTypes.bool,
   getActiveInstitution: PropTypes.func.isRequired,
   institutionId: PropTypes.number.isRequired,
   dateEnd: PropTypes.string,
   dateStart: PropTypes.string,
+  editModal: PropTypes.bool,
   names: PropTypes.array.isRequired,
   synonym: PropTypes.string,
   synonymHasErrored: PropTypes.bool,
   synonymIsLoading: PropTypes.bool,
+  toggleAddModal: PropTypes.func.isRequired,
+  toggleEditModal: PropTypes.func.isRequired,
+  uai: PropTypes.string,
+  updateSynonymList: PropTypes.func.isRequired,
 };
 
 NameContainer.defaultProps = {
+  addContentHasErrored: false,
+  addContentIsLoading: false,
+  addModal: false,
   dateEnd: '',
   dateStart: '',
-  deleteModal: false,
+  editModal: false,
   synonym: '',
   synonymHasErrored: false,
   synonymIsLoading: false,
+  uai: null,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NameContainer);

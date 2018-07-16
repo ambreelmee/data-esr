@@ -5,6 +5,7 @@ import {
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 
 class NameModal extends Component {
@@ -14,17 +15,13 @@ class NameModal extends Component {
     this.state = {
       initials: this.props.initials,
       text: this.props.text,
-      date_start: this.props.date_start,
+      date_start: this.props.date_start ? this.props.date_start : moment().format('YYYY-MM-DD'),
       date_end: this.props.date_end,
-      modal: true,
-      errorMessage: '',
-      isLoading: false,
       status: this.props.status,
     };
     this.triggerAction = this.triggerAction.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onRadioChange = this.onRadioChange.bind(this);
-    this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
@@ -36,118 +33,41 @@ class NameModal extends Component {
   }
 
   triggerAction() {
+    const jsonBody = JSON.stringify({
+      institution_name:
+        {
+          initials: this.state.initials,
+          text: this.state.text,
+          date_start: this.state.date_start,
+          date_end: this.state.date_end,
+          status: this.state.status,
+        },
+    });
     if (this.props.id) {
-      this.modifyCurrentName();
-    } else if (this.props.etablissement_id) {
-      this.addNewName();
+      const url = `${process.env.API_URL_STAGING}institution_names/${this.props.id}`;
+      this.props.addContent(url, jsonBody, 'PUT');
+    } else if (this.props.institutionId) {
+      const url = `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}/institution_names`;
+      this.props.addContent(url, jsonBody, 'POST');
     } else {
-      this.createInstitution();
+      const institution = {
+        initials: this.state.initials,
+        name: this.state.text,
+        date_start: this.state.date_start,
+        date_end: this.state.date_end,
+      };
+      this.props.createInstitution(JSON.stringify({ institution }));
     }
   }
 
-  toggle() {
-    this.props.toggleModal();
-    this.setState({
-      modal: !this.state.modal,
-      errorMessage: '',
-    });
-  }
-
-  addNewName() {
-    this.setState({ isLoading: true });
-    const newName = {
-      initials: this.state.initials,
-      text: this.state.text,
-      date_start: this.state.date_start,
-      date_end: this.state.date_end,
-      status: this.state.status,
-    };
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/institution_names`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-      body: JSON.stringify({ institution_name: newName }),
-    })
-      .then(res => res.json())
-      .then((data) => {
-        if (data === 'Record not found') {
-          this.setState({
-            errorMessage: 'Formulaire vide ou incomplet',
-            isLoading: false,
-          });
-        } else {
-          this.toggle();
-          this.props.getData(this.props.etablissement_id);
-        }
-      });
-  }
-
-  createInstitution() {
-    this.setState({ isLoading: true });
-    const newInstitution = {
-      initials: this.state.initials,
-      name: this.state.text,
-      date_start: this.state.date_start,
-      date_end: this.state.date_end,
-    };
-    fetch(`${process.env.API_URL_STAGING}institutions/`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-      body: JSON.stringify({ institution: newInstitution }),
-    })
-      .then(res => res.json())
-      .then((data) => {
-        if (data === 'Record not found') {
-          this.setState({
-            errorMessage: 'Formulaire vide ou incomplet',
-            isLoading: false,
-          });
-        } else {
-          this.setState({ redirectToNewInstitutionId: data.institution.id });
-        }
-      });
-  }
-
-  modifyCurrentName() {
-    this.setState({ isLoading: true });
-    const modifiedName = {
-      initials: this.state.initials,
-      text: this.state.text,
-      date_start: this.state.date_start,
-      date_end: this.state.date_end,
-      status: this.state.status,
-    };
-    fetch(
-      `${process.env.API_URL_STAGING}institution_names/${this.props.id}`,
-      {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }),
-        body: JSON.stringify({ institution_name: modifiedName }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.toggle();
-        this.setState({ isLoading: false });
-        this.props.getData(this.props.etablissement_id);
-      });
-  }
 
   render() {
     if (this.state.redirectToNewInstitutionId) {
       return <Redirect to={`/etablissements/${this.state.redirectToNewInstitutionId}`} />;
     }
     return (
-      <Modal isOpen={this.state.modal} toggle={this.toggle}>
-        <ModalHeader toggle={this.toggle}>
+      <Modal isOpen={this.props.modal} toggle={this.props.toggleModal}>
+        <ModalHeader toggle={this.props.toggleModal}>
           {this.props.id ? 'Modifier le nom' : 'Ajouter un établissement'}
         </ModalHeader>
         <ModalBody>
@@ -245,23 +165,26 @@ class NameModal extends Component {
           </Card>
         </ModalBody>
         <ModalFooter>
-          <p className="mt-2 text-danger">{this.state.errorMessage}</p>
+          <p className="mt-2 text-danger">
+            {this.props.hasErrored ?
+              'Opération impossible, veuillez vérifier que le formulaire est bien complet' : ''}
+          </p>
           <Button
             className="m-1 float-right"
             color="primary"
-            disabled={this.state.isLoading}
-            onClick={!this.state.isLoading ? this.triggerAction : null}
+            disabled={this.props.isLoading}
+            onClick={!this.props.isLoading ? this.triggerAction : null}
           >
-            {this.state.isLoading ?
+            {this.props.isLoading ?
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Modification </span>
               </div> :
               <div>
-                {this.props.id ? 'Modifier le nom' : this.props.etablissement_id ? 'Ajouter un nom' : 'Créer un établissement'}
+                {this.props.id ? 'Modifier le nom' : this.props.institutionId ? 'Ajouter un nom' : 'Créer un établissement'}
               </div>}
           </Button>
-          <Button color="secondary" onClick={this.toggle}>Annuler</Button>
+          <Button color="secondary" onClick={this.props.toggleModal}>Annuler</Button>
         </ModalFooter>
       </Modal>
 
@@ -270,24 +193,31 @@ class NameModal extends Component {
 }
 
 NameModal.propTypes = {
+  addContent: PropTypes.func,
+  closeModal: PropTypes.func,
+  createInstitution: PropTypes.func,
+  hasErrored: PropTypes.bool.isRequired,
   id: PropTypes.number,
   initials: PropTypes.string,
+  isLoading: PropTypes.bool.isRequired,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
-  etablissement_id: PropTypes.number,
-  getData: PropTypes.func,
+  institutionId: PropTypes.number,
+  modal: PropTypes.bool,
   status: PropTypes.string,
   text: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
 };
 
 NameModal.defaultProps = {
+  addContent: null,
+  createInstitution: null,
   id: null,
   initials: null,
   date_start: null,
   date_end: null,
-  etablissement_id: null,
-  getData: null,
+  institutionId: null,
+  modal: true,
   status: 'active',
   text: null,
 };

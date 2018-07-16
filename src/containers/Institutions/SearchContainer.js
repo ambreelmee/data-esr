@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   searchFetchData, institutionsSearch, onPageClick,
-  resetSearchAndDisplayFirstPage,
+  resetSearchAndDisplayFirstPage, createInstitution, toggleModal,
 } from '../../actions/search';
 import { getActiveEntity, getFormattedAddress } from '../../views/Institutions/methods';
 import SearchPageEtablissement from '../../views/Institutions/Search/SearchPageEtablissement';
@@ -72,7 +72,13 @@ class SearchContainer extends Component {
           {this.props.institutions.length > 0 ?
             <SearchPagination {...this.props.links} onClick={this.props.onPageClick} /> : <div />}
         </div>
-        <AddInstitutionButtons />
+        <AddInstitutionButtons
+          toggleModal={this.props.toggleModal}
+          createInstitution={this.props.createInstitution}
+          hasErrored={this.props.createInstitutionHasErrored}
+          isLoading={this.props.createInstitutionIsLoading}
+          modal={this.props.modal}
+        />
       </div>
     );
   }
@@ -80,8 +86,11 @@ class SearchContainer extends Component {
 
 const mapStateToProps = state => ({
   count: state.search.countResults,
+  createInstitutionHasErrored: state.search.createInstitutionHasErrored,
+  createInstitutionIsLoading: state.search.createInstitutionIsLoading,
   institutions: state.search.institutionsResults,
   links: state.search.linksResults,
+  modal: state.search.modal,
   hasErrored: state.search.institutionsHasErrored,
   isLoading: state.search.institutionsIsLoading,
   isSearching: state.search.isSearching,
@@ -89,33 +98,44 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  toggleModal: () => dispatch(toggleModal()),
+  createInstitution: jsonBody => dispatch(createInstitution(jsonBody)),
   fetchData: url => dispatch(searchFetchData(url)),
   onPageClick: url => dispatch(onPageClick(url)),
-  search: event => dispatch(institutionsSearch(event)),
   resetSearch: () => dispatch(resetSearchAndDisplayFirstPage()),
+  search: event => dispatch(institutionsSearch(event)),
 });
 
 SearchContainer.propTypes = {
   count: PropTypes.string,
+  closeModal: PropTypes.func.isRequired,
+  createInstitution: PropTypes.func.isRequired,
+  createInstitutionHasErrored: PropTypes.bool,
+  createInstitutionIsLoading: PropTypes.bool,
   fetchData: PropTypes.func.isRequired,
   institutions: PropTypes.array,
   isLoading: PropTypes.bool,
   isSearching: PropTypes.bool,
   links: PropTypes.object,
+  modal: PropTypes.bool,
   onPageClick: PropTypes.func.isRequired,
   hasErrored: PropTypes.bool,
   resetSearch: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
   search: PropTypes.func.isRequired,
   searchValue: PropTypes.string,
 };
 
 SearchContainer.defaultProps = {
   count: '0',
+  createInstitutionHasErrored: false,
+  createInstitutionIsLoading: false,
   hasErrored: false,
   institutions: [],
   isLoading: false,
   isSearching: false,
   links: {},
+  modal: false,
   searchValue: '',
 };
 
