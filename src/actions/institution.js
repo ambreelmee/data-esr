@@ -41,7 +41,7 @@ export function getActiveInstitution(institutionId) {
       .catch(() => {
         dispatch(institutionHasErrored(true));
         dispatch(institutionIsLoading(false));
-      })
+      });
   };
 }
 
@@ -88,7 +88,13 @@ export function updateSynonymList(url, synonym) {
       .catch(() => {
         dispatch(synonymHasErrored(true));
         dispatch(synonymIsLoading(false));
-      })
+      });
+  };
+}
+export function toggleDeleteModal(url) {
+  return {
+    type: 'TOGGLE_DELETE_MODAL',
+    url,
   };
 }
 export function deleteContentIsLoading(bool) {
@@ -101,6 +107,16 @@ export function deleteContentHasErrored(bool) {
   return {
     type: 'DELETE_CONTENT_HAS_ERRORED',
     hasErrored: bool,
+  };
+}
+export function deleteContentSuccess() {
+  return {
+    type: 'DELETE_CONTENT_SUCCESS',
+  };
+}
+export function removeActiveInstitution() {
+  return {
+    type: 'REMOVE_ACTIVE_INSTITUTION',
   };
 }
 export function deleteContent(url, institutionId) {
@@ -122,7 +138,12 @@ export function deleteContent(url, institutionId) {
       .then(response => response.json())
       .then(() => {
         dispatch(deleteContentIsLoading(false));
-        dispatch(getActiveInstitution(institutionId));
+        dispatch(deleteContentSuccess());
+        if (institutionId) {
+          dispatch(getActiveInstitution(institutionId));
+        } else {
+          dispatch(removeActiveInstitution())
+        }
       })
       .catch(() => {
         dispatch(deleteContentHasErrored(true));

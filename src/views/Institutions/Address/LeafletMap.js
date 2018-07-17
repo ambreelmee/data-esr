@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge } from 'reactstrap';
+import { Badge, Card } from 'reactstrap';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import PropTypes from 'prop-types';
 
@@ -33,7 +33,7 @@ class LeafletMap extends Component {
     const zipAndCity = `${this.props.currentAddress.zip_code} ,${this.props.currentAddress.city}`;
     const position = [this.props.currentAddress.latitude, this.props.currentAddress.longitude];
     return (
-      <div>
+      <Card className="mt-2 mb-0">
         <Map
           center={position}
           zoom={this.state.zoom}
@@ -69,7 +69,7 @@ class LeafletMap extends Component {
             <Badge color="warning" className="m-3">{this.state.positionMessage}</Badge>
           </div> :
           <div />}
-      </div>
+      </Card>
     );
   }
 }

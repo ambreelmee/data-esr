@@ -21,7 +21,7 @@ Address.propTypes = {
   address_2: PropTypes.string,
   business_name: PropTypes.string,
   city: PropTypes.string.isRequired,
-  city_code: PropTypes.string,
+  city_code: PropTypes.number,
   phone: PropTypes.string,
   status: PropTypes.string.isRequired,
   zip_code: PropTypes.string.isRequired,

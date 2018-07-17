@@ -7,7 +7,7 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { institutionsSearch, resetSearchAndDisplayFirstPage } from '../../actions/search';
 import { getActiveInstitution } from '../../actions/institution';
-import AddressContainer from '../../views/Institutions/Address/AddressContainer';
+import AddressContainer from './AddressContainer';
 import EvolutionContainer from '../../views/Institutions/Relation/EvolutionContainer';
 import NameContainer from './NameContainer';
 import LinkContainer from '../../views/Institutions/Link/LinkContainer';
@@ -71,10 +71,8 @@ class InstitutionContainer extends Component {
         />
         <Row>
           <Col md="8">
-            <Row>
-              <NameContainer getActiveInstitution={this.props.getActiveInstitution} />
-            </Row>
-            <AddressContainer etablissement_id={institutionId} />
+            <NameContainer getActiveInstitution={this.props.getActiveInstitution} />
+            <AddressContainer institutionId={institutionId} />
           </Col>
           <Col md="4">
             <Row className="mx-1">

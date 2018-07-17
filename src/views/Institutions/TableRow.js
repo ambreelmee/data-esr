@@ -11,23 +11,15 @@ class TableRow extends Component {
 
     this.state = {
       deleteTooltip: false,
-      deleteModal: false,
       editTooltip: false,
     };
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
-    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     this.toggleEditToolTip = this.toggleEditToolTip.bind(this);
   }
 
   toggleDeleteToolTip() {
     this.setState({
       deleteTooltip: !this.state.deleteTooltip,
-    });
-  }
-
-  toggleDeleteModal() {
-    this.setState({
-      deleteModal: !this.state.deleteModal,
     });
   }
 
@@ -41,8 +33,14 @@ class TableRow extends Component {
   render() {
     return (
       <tr key={this.props.id}>
-        <td>{this.props.initials}</td>
-        <td>{this.props.text}</td>
+        <td>{this.props.initials ? this.props.initials : this.props.business_name}</td>
+        <td>{this.props.text ? this.props.text : this.props.address_1}</td>
+        {this.props.address_1 ? <td>{this.props.address_2}</td> : ''}
+        {this.props.address_1 ? <td>{this.props.zip_code}</td> : ''}
+        {this.props.address_1 ? <td>{this.props.city}</td> : ''}
+        {this.props.address_1 ? <td>{this.props.city_code}</td> : ''}
+        {this.props.address_1 ? <td>{this.props.country}</td> : ''}
+        {this.props.address_1 ? <td>{this.props.phone}</td> : ''}
         <td>{this.props.date_start ? moment(this.props.date_start).format('LL') : ''}</td>
         <td>{this.props.date_end ? moment(this.props.date_end).format('LL') : ''}</td>
         <td>
@@ -54,21 +52,21 @@ class TableRow extends Component {
           <div className="d-flex flex-row">
             <Button
               color="info"
-              id={`historymodal-edit-button-${this.props.id}`}
-              onClick={this.props.toggleModal}
+              id={`tableModal-edit-button-${this.props.id}`}
+              onClick={this.props.toggleEditModal}
               size="sm"
             >
               <i className="fa fa-pencil" />
             </Button>
-            {this.props.modal ?
+            {this.props.editModal ?
               React.cloneElement(
                 this.props.component,
-                { ...this.props, toggleModal: this.props.toggleModal, modal: this.props.modal }
+                { ...this.props, toggleModal: this.props.toggleEditModal, modal: this.props.editModal },
               ) : ''}
             <Button
               color="danger"
-              id={`historymodal-delete-button-${this.props.id}`}
-              onClick={this.toggleDeleteModal}
+              id={`tableModal-delete-button-${this.props.id}`}
+              onClick={() => this.props.toggleDeleteModal(this.props.deleteUrl)}
               size="sm"
             >
               <i className="fa fa-close" />
@@ -76,7 +74,7 @@ class TableRow extends Component {
             <Tooltip
               placement="bottom"
               isOpen={this.state.editTooltip}
-              target={`historymodal-edit-button-${this.props.id}`}
+              target={`tableModal-edit-button-${this.props.id}`}
               toggle={this.toggleEditToolTip}
             >
             Modifier
@@ -84,18 +82,16 @@ class TableRow extends Component {
             <Tooltip
               placement="bottom"
               isOpen={this.state.deleteTooltip}
-              target={`historymodal-delete-button-${this.props.id}`}
+              target={`tableModal-delete-button-${this.props.id}`}
               toggle={this.toggleDeleteToolTip}
             >
             Supprimer la référence
             </Tooltip>
-            {this.state.deleteModal ?
-              <DeleteModalContainer
-                deleteUrl={this.props.deleteUrl}
-                institutionId={this.props.institutionId}
-                modal={this.state.deleteModal}
-                toggleModal={this.toggleDeleteModal}
-              /> : <div />}
+            <DeleteModalContainer
+              institutionId={this.props.institutionId}
+              modal={this.props.deleteModal}
+              toggleModal={this.props.toggleDeleteModal}
+            />
           </div>
         </td>
       </tr>);
@@ -103,22 +99,41 @@ class TableRow extends Component {
 }
 
 TableRow.propTypes = {
+  address_1: PropTypes.string,
+  address_2: PropTypes.string,
+  business_name: PropTypes.string,
+  city: PropTypes.string,
+  city_code: PropTypes.number,
   component: PropTypes.object.isRequired,
+  country: PropTypes.string,
   date_end: PropTypes.string,
   date_start: PropTypes.string,
   deleteUrl: PropTypes.string.isRequired,
+  deleteModal: PropTypes.bool.isRequired,
+  editModal: PropTypes.bool.isRequired,
   id: PropTypes.number.isRequired,
-  initials: PropTypes.string.isRequired,
+  initials: PropTypes.string,
   institutionId: PropTypes.number.isRequired,
-  modal: PropTypes.bool.isRequired,
+  phone: PropTypes.string,
   status: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
-  toggleModal: PropTypes.func.isRequired,
+  toggleDeleteModal: PropTypes.func.isRequired,
+  toggleEditModal: PropTypes.func.isRequired,
+  zip_code: PropTypes.string,
 };
 
 TableRow.defaultProps = {
+  address_1: '',
+  address_2: '',
+  business_name: '',
+  city: '',
+  city_code: null,
+  country: '',
   date_end: '',
   date_start: '',
+  initials: '',
+  phone: null,
+  zip_code: null,
 };
 
 export default TableRow;

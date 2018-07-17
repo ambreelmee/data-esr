@@ -14,9 +14,11 @@ class TableModal extends Component {
           key={contentItem.id}
           component={this.props.component}
           deleteUrl={`${this.props.deleteUrl}/${contentItem.id}`}
+          deleteModal={this.props.deleteModal}
+          editModal={this.props.editModal}
           institutionId={this.props.institutionId}
-          modal={this.props.editModal}
-          toggleModal={this.props.toggleEditModal}
+          toggleDeleteModal={this.props.toggleDeleteModal}
+          toggleEditModal={this.props.toggleEditModal}
         />));
   }
 
@@ -41,7 +43,7 @@ class TableModal extends Component {
             <i className="fa fa-plus mr-1" />
             Ajouter un élément
           </Button>
-          {this.props.addModal ? this.props.component : '' }
+          {this.props.component}
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={this.props.toggleModal}>Fermer</Button>
@@ -53,15 +55,16 @@ class TableModal extends Component {
 }
 
 TableModal.propTypes = {
-  addModal: PropTypes.bool.isRequired,
   component: PropTypes.object.isRequired,
   content: PropTypes.array.isRequired,
   deleteUrl: PropTypes.string.isRequired,
+  deleteModal: PropTypes.bool.isRequired,
   editModal: PropTypes.bool.isRequired,
   institutionId: PropTypes.number.isRequired,
   modal: PropTypes.bool.isRequired,
   tableHeader: PropTypes.array.isRequired,
   toggleAddModal: PropTypes.func.isRequired,
+  toggleDeleteModal: PropTypes.func.isRequired,
   toggleEditModal: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };

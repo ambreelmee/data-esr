@@ -4,8 +4,7 @@ import {
   Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import DeleteInstitution from './DeleteInstitution';
-
+import DeleteModalContainer from '../../../containers/Institutions/DeleteModalContainer';
 
 class StatusModal extends Component {
   constructor(props) {
@@ -74,7 +73,22 @@ class StatusModal extends Component {
           </Card>
         </ModalBody>
         <ModalFooter>
-          <DeleteInstitution id={this.props.institutionId} uai={this.props.uai} />
+          <Button color="danger" onClick={this.props.toggleDeleteModal} >
+            Supprimer défintivement
+          </Button>
+          <DeleteModalContainer
+            deleteUrl={`${process.env.API_BCE_URL}institutions/${this.props.uai}`}
+            modal={this.props.deleteModal}
+            toggleModal={this.props.toggleDeleteModal}
+            message={
+              <div>
+                <p className="text-danger">Etes-vous sûr de vouloir supprimer cet établissement ?</p><br />
+                Toutes les données liées à cet établissement seront perdues et les mises à jour
+                automatiques avec le référentiel de la BCE ne sera plus assurée.<br />
+                Si vous souhaitez seulement déclarer l&#39;établissement comme <strong>fermé</strong>,
+                 modifiez le bloc qui indique la date d&#39;ouverture à gauche du bouton supprimer
+              </div>}
+          />
           {this.props.hasErrored ?
             <p className="mt-2 text-danger">Erreur lors de l&#39;envoi du formulaire</p> :
             <p className="mt-2"> ou </p>}
@@ -105,10 +119,12 @@ StatusModal.propTypes = {
   addContent: PropTypes.func.isRequired,
   date_start: PropTypes.string.isRequired,
   date_end: PropTypes.string,
+  deleteModal: PropTypes.bool.isRequired,
   hasErrored: PropTypes.bool.isRequired,
   institutionId: PropTypes.number.isRequired,
   isLoading: PropTypes.bool.isRequired,
   modal: PropTypes.bool.isRequired,
+  toggleDeleteModal: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   uai: PropTypes.string.isRequired,
 };

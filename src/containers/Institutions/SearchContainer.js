@@ -108,7 +108,6 @@ const mapDispatchToProps = dispatch => ({
 
 SearchContainer.propTypes = {
   count: PropTypes.string,
-  closeModal: PropTypes.func.isRequired,
   createInstitution: PropTypes.func.isRequired,
   createInstitutionHasErrored: PropTypes.bool,
   createInstitutionIsLoading: PropTypes.bool,

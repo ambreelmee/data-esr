@@ -1,42 +1,47 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { toggleDeleteModal, deleteContent } from '../../actions/institution';
+import { deleteContent } from '../../actions/institution';
 import DeleteModal from '../../views/Institutions/DeleteModal';
 
 const DeleteModalContainer = props => (
   <DeleteModal
     deleteMethod={() => props.deleteContent(props.deleteUrl, props.institutionId)}
-    hasErrored={props.deleteContentHasErrored}
-    isLoading={props.deleteContentIsLoading}
+    hasErrored={props.hasErrored}
+    isLoading={props.isLoading}
     modal={props.modal}
     toggleModal={props.toggleModal}
+    message={props.message}
   />
 );
 
 const mapStateToProps = state => ({
-  deleteContentHasErrored: state.activeInstitution.deleteContentHasErrored,
-  deleteContentIsLoading: state.activeInstitution.deleteContentIsLoading,
+  deleteUrl: state.activeInstitution.deleteUrl,
+  hasErrored: state.activeInstitution.deleteContentHasErrored,
+  isLoading: state.activeInstitution.deleteContentIsLoading,
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleDeleteModal: () => dispatch(toggleDeleteModal()),
   deleteContent: (url, id) => dispatch(deleteContent(url, id)),
 });
 
 DeleteModalContainer.propTypes = {
   deleteContent: PropTypes.func.isRequired,
-  deleteContentHasErrored: PropTypes.bool,
-  deleteContentIsLoading: PropTypes.bool,
-  modal: PropTypes.bool.isRequired,
-  institutionId: PropTypes.number.isRequired,
-  toggleModal: PropTypes.func.isRequired,
   deleteUrl: PropTypes.string.isRequired,
+  hasErrored: PropTypes.bool,
+  institutionId: PropTypes.number,
+  isLoading: PropTypes.bool,
+  modal: PropTypes.bool,
+  message: PropTypes.string,
+  toggleModal: PropTypes.func.isRequired,
 };
 
 DeleteModalContainer.defaultProps = {
-  deleteContentHasErrored: false,
-  deleteContentIsLoading: false,
+  hasErrored: false,
+  isLoading: false,
+  institutionId: null,
+  message: '',
+  modal: false,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteModalContainer);

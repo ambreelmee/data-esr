@@ -8,7 +8,7 @@ const DeleteModal = props => (
       Suppression du champ
     </ModalHeader>
     <ModalBody>
-      Etes-vous sûr de vouloir supprimer ce champ ?
+      {props.message ? props.message : 'Etes-vous sûr de vouloir supprimer ce champ ?'}
     </ModalBody>
     <ModalFooter>
       {props.hasErrored ?
@@ -36,12 +36,13 @@ DeleteModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
   hasErrored: PropTypes.bool,
-  modal: PropTypes.bool,
+  modal: PropTypes.bool.isRequired,
+  message: PropTypes.string,
   deleteMethod: PropTypes.func.isRequired,
 };
 
 DeleteModal.defaultProps = {
-  modal: true,
+  message: '',
   hasErrored: false,
   isLoading: false,
 };
