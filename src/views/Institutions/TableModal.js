@@ -13,6 +13,7 @@ class TableModal extends Component {
         <TableRow
           {...contentItem}
           key={contentItem.id}
+          activeId={this.props.activeId}
           component={this.props.component}
           deleteUrl={`${this.props.deleteUrl}/${contentItem.id}`}
           deleteModal={this.props.deleteModal}
@@ -61,6 +62,7 @@ class TableModal extends Component {
 }
 
 TableModal.propTypes = {
+  activeId: PropTypes.number.isRequired,
   addModal: PropTypes.bool.isRequired,
   component: PropTypes.object.isRequired,
   content: PropTypes.array.isRequired,

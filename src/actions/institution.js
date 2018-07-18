@@ -167,14 +167,20 @@ export function addContentHasErrored(bool) {
     hasErrored: bool,
   };
 }
-export function toggleAddModal() {
+export function toggleAddNameModal() {
   return {
-    type: 'TOGGLE_ADD_MODAL',
+    type: 'TOGGLE_ADD_NAME_MODAL',
   };
 }
-export function toggleEditModal() {
+export function toggleAddAddressModal() {
+  return {
+    type: 'TOGGLE_ADD_ADDRESS_MODAL',
+  };
+}
+export function toggleEditModal(id) {
   return {
     type: 'TOGGLE_EDIT_MODAL',
+    id,
   };
 }
 export function addContent(url, jsonBody, method, institutionId) {

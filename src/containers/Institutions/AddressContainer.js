@@ -3,7 +3,7 @@ import { Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import { addContent } from '../../actions/institution';
+import { addContent, toggleAddAddressModal, toggleEditModal } from '../../actions/institution';
 import AddressCard from '../../views/Institutions/Address/AddressCard';
 import TableModalContainer from './TableModalContainer';
 import AddressModal from '../../views/Institutions/Address/AddressModal';
@@ -68,14 +68,17 @@ class AddressContainer extends Component {
         <Col md="4">
           <Row>
             <AddressCard
+              addModal={this.props.addModal}
               displayedAddress={displayedAddress}
               dropdown={this.state.dropdown}
               displayDropdown={this.displayDropdown}
+              id={displayedAddress.id}
               toggleAddModal={this.props.toggleAddModal}
               toggleTableModal={this.toggleTableModal}
             />
             {this.state.tableModal ?
               <TableModalContainer
+                addModal={this.props.addModal}
                 component={<AddressModal />}
                 deleteUrl={`${process.env.API_URL_STAGING}addresses`}
                 content={this.props.addresses}
@@ -84,9 +87,18 @@ class AddressContainer extends Component {
                   'Ville', 'Code commune', 'Pays', 'Téléphone', 'Début', 'Fin', 'Statut', 'Action ']
                 }
                 tableModal={this.state.tableModal}
+                toggleAddModal={this.props.toggleAddModal}
                 toggleTableModal={this.toggleTableModal}
               /> : <div />}
             <CodeContainer etablissement_id={this.props.institutionId} />
+            <AddressModal
+              addContent={this.props.addContent}
+              hasErrored={this.props.addContentHasErrored}
+              institutionId={this.props.institutionId}
+              isLoading={this.props.addContentIsLoading}
+              modal={this.props.addModal}
+              toggleModal={this.props.toggleAddModal}
+            />
           </Row>
         </Col>
       </Row>
@@ -95,6 +107,7 @@ class AddressContainer extends Component {
 }
 
 const mapStateToProps = state => ({
+  addModal: state.activeInstitution.addAddressModal,
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
   addresses: state.activeInstitution.institution.addresses,
@@ -103,19 +116,23 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
-  toggleAddModal: () => dispatch(toggleAddModal())
+  toggleAddModal: () => dispatch(toggleAddAddressModal()),
+  toggleEditModal: id => dispatch(toggleEditModal(id)),
 });
 
 AddressContainer.propTypes = {
   addContent: PropTypes.func.isRequired,
+  addModal: PropTypes.bool,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
   addresses: PropTypes.array.isRequired,
   institutionId: PropTypes.number.isRequired,
   toggleAddModal: PropTypes.func.isRequired,
+  toggleEditModal: PropTypes.func.isRequired,
 };
 
 AddressContainer.defaultProps = {
+  addModal: false,
   addContentHasErrored: false,
   addContentIsLoading: false,
 };

@@ -51,12 +51,12 @@ class TableRow extends Component {
             <Button
               color="info"
               id={`tableModal-edit-button-${this.props.id}`}
-              onClick={this.props.toggleEditModal}
+              onClick={() => this.props.toggleEditModal(this.props.id)}
               size="sm"
             >
               <i className="fa fa-pencil" />
             </Button>
-            {this.props.editModal ?
+            {this.props.editModal && this.props.activeId === this.props.id ?
               React.cloneElement(
                 this.props.component,
                 { ...this.props, toggleModal: this.props.toggleEditModal, modal: this.props.editModal },
@@ -92,6 +92,7 @@ class TableRow extends Component {
 }
 
 TableRow.propTypes = {
+  activeId: PropTypes.number.isRequired,
   address_1: PropTypes.string,
   address_2: PropTypes.string,
   business_name: PropTypes.string,

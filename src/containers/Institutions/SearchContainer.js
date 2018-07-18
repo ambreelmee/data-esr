@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   searchFetchData, institutionsSearch, onPageClick,
-  resetSearchAndDisplayFirstPage, createInstitution, toggleModal,
+  resetSearchAndDisplayFirstPage, createInstitution, toggleAddModal,
 } from '../../actions/search';
 import { getActiveEntity, getFormattedAddress } from '../../views/Institutions/methods';
 import SearchPageEtablissement from '../../views/Institutions/Search/SearchPageEtablissement';
@@ -90,7 +90,7 @@ const mapStateToProps = state => ({
   createInstitutionIsLoading: state.search.createInstitutionIsLoading,
   institutions: state.search.institutionsResults,
   links: state.search.linksResults,
-  modal: state.search.modal,
+  modal: state.search.addModal,
   hasErrored: state.search.institutionsHasErrored,
   isLoading: state.search.institutionsIsLoading,
   isSearching: state.search.isSearching,
@@ -98,7 +98,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleModal: () => dispatch(toggleModal()),
+  toggleModal: () => dispatch(toggleAddModal()),
   createInstitution: jsonBody => dispatch(createInstitution(jsonBody)),
   fetchData: url => dispatch(searchFetchData(url)),
   onPageClick: url => dispatch(onPageClick(url)),

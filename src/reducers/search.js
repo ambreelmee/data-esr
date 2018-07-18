@@ -50,7 +50,7 @@ export default function search(state = [], action) {
       return { ...state, createInstitutionHasErrored: action.hasErrored };
     case 'CREATE_INSTITUTION_IS_LOADING':
       return { ...state, createInstitutionIsLoading: action.isLoading };
-    case 'TOGGLE_ADD_MODAL':
+    case 'TOGGLE_ADD_NAME_MODAL':
       return {
         ...state,
         addContentHasErrored: false,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row } from 'reactstrap';
-import { updateSynonymList, addContent, toggleDeleteModal } from '../../actions/institution';
+import { updateSynonymList, addContent, toggleDeleteModal, toggleAddNameModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import StatusModal from '../../views/Institutions/Name/StatusModal';
 import TableModalContainer from './TableModalContainer';
@@ -77,11 +77,13 @@ class NameContainer extends Component {
         />
         {this.state.tableModal ?
           <TableModalContainer
+            addModal={this.props.addModal}
             component={<NameModal />}
             deleteUrl={`${process.env.API_URL_STAGING}institution_names`}
             content={this.props.names}
             tableHeader={['Sigle', 'Nom complet', 'Début', 'Fin', 'Statut', 'Action']}
             tableModal={this.state.tableModal}
+            toggleAddModal={this.props.toggleAddModal}
             toggleTableModal={this.toggleTableModal}
           /> : <div />}
         <SynonymsModal
@@ -113,6 +115,7 @@ class NameContainer extends Component {
   }
 }
 const mapStateToProps = state => ({
+  addModal: state.activeInstitution.addNameModal,
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
   institutionId: state.activeInstitution.institution.id,
@@ -130,12 +133,14 @@ const mapDispatchToProps = dispatch => ({
   updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
   toggleDeleteModal: () => dispatch(toggleDeleteModal()),
+  toggleAddModal: () => dispatch(toggleAddNameModal()),
 });
 
 NameContainer.propTypes = {
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
+  addModal: PropTypes.bool,
   getActiveInstitution: PropTypes.func.isRequired,
   institutionId: PropTypes.number.isRequired,
   dateEnd: PropTypes.string,
@@ -145,6 +150,7 @@ NameContainer.propTypes = {
   synonym: PropTypes.string,
   synonymHasErrored: PropTypes.bool,
   synonymIsLoading: PropTypes.bool,
+  toggleAddModal: PropTypes.func.isRequired,
   toggleDeleteModal: PropTypes.func.isRequired,
   uai: PropTypes.object,
   updateSynonymList: PropTypes.func.isRequired,
@@ -153,6 +159,7 @@ NameContainer.propTypes = {
 NameContainer.defaultProps = {
   addContentHasErrored: false,
   addContentIsLoading: false,
+  addModal: false,
   dateEnd: '',
   dateStart: '',
   deleteModal: false,

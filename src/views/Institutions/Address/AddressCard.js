@@ -25,6 +25,10 @@ const AddressCard = props => (
               <i className="fa fa-eye text-info" />
                 Afficher les informations détaillées
             </DropdownItem>
+            <DropdownItem onClick={props.toggleAddModal}>
+              <i className="fa fa-plus text-success" />
+                Ajouter une nouvelle adresse
+            </DropdownItem>
           </DropdownMenu>
         </ButtonDropdown>
       </ButtonGroup>
@@ -57,6 +61,7 @@ AddressCard.propTypes = {
   displayedAddress: PropTypes.object,
   dropdown: PropTypes.bool.isRequired,
   displayDropdown: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
   toggleAddModal: PropTypes.func.isRequired,
   toggleTableModal: PropTypes.func.isRequired,
 };

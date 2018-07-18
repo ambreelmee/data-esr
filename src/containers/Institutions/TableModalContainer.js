@@ -7,6 +7,7 @@ import TableModal from '../../views/Institutions/TableModal';
 const TableModalContainer = (props) => {
   return (
     <TableModal
+      activeId={props.activeId}
       addModal={props.addModal}
       component={React.cloneElement(
         props.component,
@@ -34,9 +35,9 @@ const TableModalContainer = (props) => {
 }
 
 const mapStateToProps = state => ({
+  activeId: state.activeInstitution.activeId,
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
-  addModal: state.activeInstitution.addModal,
   institutionId: state.activeInstitution.institution.id,
   deleteModal: state.activeInstitution.deleteModal,
   editModal: state.activeInstitution.editModal,
@@ -44,12 +45,12 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
-  toggleAddModal: () => dispatch(toggleAddModal()),
   toggleDeleteModal: url => dispatch(toggleDeleteModal(url)),
-  toggleEditModal: () => dispatch(toggleEditModal()),
+  toggleEditModal: id => dispatch(toggleEditModal(id)),
 });
 
 TableModalContainer.propTypes = {
+  activeId: PropTypes.number,
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
@@ -69,6 +70,7 @@ TableModalContainer.propTypes = {
 };
 
 TableModalContainer.defaultProps = {
+  activeId: 0,
   addContentHasErrored: false,
   addContentIsLoading: false,
   addModal: false,

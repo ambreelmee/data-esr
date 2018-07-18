@@ -37,16 +37,24 @@ export default function activeInstitution(state = [], action) {
     case 'TOGGLE_EDIT_MODAL':
       return {
         ...state,
+        activeId: action.id,
         addContentHasErrored: false,
         addContentIsLoading: false,
         editModal: !state.editModal,
       };
-    case 'TOGGLE_ADD_MODAL':
+    case 'TOGGLE_ADD_NAME_MODAL':
       return {
         ...state,
         addContentHasErrored: false,
         addContentIsLoading: false,
-        addModal: !state.addModal,
+        addNameModal: !state.addNameModal,
+      };
+    case 'TOGGLE_ADD_ADDRESS_MODAL':
+      return {
+        ...state,
+        addContentHasErrored: false,
+        addContentIsLoading: false,
+        addAddressModal: !state.addAddressModal,
       };
     case 'REMOVE_ACTIVE_INSTITUTION':
       return {
