@@ -6,18 +6,16 @@ export default function activeInstitution(state = [], action) {
     case 'INSTITUTION_IS_LOADING':
       return { ...state, isLoading: action.isLoading };
     case 'INSTITUTION_FETCH_DATA_SUCCESS':
-      return { ...state, institution: action.institution.institution };
-    case 'SYNONYM_HAS_ERRORED':
-      return { ...state, synonymHasErrored: action.hasErrored };
-    case 'SYNONYM_IS_LOADING':
-      return { ...state, synonymIsLoading: action.isLoading };
-    case 'INSTITUTION_FETCH_SUCCESS':
       return {
         ...state,
         institution: action.institution.institution,
         addModal: false,
         editModal: false,
       };
+    case 'SYNONYM_HAS_ERRORED':
+      return { ...state, synonymHasErrored: action.hasErrored };
+    case 'SYNONYM_IS_LOADING':
+      return { ...state, synonymIsLoading: action.isLoading };
     case 'DELETE_CONTENT_HAS_ERRORED':
       return { ...state, deleteContentHasErrored: action.hasErrored };
     case 'DELETE_CONTENT_IS_LOADING':

@@ -28,7 +28,7 @@ class StatusModal extends Component {
       date_end: this.state.date_end,
     };
     const url = `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}`;
-    this.props.addContent(url, JSON.stringify({ institution }), 'PUT');
+    this.props.addContent(url, JSON.stringify({ institution }), 'PUT', this.props.institutionId);
   }
 
   render() {

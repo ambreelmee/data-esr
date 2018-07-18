@@ -1,53 +1,36 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addContent, toggleAddModal, toggleEditModal, toggleDeleteModal } from '../../actions/institution';
 import TableModal from '../../views/Institutions/TableModal';
 
-class TableModalContainer extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      tableModal: false,
-    };
-    this.toggleTableModal = this.toggleTableModal.bind(this);
-  }
-
-  toggleTableModal() {
-    this.setState({
-      tableModal: !this.state.tableModal,
-    });
-  }
-
-  render() {
-    return (
-      <TableModal
-        addModal={this.props.addModal}
-        component={React.cloneElement(
-          this.props.component,
-          {
-            addContent: this.props.addContent,
-            hasErrored: this.props.addContentHasErrored,
-            institutionId: this.props.institutionId,
-            isLoading: this.props.addContentIsLoading,
-            toggleModal: this.props.toggleAddModal,
-            modal: this.props.addModal,
-          },
-        )}
-        content={this.props.content}
-        deleteModal={this.props.deleteModal}
-        deleteUrl={this.props.deleteUrl}
-        editModal={this.props.editModal}
-        institutionId={this.props.institutionId}
-        modal={this.props.tableModal}
-        tableHeader={this.props.tableHeader}
-        toggleAddModal={this.props.toggleAddModal}
-        toggleDeleteModal={this.props.toggleDeleteModal}
-        toggleEditModal={this.props.toggleEditModal}
-        toggleModal={this.props.toggleTableModal}
-      />);
-  }
+const TableModalContainer = (props) => {
+  return (
+    <TableModal
+      addModal={props.addModal}
+      component={React.cloneElement(
+        props.component,
+        {
+          addContent: props.addContent,
+          hasErrored: props.addContentHasErrored,
+          institutionId: props.institutionId,
+          isLoading: props.addContentIsLoading,
+          modal: props.addModal,
+          toggleModal: props.toggleAddModal,
+        },
+      )}
+      content={props.content}
+      deleteModal={props.deleteModal}
+      deleteUrl={props.deleteUrl}
+      editModal={props.editModal}
+      institutionId={props.institutionId}
+      modal={props.tableModal}
+      tableHeader={props.tableHeader}
+      toggleAddModal={props.toggleAddModal}
+      toggleDeleteModal={props.toggleDeleteModal}
+      toggleEditModal={props.toggleEditModal}
+      toggleModal={props.toggleTableModal}
+    />);
 }
 
 const mapStateToProps = state => ({
@@ -60,7 +43,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  addContent: (url, jsonBody, method) => dispatch(addContent(url, jsonBody, method)),
+  addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
   toggleAddModal: () => dispatch(toggleAddModal()),
   toggleDeleteModal: url => dispatch(toggleDeleteModal(url)),
   toggleEditModal: () => dispatch(toggleEditModal()),

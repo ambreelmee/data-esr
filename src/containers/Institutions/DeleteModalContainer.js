@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => ({
 
 DeleteModalContainer.propTypes = {
   deleteContent: PropTypes.func.isRequired,
-  deleteUrl: PropTypes.string.isRequired,
+  deleteUrl: PropTypes.string,
   hasErrored: PropTypes.bool,
   institutionId: PropTypes.number,
   isLoading: PropTypes.bool,
@@ -37,6 +37,7 @@ DeleteModalContainer.propTypes = {
 };
 
 DeleteModalContainer.defaultProps = {
+  deleteUrl: '',
   hasErrored: false,
   isLoading: false,
   institutionId: null,

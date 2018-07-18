@@ -25,10 +25,6 @@ const AddressCard = props => (
               <i className="fa fa-eye text-info" />
                 Afficher les informations détaillées
             </DropdownItem>
-            <DropdownItem onClick={props.toggleAddModal}>
-              <i className="fa fa-plus text-success" />
-                Ajouter une nouvelle adresse
-            </DropdownItem>
           </DropdownMenu>
         </ButtonDropdown>
       </ButtonGroup>

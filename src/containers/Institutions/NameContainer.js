@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row } from 'reactstrap';
-import {
-  updateSynonymList, addContent, toggleAddModal,
-  toggleEditModal, toggleDeleteModal,
-} from '../../actions/institution';
+import { updateSynonymList, addContent, toggleDeleteModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import StatusModal from '../../views/Institutions/Name/StatusModal';
 import TableModalContainer from './TableModalContainer';
@@ -78,41 +75,39 @@ class NameContainer extends Component {
           toggleSynonymModal={this.toggleSynonymModal}
           toggleTableModal={this.toggleTableModal}
         />
-        <TableModalContainer
-          component={<NameModal />}
-          deleteUrl={`${process.env.API_URL_STAGING}institution_names/`}
-          content={this.props.names}
-          tableHeader={['Sigle', 'Nom complet', 'Début', 'Fin', 'Statut', 'Action']}
-          tableModal={this.state.tableModal}
-          toggleTableModal={this.toggleTableModal}
-
+        {this.state.tableModal ?
+          <TableModalContainer
+            component={<NameModal />}
+            deleteUrl={`${process.env.API_URL_STAGING}institution_names`}
+            content={this.props.names}
+            tableHeader={['Sigle', 'Nom complet', 'Début', 'Fin', 'Statut', 'Action']}
+            tableModal={this.state.tableModal}
+            toggleTableModal={this.toggleTableModal}
+          /> : <div />}
+        <SynonymsModal
+          institutionId={this.props.institutionId}
+          isLoading={this.props.synonymIsLoading}
+          hasErrored={this.props.synonymHasErrored}
+          modal={this.state.synonymModal}
+          synonyms={this.props.synonym}
+          toggleModal={this.toggleSynonymModal}
+          updateSynonymList={this.props.updateSynonymList}
+          url={`${process.env.API_URL_STAGING}institutions/${this.props.institutionId}`}
         />
-        {this.state.synonymModal ?
-          <SynonymsModal
-            institutionId={this.props.institutionId}
-            isLoading={this.props.synonymIsLoading}
-            hasErrored={this.props.synonymHasErrored}
-            modal={this.state.synonymModal}
-            synonyms={this.props.synonym}
-            toggleModal={this.toggleSynonymModal}
-            updateSynonymList={this.props.updateSynonymList}
-            url={`${process.env.API_URL_STAGING}institutions/${this.props.institutionId}`}
-          /> : <div />}
-        {this.state.statusModal ?
-          <StatusModal
-            addContent={this.props.addContent}
-            hasErrored={this.props.addContentHasErrored}
-            institutionId={this.props.institutionId}
-            isLoading={this.props.addContentIsLoading}
-            date_end={this.props.dateEnd}
-            date_start={this.props.dateStart}
-            deleteModal={this.props.deleteModal}
-            getData={this.props.getActiveInstitution}
-            modal={this.state.statusModal}
-            toggleDeleteModal={this.props.toggleDeleteModal}
-            toggleModal={this.toggleStatusModal}
-            uai={this.props.uai ? this.props.uai.content : 'X'}
-          /> : <div />}
+        <StatusModal
+          addContent={this.props.addContent}
+          hasErrored={this.props.addContentHasErrored}
+          institutionId={this.props.institutionId}
+          isLoading={this.props.addContentIsLoading}
+          date_end={this.props.dateEnd}
+          date_start={this.props.dateStart}
+          deleteModal={this.props.deleteModal}
+          getData={this.props.getActiveInstitution}
+          modal={this.state.statusModal}
+          toggleDeleteModal={this.props.toggleDeleteModal}
+          toggleModal={this.toggleStatusModal}
+          uai={this.props.uai ? this.props.uai.content : 'X'}
+        />
       </Row>
     );
   }
@@ -120,12 +115,10 @@ class NameContainer extends Component {
 const mapStateToProps = state => ({
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
-  addModal: state.activeInstitution.addModal,
   institutionId: state.activeInstitution.institution.id,
   dateEnd: state.activeInstitution.institution.date_end,
   dateStart: state.activeInstitution.institution.date_start,
   deleteModal: state.activeInstitution.deleteModal,
-  editModal: state.activeInstitution.editModal,
   names: state.activeInstitution.institution.names,
   synonym: state.activeInstitution.institution.synonym,
   synonymHasErrored: state.activeInstitution.synonymHasErrored,
@@ -135,30 +128,24 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
-  addContent: (url, jsonBody, method) => dispatch(addContent(url, jsonBody, method)),
-  toggleAddModal: () => dispatch(toggleAddModal()),
+  addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
   toggleDeleteModal: () => dispatch(toggleDeleteModal()),
-  toggleEditModal: () => dispatch(toggleEditModal()),
 });
 
 NameContainer.propTypes = {
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
-  addModal: PropTypes.bool,
   getActiveInstitution: PropTypes.func.isRequired,
   institutionId: PropTypes.number.isRequired,
   dateEnd: PropTypes.string,
   dateStart: PropTypes.string,
   deleteModal: PropTypes.bool,
-  editModal: PropTypes.bool,
   names: PropTypes.array.isRequired,
   synonym: PropTypes.string,
   synonymHasErrored: PropTypes.bool,
   synonymIsLoading: PropTypes.bool,
-  toggleAddModal: PropTypes.func.isRequired,
   toggleDeleteModal: PropTypes.func.isRequired,
-  toggleEditModal: PropTypes.func.isRequired,
   uai: PropTypes.object,
   updateSynonymList: PropTypes.func.isRequired,
 };
@@ -166,11 +153,9 @@ NameContainer.propTypes = {
 NameContainer.defaultProps = {
   addContentHasErrored: false,
   addContentIsLoading: false,
-  addModal: false,
   dateEnd: '',
   dateStart: '',
   deleteModal: false,
-  editModal: false,
   synonym: '',
   synonymHasErrored: false,
   synonymIsLoading: false,

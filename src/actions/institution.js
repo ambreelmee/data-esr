@@ -57,10 +57,10 @@ export function synonymIsLoading(bool) {
     isLoading: bool,
   };
 }
-export function institutionFetchSuccess(institution) {
+export function institutionFetchSuccess(data) {
   return {
     type: 'INSTITUTION_FETCH_SUCCESS',
-    institution,
+    data,
   };
 }
 export function updateSynonymList(url, synonym) {
@@ -81,8 +81,12 @@ export function updateSynonymList(url, synonym) {
         return response;
       })
       .then(response => response.json())
-      .then((institution) => {
-        dispatch(institutionFetchSuccess(institution));
+      .then((data) => {
+        if (data.institution) {
+          dispatch(institutionFetchDataSuccess(data));
+        } else {
+          dispatch(institutionFetchSuccess(data))
+        }
         dispatch(synonymIsLoading(false));
       })
       .catch(() => {
@@ -173,7 +177,7 @@ export function toggleEditModal() {
     type: 'TOGGLE_EDIT_MODAL',
   };
 }
-export function addContent(url, jsonBody, method) {
+export function addContent(url, jsonBody, method, institutionId) {
   return (dispatch) => {
     dispatch(addContentIsLoading(true));
     fetch(url, {
@@ -191,9 +195,9 @@ export function addContent(url, jsonBody, method) {
         return response;
       })
       .then(response => response.json())
-      .then((institution) => {
+      .then(() => {
         dispatch(addContentIsLoading(false));
-        dispatch(institutionFetchSuccess(institution));
+        dispatch(getActiveInstitution(institutionId));
       })
       .catch(() => {
         dispatch(addContentHasErrored(true));

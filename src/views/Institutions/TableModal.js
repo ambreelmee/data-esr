@@ -3,6 +3,7 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'react
 import PropTypes from 'prop-types';
 
 import TableRow from './TableRow';
+import DeleteModalContainer from '../../containers/Institutions/DeleteModalContainer';
 
 
 class TableModal extends Component {
@@ -48,6 +49,11 @@ class TableModal extends Component {
         <ModalFooter>
           <Button color="secondary" onClick={this.props.toggleModal}>Fermer</Button>
         </ModalFooter>
+        <DeleteModalContainer
+          institutionId={this.props.institutionId}
+          modal={this.props.deleteModal}
+          toggleModal={this.props.toggleDeleteModal}
+        />
       </Modal>
 
     );
@@ -55,6 +61,7 @@ class TableModal extends Component {
 }
 
 TableModal.propTypes = {
+  addModal: PropTypes.bool.isRequired,
   component: PropTypes.object.isRequired,
   content: PropTypes.array.isRequired,
   deleteUrl: PropTypes.string.isRequired,

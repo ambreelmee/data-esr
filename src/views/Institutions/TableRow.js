@@ -3,8 +3,6 @@ import { Badge, Button, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import DeleteModalContainer from '../../containers/Institutions/DeleteModalContainer';
-
 class TableRow extends Component {
   constructor(props) {
     super(props);
@@ -87,11 +85,6 @@ class TableRow extends Component {
             >
             Supprimer la référence
             </Tooltip>
-            <DeleteModalContainer
-              institutionId={this.props.institutionId}
-              modal={this.props.deleteModal}
-              toggleModal={this.props.toggleDeleteModal}
-            />
           </div>
         </td>
       </tr>);
@@ -116,7 +109,7 @@ TableRow.propTypes = {
   institutionId: PropTypes.number.isRequired,
   phone: PropTypes.string,
   status: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
   toggleDeleteModal: PropTypes.func.isRequired,
   toggleEditModal: PropTypes.func.isRequired,
   zip_code: PropTypes.string,
@@ -133,6 +126,7 @@ TableRow.defaultProps = {
   date_start: '',
   initials: '',
   phone: null,
+  text: '',
   zip_code: null,
 };
 

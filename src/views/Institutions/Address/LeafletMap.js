@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Badge, Card } from 'reactstrap';
+import { Badge, Button, Card } from 'reactstrap';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import PropTypes from 'prop-types';
-
-import UpdatePositionButton from './UpdatePositionButton';
 
 class LeafletMap extends Component {
   constructor(props) {
@@ -13,12 +11,25 @@ class LeafletMap extends Component {
       latlng: null,
     };
     this.handleClick = this.handleClick.bind(this);
+    this.updatePosition = this.updatePosition.bind(this);
   }
 
   handleClick(e) {
     this.setState({
       latlng: e.latlng,
     });
+  }
+
+  updatePosition() {
+    const jsonBody = JSON.stringify({
+      address: {
+        latitude: this.state.latlng.lat || this.props.latitude,
+        longitude: this.state.latlng.lng || this.props.longitude,
+      }
+    });
+    const url = `${process.env.API_URL_STAGING}addresses/${this.props.id}`;
+    this.props.addContent(url, jsonBody, 'PUT', this.props.institutionId);
+    this.setState({ latlng: null })
   }
 
 
@@ -30,8 +41,7 @@ class LeafletMap extends Component {
         </Popup>
       </Marker>
     ) : null;
-    const zipAndCity = `${this.props.currentAddress.zip_code} ,${this.props.currentAddress.city}`;
-    const position = [this.props.currentAddress.latitude, this.props.currentAddress.longitude];
+    const position = [this.props.latitude, this.props.longitude];
     return (
       <Card className="mt-2 mb-0">
         <Map
@@ -46,12 +56,7 @@ class LeafletMap extends Component {
           <Marker position={position}>
             <Popup>
               <div>
-                <p>{this.props.currentAddress.address_1}
-                  {this.props.currentAddress.address_2 ? <br /> : <span />}
-                  {this.props.currentAddress.address_2}<br />
-                  {zipAndCity}<br />
-                  {this.props.currentAddress.country}
-                </p>
+                {this.props.formattedAddress}
               </div>
             </Popup>
           </Marker>
@@ -59,14 +64,19 @@ class LeafletMap extends Component {
         </Map>
         {this.state.latlng ?
           <div>
-            <UpdatePositionButton
-              etablissement_id={this.props.etablissement_id}
-              id={this.props.currentAddress.id}
-              selectedLat={this.state.latlng.lat || this.props.currentAddress.latitude}
-              selectedLng={this.state.latlng.lng || this.props.currentAddress.longitude}
-              getAddresses={this.props.getAddresses}
-            />
-            <Badge color="warning" className="m-3">{this.state.positionMessage}</Badge>
+            <Button
+              className="m-1 float-right"
+              color="secondary"
+              disabled={this.props.isLoading}
+              onClick={this.updatePosition}
+            >
+              {this.props.isLoading ?
+                <div>
+                  <i className="fa fa-spinner fa-spin " />
+                  <span className="mx-1"> Modification </span>
+                </div> :
+                'Corriger les coordonnées gps'}
+            </Button>
           </div> :
           <div />}
       </Card>
@@ -75,23 +85,14 @@ class LeafletMap extends Component {
 }
 
 LeafletMap.propTypes = {
-  etablissement_id: PropTypes.number.isRequired,
-  currentAddress: PropTypes.shape({
-    address_1: PropTypes.string.isRequired,
-    address_2: PropTypes.string,
-    business_name: PropTypes.string,
-    city: PropTypes.string.isRequired,
-    country: PropTypes.string.isRequired,
-    date_end: PropTypes.string,
-    date_start: PropTypes.string.isRequired,
-    id: PropTypes.number.isRequired,
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    phone: PropTypes.string,
-    status: PropTypes.string.isRequired,
-    zip_code: PropTypes.string.isRequired,
-  }).isRequired,
-  getAddresses: PropTypes.func.isRequired,
+  addContent: PropTypes.func.isRequired,
+  formattedAddress: PropTypes.object.isRequired,
+  id: PropTypes.number.isRequired,
+  institutionId: PropTypes.number.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  latitude: PropTypes.number.isRequired,
+  longitude: PropTypes.number.isRequired,
+
 }
 
 export default LeafletMap;

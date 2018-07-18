@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import {
-  Button, Card, CardBody, Col, Form, FormGroup,
-  Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
+  Card, CardBody, Col, Form, FormGroup,
+  Input, Label, Modal, ModalBody, ModalHeader, Row,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-
-import AddressModalButton from './AddressModalButton';
+import AddOrEditModalFooter from '../AddOrEditModalFooter';
 
 
 class AddressModal extends Component {
@@ -21,8 +20,6 @@ class AddressModal extends Component {
       country: this.props.country,
       date_start: this.props.date_start,
       date_end: this.props.date_end,
-      errorMessage: '',
-      modal: true,
       phone: this.props.phone,
       zip_code: this.props.zip_code,
       status: this.props.status,
@@ -30,7 +27,6 @@ class AddressModal extends Component {
     this.triggerAction = this.triggerAction.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onRadioChange = this.onRadioChange.bind(this);
-    this.toggle = this.toggle.bind(this);
   }
 
   onRadioChange(event) {
@@ -42,94 +38,34 @@ class AddressModal extends Component {
   }
 
   triggerAction() {
-    if (this.props.id) {
-      this.modifyCurrentAddress();
-    } else {
-      this.postInstitution();
-    }
-  }
-
-  toggle() {
-    this.props.toggleModal();
-    this.setState({
-      modal: !this.state.modal,
-      errorMessage: '',
+    const jsonBody = JSON.stringify({
+      address: {
+        address_1: this.state.address_1,
+        address_2: this.state.address_2,
+        business_name: this.state.business_name,
+        city: this.state.city,
+        city_code: this.state.city_code,
+        country: this.state.country,
+        date_start: this.state.date_start,
+        date_end: this.state.date_end,
+        phone: this.state.phone,
+        zip_code: this.state.zip_code,
+        status: this.state.status,
+      },
     });
-  }
-
-  postInstitution() {
-    const newAddress = {
-      address_1: this.state.address_1,
-      address_2: this.state.address_2,
-      business_name: this.state.business_name,
-      city: this.state.city,
-      city_code: this.state.city_code,
-      country: this.state.country,
-      date_start: this.state.date_start,
-      date_end: this.state.date_end,
-      phone: this.state.phone,
-      status: this.state.status,
-      zip_code: this.state.zip_code,
-    };
-    fetch(`${process.env.API_URL_STAGING}institutions/${this.props.etablissement_id}/addresses`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-      body: JSON.stringify({ address: newAddress }),
-    })
-      .then(res => res.json())
-      .then((data) => {
-        if (data === 'Record not found') {
-          this.setState({
-            errorMessage: 'Formulaire est vide ou incomplet',
-          });
-        } else {
-          this.toggle();
-          this.props.getAddresses(this.props.etablissement_id);
-        }
-      });
-  }
-
-  modifyCurrentAddress() {
-    const modifiedAddress = {
-      address_1: this.state.address_1,
-      address_2: this.state.address_2,
-      business_name: this.state.business_name,
-      city: this.state.city,
-      city_code: this.state.city_code,
-      country: this.state.country,
-      date_start: this.state.date_start,
-      date_end: this.state.date_end,
-      phone: this.state.phone,
-      zip_code: this.state.zip_code,
-      status: this.state.status,
-    };
-    fetch(`${process.env.API_URL_STAGING}addresses/${this.props.id}`, {
-      method: 'PUT',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-      body: JSON.stringify(modifiedAddress),
-    })
-      .then(res => res.json())
-      .then(() => {
-        this.toggle();
-        this.props.getAddresses(this.props.etablissement_id);
-      })
-      .catch(() => {
-        this.setState({
-          errorMessage: 'erreur',
-        });
-      });
+    if (this.props.id) {
+      const url = `${process.env.API_URL_STAGING}addresses/${this.props.id}`;
+      this.props.addContent(url, jsonBody, 'PUT', this.props.institutionId);
+    } else {
+      const url = `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}/addresses`;
+      this.props.addContent(url, jsonBody, 'POST', this.props.institutionId);
+    }
   }
 
   render() {
     return (
-      <Modal isOpen={this.state.modal} toggle={this.toggle}>
-        <ModalHeader toggle={this.toggle}>
+      <Modal isOpen={this.props.modal} toggle={this.props.toggleModal}>
+        <ModalHeader toggle={this.props.toggleModal}>
           {this.props.id ? "Modifier l'adresse actuelle" : 'Ajouter une adresse'}
         </ModalHeader>
         <ModalBody>
@@ -308,14 +244,13 @@ class AddressModal extends Component {
             </CardBody>
           </Card>
         </ModalBody>
-        <ModalFooter>
-          <p className="mt-2 text-danger">{this.state.errorMessage}</p>
-          <AddressModalButton
-            triggerAction={this.triggerAction}
-            id={this.props.id}
-          />
-          <Button color="secondary" onClick={this.toggle}>Annuler</Button>
-        </ModalFooter>
+        <AddOrEditModalFooter
+          hasErrored={this.props.hasErrored}
+          isLoading={this.props.isLoading}
+          message={this.props.id ? "Modifier l'adresse" : 'Ajouter une adresse'}
+          toggleModal={this.props.toggleModal}
+          triggerAction={this.triggerAction}
+        />
       </Modal>
 
     );
@@ -323,16 +258,20 @@ class AddressModal extends Component {
 }
 
 AddressModal.propTypes = {
+  addContent: PropTypes.func.isRequired,
   address_1: PropTypes.string,
   address_2: PropTypes.string,
   business_name: PropTypes.string,
   id: PropTypes.number,
   city: PropTypes.string,
+  city_code: PropTypes.number,
   country: PropTypes.string,
   date_start: PropTypes.string,
   date_end: PropTypes.string,
-  etablissement_id: PropTypes.number.isRequired,
-  getAddresses: PropTypes.func.isRequired,
+  institutionId: PropTypes.number.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  modal: PropTypes.bool.isRequired,
   phone: PropTypes.string,
   status: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
@@ -344,6 +283,7 @@ AddressModal.defaultProps = {
   address_2: null,
   business_name: null,
   city: null,
+  city_code: null,
   country: null,
   date_start: null,
   date_end: null,

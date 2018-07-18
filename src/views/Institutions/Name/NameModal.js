@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Button, Card, CardBody, Col, Form, FormGroup,
-  Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
+  Card, CardBody, Col, Form, FormGroup,
+  Input, Label, Modal, ModalBody, ModalHeader, Row,
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import AddOrEditModalFooter from '../AddOrEditModalFooter';
 
 
 class NameModal extends Component {
@@ -45,10 +46,10 @@ class NameModal extends Component {
     });
     if (this.props.id) {
       const url = `${process.env.API_URL_STAGING}institution_names/${this.props.id}`;
-      this.props.addContent(url, jsonBody, 'PUT');
+      this.props.addContent(url, jsonBody, 'PUT', this.props.institutionId);
     } else if (this.props.institutionId) {
       const url = `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}/institution_names`;
-      this.props.addContent(url, jsonBody, 'POST');
+      this.props.addContent(url, jsonBody, 'POST', this.props.institutionId);
     } else {
       const institution = {
         initials: this.state.initials,
@@ -164,28 +165,14 @@ class NameModal extends Component {
             </CardBody>
           </Card>
         </ModalBody>
-        <ModalFooter>
-          <p className="mt-2 text-danger">
-            {this.props.hasErrored ?
-              'Opération impossible, veuillez vérifier que le formulaire est bien complet' : ''}
-          </p>
-          <Button
-            className="m-1 float-right"
-            color="primary"
-            disabled={this.props.isLoading}
-            onClick={!this.props.isLoading ? this.triggerAction : null}
-          >
-            {this.props.isLoading ?
-              <div>
-                <i className="fa fa-spinner fa-spin " />
-                <span className="mx-1"> Modification </span>
-              </div> :
-              <div>
-                {this.props.id ? 'Modifier le nom' : this.props.institutionId ? 'Ajouter un nom' : 'Créer un établissement'}
-              </div>}
-          </Button>
-          <Button color="secondary" onClick={this.props.toggleModal}>Annuler</Button>
-        </ModalFooter>
+        <AddOrEditModalFooter
+          hasErrored={this.props.hasErrored}
+          isLoading={this.props.isLoading}
+          message={this.props.id ?
+            'Modifier le nom' : this.props.institutionId ? 'Ajouter un nom' : 'Créer un établissement'}
+          toggleModal={this.props.toggleModal}
+          triggerAction={this.triggerAction}
+        />
       </Modal>
 
     );
@@ -194,7 +181,6 @@ class NameModal extends Component {
 
 NameModal.propTypes = {
   addContent: PropTypes.func,
-  closeModal: PropTypes.func,
   createInstitution: PropTypes.func,
   hasErrored: PropTypes.bool.isRequired,
   id: PropTypes.number,
