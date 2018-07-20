@@ -6,8 +6,8 @@ import { addContent, setActiveItem, removeActiveItem, toggleDeleteModal } from '
 import { getActiveEntity } from '../../views/Institutions/methods';
 import CustomSideBar from '../../views/Institutions/CustomSideBar';
 import NameForm from '../../views/Institutions/Name/NameForm';
-import Address from '../../views/Institutions/Address/Address';
 import DeleteModalContainer from './DeleteModalContainer';
+import NavBreadcrumb from '../../views/Institutions/NavBreadcrumb';
 
 const Name = props => (
   <div>
@@ -25,8 +25,14 @@ class NameContainer extends Component {
   render() {
     return (
       <div>
-        <h3 className="text-center"> Gestion des <strong>noms</strong> associées à l&#39;établissement <div className="text-primary">{this.props.displayedName}</div></h3>
         <Row className="bg-light mt-3">
+          <NavBreadcrumb
+            displayedName={this.props.displayedName}
+            institutionId={this.props.institutionId}
+            type="Noms"
+          />
+        </Row>
+        <Row>
           <CustomSideBar
             activeId={this.props.activeItem ? this.props.activeItem.id : null}
             component={<Name />}

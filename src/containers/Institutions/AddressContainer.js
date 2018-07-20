@@ -8,6 +8,7 @@ import CustomSideBar from '../../views/Institutions/CustomSideBar';
 import AddressForm from '../../views/Institutions/Address/AddressForm';
 import Address from '../../views/Institutions/Address/Address';
 import DeleteModalContainer from './DeleteModalContainer';
+import NavBreadcrumb from '../../views/Institutions/NavBreadcrumb';
 
 class AddressContainer extends Component {
   componentWillMount() {
@@ -17,8 +18,14 @@ class AddressContainer extends Component {
   render() {
     return (
       <div>
-        <h3 className="text-center"> Gestion des <strong>adresses</strong> associées à l&#39;établissement <div className="text-primary">{this.props.displayedName}</div></h3>
         <Row className="bg-light mt-3">
+          <NavBreadcrumb
+            displayedName={this.props.displayedName}
+            institutionId={this.props.institutionId}
+            type="Adresse"
+          />
+        </Row>
+        <Row>
           <CustomSideBar
             activeId={this.props.activeItem ? this.props.activeItem.id : null}
             component={<Address />}
