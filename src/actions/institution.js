@@ -172,11 +172,6 @@ export function toggleAddNameModal() {
     type: 'TOGGLE_ADD_NAME_MODAL',
   };
 }
-export function toggleAddAddressModal() {
-  return {
-    type: 'TOGGLE_ADD_ADDRESS_MODAL',
-  };
-}
 export function toggleEditModal(id) {
   return {
     type: 'TOGGLE_EDIT_MODAL',
@@ -208,6 +203,23 @@ export function addContent(url, jsonBody, method, institutionId) {
       .catch(() => {
         dispatch(addContentHasErrored(true));
         dispatch(addContentIsLoading(false));
-      })
+      });
+  };
+}
+export function setActiveItem(item) {
+  return {
+    type: 'SET_ACTIVE_ITEM',
+    item,
+  };
+}
+export function setDisplayedName(name) {
+  return {
+    type: 'SET_DISPLAYED_NAME',
+    name,
+  };
+}
+export function removeActiveItem() {
+  return {
+    type: 'REMOVE_ACTIVE_ITEM',
   };
 }

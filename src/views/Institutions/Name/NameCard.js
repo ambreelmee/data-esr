@@ -2,6 +2,7 @@ import React from 'react';
 import { Alert, ButtonGroup, ButtonDropdown, Card, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { NavLink } from 'react-router-dom';
 import SynonymBox from './SynonymBox';
 
 const e = document.documentElement;
@@ -26,10 +27,10 @@ const NameCard = props => (
           <i className="icon-settings" />
         </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem onClick={props.toggleTableModal}>
-            <i className="fa fa-eye text-info" />
-              Afficher les informations détaillées
-          </DropdownItem>
+          <NavLink to={`/etablissements/${props.institutionId}/noms`} className="dropdown-item" >
+            <i className="fa fa-arrow-right text-info" />
+              Gérer les noms
+          </NavLink>
           <DropdownItem onClick={props.toggleSynonymModal}>
             <i className="fa fa-edit text-warning" />
               Modifier la liste des noms d&#39;usage
@@ -60,11 +61,11 @@ NameCard.propTypes = {
   dropdown: PropTypes.bool.isRequired,
   displayDropdown: PropTypes.func.isRequired,
   initials: PropTypes.string.isRequired,
+  institutionId: PropTypes.number.isRequired,
   synonym: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   toggleStatusModal: PropTypes.func.isRequired,
   toggleSynonymModal: PropTypes.func.isRequired,
-  toggleTableModal: PropTypes.func.isRequired,
 };
 
 NameCard.defaultProps = {

@@ -8,7 +8,7 @@ import {
   resetSearchAndDisplayFirstPage, createInstitution, toggleAddModal,
 } from '../../actions/search';
 import { getActiveEntity, getFormattedAddress } from '../../views/Institutions/methods';
-import SearchPageEtablissement from '../../views/Institutions/Search/SearchPageEtablissement';
+import SearchResultCard from '../../views/Institutions/Search/SearchResultCard';
 import DownloadButton from '../../views/Institutions/DownloadButton';
 import SearchPagination from '../../views/Institutions/Search/SearchPagination';
 import AddInstitutionButtons from '../../views/Institutions/AddInstitutionButtons';
@@ -26,7 +26,7 @@ class SearchContainer extends Component {
       const codeUAI = institution.codes.find(code => code.category === 'uai');
       return (
         <Col xs="12" md="6" lg="4" className="my-1 px-1" key={`institution-${institution.id}`}>
-          <SearchPageEtablissement
+          <SearchResultCard
             address={getActiveEntity(institution.addresses) ?
               getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
             codeUAI={codeUAI ? codeUAI.content : ''}

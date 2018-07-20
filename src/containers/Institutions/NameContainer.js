@@ -1,172 +1,97 @@
 import React, { Component } from 'react';
+import { Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Row } from 'reactstrap';
-import { updateSynonymList, addContent, toggleDeleteModal, toggleAddNameModal } from '../../actions/institution';
+import { addContent, setActiveItem, removeActiveItem, toggleDeleteModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import StatusModal from '../../views/Institutions/Name/StatusModal';
-import TableModalContainer from './TableModalContainer';
-import SynonymsModal from '../../views/Institutions/Name/SynonymsModal';
-import NameModal from '../../views/Institutions/Name/NameModal';
-import NameCard from '../../views/Institutions/Name/NameCard';
+import CustomSideBar from '../../views/Institutions/CustomSideBar';
+import NameForm from '../../views/Institutions/Name/NameForm';
+import Address from '../../views/Institutions/Address/Address';
+import DeleteModalContainer from './DeleteModalContainer';
+
+const Name = props => (
+  <div>
+    <h4>{props.initials}</h4>
+    <h5>{props.text}</h5>
+  </div>
+)
 
 
 class NameContainer extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      statusModal: false,
-      dropdown: false,
-      synonymModal: false,
-      tableModal: false,
-    };
-
-    this.displayDropdown = this.displayDropdown.bind(this);
-    this.toggleStatusModal = this.toggleStatusModal.bind(this);
-    this.toggleSynonymModal = this.toggleSynonymModal.bind(this);
-    this.toggleTableModal = this.toggleTableModal.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.institutionId !== this.props.institutionId) {
-      this.props.getActiveInstitution(nextProps.institutionId);
-    }
-  }
-
-  toggleStatusModal() {
-    this.setState({
-      statusModal: !this.state.statusModal,
-    });
-  }
-
-  toggleSynonymModal() {
-    this.setState({
-      synonymModal: !this.state.synonymModal,
-    });
-  }
-
-  toggleTableModal() {
-    this.setState({
-      tableModal: !this.state.tableModal,
-    });
-  }
-
-  displayDropdown() {
-    this.setState({
-      dropdown: !this.state.dropdown,
-    });
+  componentWillMount() {
+    this.props.setActiveItem(getActiveEntity(this.props.names));
   }
 
   render() {
-    const replacementName = this.props.names ? this.props.names[0] : null;
-    const displayedName = getActiveEntity(this.props.names) ? getActiveEntity(this.props.names) : replacementName;
     return (
-      <Row>
-        <NameCard
-          dateEnd={this.props.dateEnd}
-          dateStart={this.props.dateStart}
-          dropdown={this.state.dropdown}
-          displayDropdown={this.displayDropdown}
-          initials={displayedName.initials}
-          synonym={this.props.synonym}
-          text={displayedName.text}
-          toggleStatusModal={this.toggleStatusModal}
-          toggleSynonymModal={this.toggleSynonymModal}
-          toggleTableModal={this.toggleTableModal}
-        />
-        {this.state.tableModal ?
-          <TableModalContainer
-            addModal={this.props.addModal}
-            component={<NameModal />}
-            deleteUrl={`${process.env.API_URL_STAGING}institution_names`}
+      <div>
+        <h3 className="text-center"> Gestion des <strong>noms</strong> associées à l&#39;établissement <div className="text-primary">{this.props.displayedName}</div></h3>
+        <Row className="bg-light mt-3">
+          <CustomSideBar
+            activeId={this.props.activeItem ? this.props.activeItem.id : null}
+            component={<Name />}
             content={this.props.names}
-            tableHeader={['Sigle', 'Nom complet', 'Début', 'Fin', 'Statut', 'Action']}
-            tableModal={this.state.tableModal}
-            toggleAddModal={this.props.toggleAddModal}
-            toggleTableModal={this.toggleTableModal}
-          /> : <div />}
-        <SynonymsModal
-          institutionId={this.props.institutionId}
-          isLoading={this.props.synonymIsLoading}
-          hasErrored={this.props.synonymHasErrored}
-          modal={this.state.synonymModal}
-          synonyms={this.props.synonym}
-          toggleModal={this.toggleSynonymModal}
-          updateSynonymList={this.props.updateSynonymList}
-          url={`${process.env.API_URL_STAGING}institutions/${this.props.institutionId}`}
-        />
-        <StatusModal
-          addContent={this.props.addContent}
-          hasErrored={this.props.addContentHasErrored}
-          institutionId={this.props.institutionId}
-          isLoading={this.props.addContentIsLoading}
-          date_end={this.props.dateEnd}
-          date_start={this.props.dateStart}
-          deleteModal={this.props.deleteModal}
-          getData={this.props.getActiveInstitution}
-          modal={this.state.statusModal}
-          toggleDeleteModal={this.props.toggleDeleteModal}
-          toggleModal={this.toggleStatusModal}
-          uai={this.props.uai ? this.props.uai.content : 'X'}
-        />
-      </Row>
+            removeActiveItem={this.props.removeActiveItem}
+            setActiveItem={this.props.setActiveItem}
+            buttonText="Ajouter un nom"
+          />
+          <NameForm
+            addContent={this.props.addContent}
+            hasErrored={this.props.addContentHasErrored}
+            institutionId={this.props.institutionId}
+            isLoading={this.props.addContentIsLoading}
+            deleteModal={this.props.deleteModal}
+            setActiveItem={this.props.setActiveItem}
+            toggleDeleteModal={this.props.toggleDeleteModal}
+            {...this.props.activeItem}
+          />
+          <DeleteModalContainer
+            institutionId={this.props.institutionId}
+            modal={this.props.deleteModal}
+            toggleModal={this.props.toggleDeleteModal}
+          />
+        </Row>
+      </div>
     );
   }
 }
+
 const mapStateToProps = state => ({
-  addModal: state.activeInstitution.addNameModal,
+  activeItem: state.activeInstitution.activeItem,
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
-  institutionId: state.activeInstitution.institution.id,
-  dateEnd: state.activeInstitution.institution.date_end,
-  dateStart: state.activeInstitution.institution.date_start,
-  deleteModal: state.activeInstitution.deleteModal,
   names: state.activeInstitution.institution.names,
-  synonym: state.activeInstitution.institution.synonym,
-  synonymHasErrored: state.activeInstitution.synonymHasErrored,
-  synonymIsLoading: state.activeInstitution.synonymIsLoading,
-  uai: state.activeInstitution.institution.codes.find(code => code.category === 'uai'),
+  displayedName: state.activeInstitution.displayedName,
+  deleteModal: state.activeInstitution.deleteModal,
+  institutionId: state.activeInstitution.institution.id,
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
-  toggleDeleteModal: () => dispatch(toggleDeleteModal()),
-  toggleAddModal: () => dispatch(toggleAddNameModal()),
+  setActiveItem: item => dispatch(setActiveItem(item)),
+  removeActiveItem: () => dispatch(removeActiveItem()),
+  toggleDeleteModal: url => dispatch(toggleDeleteModal(url)),
 });
 
 NameContainer.propTypes = {
+  activeItem: PropTypes.object,
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
-  addModal: PropTypes.bool,
-  getActiveInstitution: PropTypes.func.isRequired,
-  institutionId: PropTypes.number.isRequired,
-  dateEnd: PropTypes.string,
-  dateStart: PropTypes.string,
-  deleteModal: PropTypes.bool,
   names: PropTypes.array.isRequired,
-  synonym: PropTypes.string,
-  synonymHasErrored: PropTypes.bool,
-  synonymIsLoading: PropTypes.bool,
-  toggleAddModal: PropTypes.func.isRequired,
+  deleteModal: PropTypes.bool,
+  displayedName: PropTypes.string.isRequired,
+  institutionId: PropTypes.number.isRequired,
+  removeActiveItem: PropTypes.func.isRequired,
+  setActiveItem: PropTypes.func.isRequired,
   toggleDeleteModal: PropTypes.func.isRequired,
-  uai: PropTypes.object,
-  updateSynonymList: PropTypes.func.isRequired,
 };
 
 NameContainer.defaultProps = {
+  activeItem: null,
   addContentHasErrored: false,
   addContentIsLoading: false,
-  addModal: false,
-  dateEnd: '',
-  dateStart: '',
   deleteModal: false,
-  synonym: '',
-  synonymHasErrored: false,
-  synonymIsLoading: false,
-  uai: null,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NameContainer);

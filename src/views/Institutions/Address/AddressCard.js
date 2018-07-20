@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   Button, ButtonGroup, ButtonDropdown, Card, CardBody, CardHeader,
-  DropdownItem, DropdownMenu, DropdownToggle,
+  DropdownMenu, DropdownToggle,
 } from 'reactstrap';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Address from './Address';
 
@@ -13,22 +14,17 @@ const AddressCard = props => (
       Adresse de l&#39;établissement
       <ButtonGroup className="float-right">
         <ButtonDropdown
-          id="nameDropdown"
           isOpen={props.dropdown}
           toggle={props.displayDropdown}
         >
-          <DropdownToggle caret className="p-0" color="light">
-            <i className="icon-settings" />
+          <DropdownToggle id="addressDropdown" caret className="p-0" color="light">
+            <i id="addressDropdown" className="icon-settings" />
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem onClick={props.toggleTableModal}>
-              <i className="fa fa-eye text-info" />
-                Afficher les informations détaillées
-            </DropdownItem>
-            <DropdownItem onClick={props.toggleAddModal}>
-              <i className="fa fa-plus text-success" />
-                Ajouter une nouvelle adresse
-            </DropdownItem>
+            <NavLink to={`/etablissements/${props.institutionId}/adresses`} className="dropdown-item" >
+              <i className="fa fa-arrow-right text-info" />
+                Gérer les adresses
+            </NavLink>
           </DropdownMenu>
         </ButtonDropdown>
       </ButtonGroup>
@@ -62,8 +58,8 @@ AddressCard.propTypes = {
   dropdown: PropTypes.bool.isRequired,
   displayDropdown: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
+  institutionId: PropTypes.number.isRequired,
   toggleAddModal: PropTypes.func.isRequired,
-  toggleTableModal: PropTypes.func.isRequired,
 };
 
 

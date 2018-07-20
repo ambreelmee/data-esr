@@ -21,7 +21,7 @@ export default function activeInstitution(state = [], action) {
     case 'DELETE_CONTENT_IS_LOADING':
       return { ...state, deleteContentIsLoading: action.isLoading };
     case 'DELETE_CONTENT_SUCCESS':
-      return { ...state, deleteModal: false };
+      return { ...state, deleteModal: false, activeItem: {} };
     case 'TOGGLE_DELETE_MODAL':
       return {
         ...state,
@@ -49,17 +49,25 @@ export default function activeInstitution(state = [], action) {
         addContentIsLoading: false,
         addNameModal: !state.addNameModal,
       };
-    case 'TOGGLE_ADD_ADDRESS_MODAL':
-      return {
-        ...state,
-        addContentHasErrored: false,
-        addContentIsLoading: false,
-        addAddressModal: !state.addAddressModal,
-      };
     case 'REMOVE_ACTIVE_INSTITUTION':
       return {
         ...state,
         activeInstitution: {},
+      };
+    case 'SET_ACTIVE_ITEM':
+      return {
+        ...state,
+        activeItem: action.item,
+      };
+    case 'REMOVE_ACTIVE_ITEM':
+      return {
+        ...state,
+        activeItem: {},
+      };
+    case 'SET_DISPLAYED_NAME':
+      return {
+        ...state,
+        displayedName: action.name,
       };
     default:
       return state;

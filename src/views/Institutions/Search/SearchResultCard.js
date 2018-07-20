@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 
-class SearchPageEtablissement extends Component {
+class SearchResultCard extends Component {
   constructor(props) {
     super(props);
 
@@ -66,7 +66,7 @@ class SearchPageEtablissement extends Component {
   }
 }
 
-SearchPageEtablissement.propTypes = {
+SearchResultCard.propTypes = {
   name: PropTypes.shape({
     initials: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -78,8 +78,8 @@ SearchPageEtablissement.propTypes = {
   tags: PropTypes.array.isRequired,
 };
 
-SearchPageEtablissement.defaultProps = {
+SearchResultCard.defaultProps = {
   date_end: null,
 };
 
-export default SearchPageEtablissement;
+export default SearchResultCard;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Col, Button, Row } from 'reactstrap';
-import { Redirect } from 'react-router-dom';
+import { Col, Row } from 'reactstrap';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 class RelationCategoryContainer extends Component {
@@ -23,23 +23,18 @@ class RelationCategoryContainer extends Component {
 
   renderRelations(relationList) {
     return relationList.map(relation => (
-      <Button
-        style={{ whiteSpace: 'normal' }}
-        color="light"
+      <NavLink
         key={`relation-${relation.id}`}
-        id={relation.id}
-        onClick={this.redirectToInstitution}
+        className="btn btn-light"
+        to={`/etablissements/${relation.id}`}
+        style={{ whiteSpace: 'normal' }}
       >
         {relation.name}
-      </Button>
+      </NavLink>
     ));
   }
 
   render() {
-    if (this.state.redirectToInstitution) {
-      console.log(this.state.selectedInstitution)
-      return <Redirect to={`/etablissements/${this.state.selectedInstitution}`} />;
-    }
     return (
       <Row className="border-top py-1">
         <Col xs="3" className="mx-auto">

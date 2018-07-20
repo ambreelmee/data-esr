@@ -1,140 +1,89 @@
 import React, { Component } from 'react';
-import { Col, Row } from 'reactstrap';
+import { Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { addContent, setActiveItem, removeActiveItem, toggleDeleteModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import { addContent, toggleAddAddressModal, toggleEditModal } from '../../actions/institution';
-import AddressCard from '../../views/Institutions/Address/AddressCard';
-import TableModalContainer from './TableModalContainer';
-import AddressModal from '../../views/Institutions/Address/AddressModal';
-import ConnectionContainer from '../../views/Institutions/Relation/ConnectionContainer';
-import CodeContainer from '../../views/Institutions/Code/CodeContainer';
-import LeafletMap from '../../views/Institutions/Address/LeafletMap';
-
+import CustomSideBar from '../../views/Institutions/CustomSideBar';
+import AddressForm from '../../views/Institutions/Address/AddressForm';
+import Address from '../../views/Institutions/Address/Address';
+import DeleteModalContainer from './DeleteModalContainer';
 
 class AddressContainer extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dropdown: false,
-      tableModal: false,
-    };
-    this.displayDropdown = this.displayDropdown.bind(this);
-    this.toggleTableModal = this.toggleTableModal.bind(this);
-  }
-
-  toggleTableModal() {
-    this.setState({
-      tableModal: !this.state.tableModal,
-    });
-  }
-
-  displayDropdown() {
-    this.setState({
-      dropdown: !this.state.dropdown,
-    });
+  componentWillMount() {
+    this.props.setActiveItem(getActiveEntity(this.props.addresses));
   }
 
   render() {
-    if (this.state.isLoading) {
-      return <p />;
-    }
-    const replacementAddress = this.props.addresses ? this.props.addresses[0] : null;
-    const displayedAddress = getActiveEntity(this.props.addresses) ?
-      getActiveEntity(this.props.addresses) : replacementAddress;
     return (
-      <Row>
-        <Col md="8" className="pl-0">
-          {displayedAddress && displayedAddress.latitude && displayedAddress.longitude ?
-            <LeafletMap
-              addContent={this.props.addContent}
-              formattedAddress={
-                <p>
-                  {displayedAddress.address_1}
-                  {displayedAddress.address_2 ? <br /> : <span />}
-                  {displayedAddress.address_2}<br />
-                  {`${displayedAddress.zip_code} ,${displayedAddress.city}`}<br />
-                  {displayedAddress.country}
-                </p>}
-              id={displayedAddress.id}
-              institutionId={this.props.institutionId}
-              isLoading={this.props.addContentIsLoading}
-              latitude={displayedAddress.latitude}
-              longitude={displayedAddress.longitude}
-            /> : <div />}
-          <ConnectionContainer etablissement_id={this.props.institutionId} />
-        </Col>
-        <Col md="4">
-          <Row>
-            <AddressCard
-              addModal={this.props.addModal}
-              displayedAddress={displayedAddress}
-              dropdown={this.state.dropdown}
-              displayDropdown={this.displayDropdown}
-              id={displayedAddress.id}
-              toggleAddModal={this.props.toggleAddModal}
-              toggleTableModal={this.toggleTableModal}
-            />
-            {this.state.tableModal ?
-              <TableModalContainer
-                addModal={this.props.addModal}
-                component={<AddressModal />}
-                deleteUrl={`${process.env.API_URL_STAGING}addresses`}
-                content={this.props.addresses}
-                tableHeader={
-                  ['Raison sociale', 'Champ adresse 1', 'Champ adresse 2', 'Code postale',
-                  'Ville', 'Code commune', 'Pays', 'Téléphone', 'Début', 'Fin', 'Statut', 'Action ']
-                }
-                tableModal={this.state.tableModal}
-                toggleAddModal={this.props.toggleAddModal}
-                toggleTableModal={this.toggleTableModal}
-              /> : <div />}
-            <CodeContainer etablissement_id={this.props.institutionId} />
-            <AddressModal
-              addContent={this.props.addContent}
-              hasErrored={this.props.addContentHasErrored}
-              institutionId={this.props.institutionId}
-              isLoading={this.props.addContentIsLoading}
-              modal={this.props.addModal}
-              toggleModal={this.props.toggleAddModal}
-            />
-          </Row>
-        </Col>
-      </Row>
+      <div>
+        <h3 className="text-center"> Gestion des <strong>adresses</strong> associées à l&#39;établissement <div className="text-primary">{this.props.displayedName}</div></h3>
+        <Row className="bg-light mt-3">
+          <CustomSideBar
+            activeId={this.props.activeItem ? this.props.activeItem.id : null}
+            component={<Address />}
+            content={this.props.addresses}
+            removeActiveItem={this.props.removeActiveItem}
+            setActiveItem={this.props.setActiveItem}
+            buttonText="Ajouter un nom"
+          />
+          <AddressForm
+            addContent={this.props.addContent}
+            hasErrored={this.props.addContentHasErrored}
+            institutionId={this.props.institutionId}
+            isLoading={this.props.addContentIsLoading}
+            deleteModal={this.props.deleteModal}
+            setActiveItem={this.props.setActiveItem}
+            toggleDeleteModal={this.props.toggleDeleteModal}
+            {...this.props.activeItem}
+          />
+          <DeleteModalContainer
+            institutionId={this.props.institutionId}
+            modal={this.props.deleteModal}
+            toggleModal={this.props.toggleDeleteModal}
+          />
+        </Row>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  addModal: state.activeInstitution.addAddressModal,
+  activeItem: state.activeInstitution.activeItem,
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
   addresses: state.activeInstitution.institution.addresses,
+  displayedName: state.activeInstitution.displayedName,
+  deleteModal: state.activeInstitution.deleteModal,
   institutionId: state.activeInstitution.institution.id,
 });
 
 const mapDispatchToProps = dispatch => ({
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
-  toggleAddModal: () => dispatch(toggleAddAddressModal()),
-  toggleEditModal: id => dispatch(toggleEditModal(id)),
+  setActiveItem: item => dispatch(setActiveItem(item)),
+  removeActiveItem: () => dispatch(removeActiveItem()),
+  toggleDeleteModal: url => dispatch(toggleDeleteModal(url)),
 });
 
 AddressContainer.propTypes = {
+  activeItem: PropTypes.object,
   addContent: PropTypes.func.isRequired,
-  addModal: PropTypes.bool,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
   addresses: PropTypes.array.isRequired,
+  deleteModal: PropTypes.bool,
+  displayedName: PropTypes.string.isRequired,
   institutionId: PropTypes.number.isRequired,
-  toggleAddModal: PropTypes.func.isRequired,
-  toggleEditModal: PropTypes.func.isRequired,
+  removeActiveItem: PropTypes.func.isRequired,
+  setActiveItem: PropTypes.func.isRequired,
+  toggleDeleteModal: PropTypes.func.isRequired,
 };
 
 AddressContainer.defaultProps = {
-  addModal: false,
+  activeItem: null,
   addContentHasErrored: false,
   addContentIsLoading: false,
+  deleteModal: false,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddressContainer);
