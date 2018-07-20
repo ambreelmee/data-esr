@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
-import NameModal from './Name/NameModal';
-import UploadModal from './UploadModal';
+import AddInstitutionModal from './AddInstitutionModal';
+import UploadModal from '../UploadModal';
 
 class AddInstitutionButtons extends Component {
   constructor(props) {
@@ -66,7 +66,7 @@ class AddInstitutionButtons extends Component {
         Ajouter un établissement
         </Tooltip>
         {this.props.modal ?
-          <NameModal
+          <AddInstitutionModal
             createInstitution={this.props.createInstitution}
             hasErrored={this.props.hasErrored}
             isLoading={this.props.isLoading}

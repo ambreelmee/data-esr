@@ -3,22 +3,20 @@ import {
   Card, CardBody, Col, Form, FormGroup,
   Input, Label, Modal, ModalBody, ModalHeader, Row,
 } from 'reactstrap';
-import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import AddOrEditModalFooter from '../AddOrEditModalFooter';
+import AddInstitutionModalFooter from './AddInstitutionModalFooter';
 
 
-class NameModal extends Component {
+class AddInstitutionModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      initials: this.props.initials,
-      text: this.props.text,
-      date_start: this.props.date_start ? this.props.date_start : moment().format('YYYY-MM-DD'),
-      date_end: this.props.date_end,
-      status: this.props.status,
+      initials: '',
+      text: '',
+      date_start: '',
+      date_end: '',
+      status: 'active',
     };
     this.triggerAction = this.triggerAction.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -34,42 +32,21 @@ class NameModal extends Component {
   }
 
   triggerAction() {
-    const jsonBody = JSON.stringify({
-      institution_name:
-        {
-          initials: this.state.initials,
-          text: this.state.text,
-          date_start: this.state.date_start,
-          date_end: this.state.date_end,
-          status: this.state.status,
-        },
-    });
-    if (this.props.id) {
-      const url = `${process.env.API_URL_STAGING}institution_names/${this.props.id}`;
-      this.props.addContent(url, jsonBody, 'PUT', this.props.institutionId);
-    } else if (this.props.institutionId) {
-      const url = `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}/institution_names`;
-      this.props.addContent(url, jsonBody, 'POST', this.props.institutionId);
-    } else {
-      const institution = {
-        initials: this.state.initials,
-        name: this.state.text,
-        date_start: this.state.date_start,
-        date_end: this.state.date_end,
-      };
-      this.props.createInstitution(JSON.stringify({ institution }));
-    }
+    const institution = {
+      initials: this.state.initials,
+      name: this.state.text,
+      date_start: this.state.date_start,
+      date_end: this.state.date_end,
+    };
+    this.props.createInstitution(JSON.stringify({ institution }));
   }
 
 
   render() {
-    if (this.state.redirectToNewInstitutionId) {
-      return <Redirect to={`/etablissements/${this.state.redirectToNewInstitutionId}`} />;
-    }
     return (
       <Modal isOpen={this.props.modal} toggle={this.props.toggleModal}>
         <ModalHeader toggle={this.props.toggleModal}>
-          {this.props.id ? 'Modifier le nom' : 'Ajouter un établissement'}
+          Ajouter un établissement
         </ModalHeader>
         <ModalBody>
           Les champs colorés sont obligatoires
@@ -86,8 +63,8 @@ class NameModal extends Component {
                       className="form-control-warning"
                       required
                       type="text"
-                      value={this.state.initials ? this.state.initials : ''}
-                      placeholder={this.state.initials ? this.state.initials : "Sigle de l'établissement"}
+                      value={this.state.initials}
+                      placeholder="Sigle de l'établissement"
                       onChange={this.onChange}
                     />
                   </Col>
@@ -99,8 +76,8 @@ class NameModal extends Component {
                     type="text"
                     className="form-control-warning"
                     required
-                    value={this.state.text ? this.state.text : ''}
-                    placeholder={this.state.text ? this.state.text : "Nom complet de l'établissement"}
+                    value={this.state.text}
+                    placeholder="Nom complet de l'établissement"
                     onChange={this.onChange}
                   />
                 </FormGroup>
@@ -111,8 +88,7 @@ class NameModal extends Component {
                       <Input
                         type="date"
                         id="date_start"
-                        value={this.state.date_start ? this.state.date_start : ''}
-                        placeholder={this.state.date_start ? this.state.date_start : ''}
+                        value={this.state.date_start}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -123,8 +99,7 @@ class NameModal extends Component {
                       <Input
                         type="date"
                         id="date_end"
-                        value={this.state.date_end ? this.state.date_end : ''}
-                        placeholder={this.state.date_end ? this.state.date_end : ''}
+                        value={this.state.date_end}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -142,7 +117,7 @@ class NameModal extends Component {
                         id="active"
                         name="status"
                         value="active"
-                        defaultChecked={this.state.status === 'active'}
+                        checked={this.state.status === 'active'}
                         onChange={this.onRadioChange}
                       />
                       <Label className="form-check-label" check htmlFor="active">Actif</Label>
@@ -154,7 +129,7 @@ class NameModal extends Component {
                         id="archived"
                         name="status"
                         value="archived"
-                        defaultChecked={this.state.status === 'archived'}
+                        checked={this.state.status === 'archived'}
                         onChange={this.onRadioChange}
                       />
                       <Label className="form-check-label" check htmlFor="archived">Archivé</Label>
@@ -165,11 +140,10 @@ class NameModal extends Component {
             </CardBody>
           </Card>
         </ModalBody>
-        <AddOrEditModalFooter
+        <AddInstitutionModalFooter
           hasErrored={this.props.hasErrored}
           isLoading={this.props.isLoading}
-          message={this.props.id ?
-            'Modifier le nom' : this.props.institutionId ? 'Ajouter un nom' : 'Créer un établissement'}
+          message="Créer un établissement"
           toggleModal={this.props.toggleModal}
           triggerAction={this.triggerAction}
         />
@@ -179,33 +153,12 @@ class NameModal extends Component {
   }
 }
 
-NameModal.propTypes = {
-  addContent: PropTypes.func,
-  createInstitution: PropTypes.func,
+AddInstitutionModal.propTypes = {
+  createInstitution: PropTypes.func.isRequired,
   hasErrored: PropTypes.bool.isRequired,
-  id: PropTypes.number,
-  initials: PropTypes.string,
   isLoading: PropTypes.bool.isRequired,
-  date_start: PropTypes.string,
-  date_end: PropTypes.string,
-  institutionId: PropTypes.number,
-  modal: PropTypes.bool,
-  status: PropTypes.string,
-  text: PropTypes.string,
+  modal: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 
-NameModal.defaultProps = {
-  addContent: null,
-  createInstitution: null,
-  id: null,
-  initials: null,
-  date_start: null,
-  date_end: null,
-  institutionId: null,
-  modal: true,
-  status: 'active',
-  text: null,
-};
-
-export default NameModal;
+export default AddInstitutionModal;

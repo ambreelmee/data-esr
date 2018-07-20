@@ -10,42 +10,6 @@ export default {
         class: 'pl-3',
       },
       {
-        name: 'Adresses',
-        url: '/adresses',
-        icon: 'fa fa-map-marker',
-        class: 'pl-3',
-      },
-      {
-        name: 'Identifiants',
-        url: '/codes',
-        icon: 'fa fa-th',
-        class: 'pl-3',
-      },
-      {
-        name: 'Liens',
-        url: '/liens',
-        icon: 'fa fa-at',
-        class: 'pl-3',
-      },
-      {
-        name: 'Caractérisations',
-        url: '/caracterisations',
-        icon: 'fa fa-tag',
-        class: 'pl-3',
-      },
-      {
-        name: 'Evolutions',
-        url: '/evolutions',
-        icon: 'fa fa-history',
-        class: 'pl-3',
-      },
-      {
-        name: 'Rattachement',
-        url: '/rattachements',
-        icon: 'fa fa-arrows-alt',
-        class: 'pl-3',
-      },
-      {
         name: 'Mises à jour',
         url: '/mises-a-jour',
         icon: 'fa fa-bell',
@@ -54,6 +18,12 @@ export default {
           variant: 'danger',
           text: 'new',
         },
+      },
+      {
+        name: 'Admin',
+        url: '/admin',
+        icon: 'icon-settings"',
+        class: 'pl-3',
       }],
   }],
 };

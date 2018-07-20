@@ -9,8 +9,8 @@ import SearchContainer from '../Institutions/SearchContainer';
 import InstitutionContainer from '../Institutions/InstitutionContainer';
 import AddressContainer from '../Institutions/AddressContainer';
 import NameContainer from '../Institutions/NameContainer';
-import SubMenuContainer from '../../views/Institutions/SubMenus/SubMenuContainer';
-import UpdateContainer from '../../views/Institutions/SubMenus/Update/UpdateContainer';
+import UpdateContainer from '../../views/Institutions/Update/UpdateContainer';
+import Admin from '../../views/Institutions/Admin/Admin';
 
 const Full = props => (
   <div className="app">
@@ -24,22 +24,7 @@ const Full = props => (
             <PrivateRoute exact path="/etablissements/:number" component={InstitutionContainer} />
             <PrivateRoute path="/etablissements/:number/adresses" component={AddressContainer} />
             <PrivateRoute path="/etablissements/:number/noms" component={NameContainer} />
-            <PrivateRoute path="/liens" component={SubMenuContainer} categoryType="link" routePath="links" />
-            <PrivateRoute path="/codes" component={SubMenuContainer} categoryType="code" routePath="codes" />
-            <PrivateRoute
-              path="/evolutions"
-              component={SubMenuContainer}
-              categoryType="institution_evolution"
-              routePath="evolutions"
-            />
-            <PrivateRoute
-              path="/rattachements"
-              component={SubMenuContainer}
-              categoryType="institution_connection"
-              routePath="connections"
-            />
-            <PrivateRoute path="/caracterisations" component={SubMenuContainer} routePath="taggings" />
-            <PrivateRoute path="/adresses" component={SubMenuContainer} routePath="addresses" />
+            <PrivateRoute path="/admin" component={Admin} />
             <PrivateRoute path="/mises-a-jour" component={UpdateContainer} />
             <Redirect from="/" to="/etablissements" />
           </Switch>

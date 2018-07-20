@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ModalFooter } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-const AddOrEditModalFooter = props => (
+const AddInstitutionModalFooter = props => (
   <ModalFooter>
     <p className="mt-2 text-danger">
       {props.hasErrored ?
@@ -28,7 +28,7 @@ const AddOrEditModalFooter = props => (
 );
 
 
-AddOrEditModalFooter.propTypes = {
+AddInstitutionModalFooter.propTypes = {
   hasErrored: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   message: PropTypes.string.isRequired,
@@ -36,4 +36,4 @@ AddOrEditModalFooter.propTypes = {
   triggerAction: PropTypes.func.isRequired,
 };
 
-export default AddOrEditModalFooter;
+export default AddInstitutionModalFooter;

@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addContent, setActiveItem, removeActiveItem, toggleDeleteModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import CustomSideBar from '../../views/Institutions/CustomSideBar';
-import NameForm from '../../views/Institutions/Name/NameForm';
+import CustomSideBar from '../../views/Institutions/InstitutionPage/CustomSideBar';
+import NameForm from '../../views/Institutions/InstitutionPage/Name/NameForm';
 import DeleteModalContainer from './DeleteModalContainer';
-import NavBreadcrumb from '../../views/Institutions/NavBreadcrumb';
+import NavBreadcrumb from '../../views/Institutions/InstitutionPage/NavBreadcrumb';
 
 const Name = props => (
   <div>

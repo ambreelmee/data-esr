@@ -11,7 +11,7 @@ import { getActiveEntity, getFormattedAddress } from '../../views/Institutions/m
 import SearchResultCard from '../../views/Institutions/Search/SearchResultCard';
 import DownloadButton from '../../views/Institutions/DownloadButton';
 import SearchPagination from '../../views/Institutions/Search/SearchPagination';
-import AddInstitutionButtons from '../../views/Institutions/AddInstitutionButtons';
+import AddInstitutionButtons from '../../views/Institutions/Search/AddInstitutionButtons';
 import SearchBar from '../../views/Institutions/Search/SearchBar';
 
 class SearchContainer extends Component {

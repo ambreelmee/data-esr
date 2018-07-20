@@ -4,7 +4,7 @@ import {
   Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import DeleteModalContainer from '../../../containers/Institutions/DeleteModalContainer';
+import DeleteModalContainer from '../../../../containers/Institutions/DeleteModalContainer';
 
 class StatusModal extends Component {
   constructor(props) {

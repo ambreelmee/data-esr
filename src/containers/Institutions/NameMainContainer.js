@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row } from 'reactstrap';
-import { updateSynonymList, addContent, toggleDeleteModal, toggleAddNameModal, setDisplayedName } from '../../actions/institution';
+import { updateSynonymList, addContent, toggleDeleteModal, setDisplayedName } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import StatusModal from '../../views/Institutions/Name/StatusModal';
-import SynonymsModal from '../../views/Institutions/Name/SynonymsModal';
-import NameCard from '../../views/Institutions/Name/NameCard';
+import StatusModal from '../../views/Institutions/InstitutionPage/Name/StatusModal';
+import SynonymsModal from '../../views/Institutions/InstitutionPage/Name/SynonymsModal';
+import NameCard from '../../views/Institutions/InstitutionPage/Name/NameCard';
 
 
 class NameMainContainer extends Component {
@@ -52,7 +52,7 @@ class NameMainContainer extends Component {
     const replacementName = this.props.names ? this.props.names[0] : null;
     const displayedName = getActiveEntity(this.props.names) ? getActiveEntity(this.props.names) : replacementName;
     this.props.setDisplayedName(`${displayedName.initials}${displayedName.initials === displayedName.text ?
-      '' : ` - ${displayedName.text.toProperCase()}`}`)
+      '' : ` - ${displayedName.text.toProperCase()}`}`);
     return (
       <Row>
         <NameCard
@@ -96,7 +96,6 @@ class NameMainContainer extends Component {
   }
 }
 const mapStateToProps = state => ({
-  addModal: state.activeInstitution.addNameModal,
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
   institutionId: state.activeInstitution.institution.id,
@@ -139,7 +138,6 @@ NameMainContainer.propTypes = {
 NameMainContainer.defaultProps = {
   addContentHasErrored: false,
   addContentIsLoading: false,
-  addModal: false,
   dateEnd: '',
   dateStart: '',
   deleteModal: false,
