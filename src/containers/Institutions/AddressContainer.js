@@ -32,7 +32,7 @@ class AddressContainer extends Component {
             content={this.props.addresses}
             removeActiveItem={this.props.removeActiveItem}
             setActiveItem={this.props.setActiveItem}
-            buttonText="Ajouter un nom"
+            buttonText="Ajouter une adresse"
           />
           <AddressForm
             addContent={this.props.addContent}

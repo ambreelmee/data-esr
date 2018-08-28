@@ -5,17 +5,16 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addContent, institutionsSearch, resetSearchAndDisplayFirstPage } from '../../actions/search';
-import { getActiveInstitution } from '../../actions/institution';
+import { getActiveInstitution, getDaughters, getMothers } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import EvolutionContainer from '../../views/Institutions/Relation/EvolutionContainer';
-import NameMainContainer from './NameMainContainer';
-import LinkContainer from '../../views/Institutions/Link/LinkContainer';
-import TagContainer from '../../views/Institutions/Tag/TagContainer';
+import MainCardContainer from './MainCardContainer';
+import LinkContainer from '../../views/Institutions/InstitutionPage/Link/LinkContainer';
+import TagContainer from '../../views/Institutions/InstitutionPage/Tag/TagContainer';
 import SearchBar from '../../views/Institutions/Search/SearchBar';
-import AddressCard from '../../views/Institutions/Address/AddressCard';
-import ConnectionContainer from '../../views/Institutions/Relation/ConnectionContainer';
-import CodeContainer from '../../views/Institutions/Code/CodeContainer';
-import LeafletMap from '../../views/Institutions/Address/LeafletMap';
+import AddressCard from '../../views/Institutions/InstitutionPage/Address/AddressCard';
+import ConnectionCard from '../../views/Institutions/InstitutionPage/Relation/ConnectionCard';
+import CodeContainer from '../../views/Institutions/InstitutionPage/Code/CodeContainer';
+import LeafletMap from '../../views/Institutions/InstitutionPage/Address/LeafletMap';
 
 
 class InstitutionContainer extends Component {
@@ -75,9 +74,16 @@ class InstitutionContainer extends Component {
         />
         <Row>
           <Col md="8">
-            <NameMainContainer getActiveInstitution={this.props.getActiveInstitution} />
+            <MainCardContainer getActiveInstitution={this.props.getActiveInstitution} />
             <Row>
-              <Col md="8" className="pl-0">
+              <Col md="6" className="pl-0">
+                <AddressCard
+                  displayedAddress={displayedAddress}
+                  dropdown={this.state.addressDropdown}
+                  displayDropdown={this.displayDropdown}
+                  id={displayedAddress ? displayedAddress.id : null}
+                  institutionId={institutionId}
+                />
                 {displayedAddress && displayedAddress.latitude && displayedAddress.longitude ?
                   <LeafletMap
                     addContent={this.props.addContent}
@@ -95,17 +101,9 @@ class InstitutionContainer extends Component {
                     latitude={displayedAddress.latitude}
                     longitude={displayedAddress.longitude}
                   /> : <div />}
-                <ConnectionContainer etablissement_id={institutionId} />
               </Col>
-              <Col md="4">
+              <Col md="6">
                 <Row>
-                  <AddressCard
-                    displayedAddress={displayedAddress}
-                    dropdown={this.state.addressDropdown}
-                    displayDropdown={this.displayDropdown}
-                    id={displayedAddress.id}
-                    institutionId={institutionId}
-                  />
                   <CodeContainer etablissement_id={institutionId} />
                 </Row>
               </Col>
@@ -113,7 +111,12 @@ class InstitutionContainer extends Component {
           </Col>
           <Col md="4">
             <Row className="mx-1">
-              <EvolutionContainer etablissement_id={institutionId} />
+              {!this.props.mothersIsLoading && !this.props.daughtersIsLoading ?
+                <ConnectionCard
+                  mothers={this.props.mothers}
+                  daughters={this.props.daughters}
+                  institutionId={institutionId}
+                /> : <div />}
               <TagContainer etablissement_id={institutionId} />
               <LinkContainer etablissement_id={institutionId} />
             </Row>
@@ -128,14 +131,20 @@ const mapStateToProps = state => ({
   activeInstitution: state.activeInstitution.institution,
   addContentHasErrored: state.activeInstitution.addContentHasErrored,
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
-  isSearching: state.search.isSearching,
-  searchValue: state.search.searchValue,
+  daughters: state.activeInstitution.daughters,
+  daughtersIsLoading: state.activeInstitution.daughtersIsLoading,
   isLoading: state.activeInstitution.isLoading,
+  isSearching: state.search.isSearching,
+  mothers: state.activeInstitution.mothers,
+  mothersIsLoading: state.activeInstitution.mothersIsLoading,
+  searchValue: state.search.searchValue,
 });
 
 const mapDispatchToProps = dispatch => ({
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
   getActiveInstitution: id => dispatch(getActiveInstitution(id)),
+  getDaughters: id => dispatch(getDaughters(id)),
+  getMothers: id => dispatch(getMothers(id)),
   resetSearch: () => dispatch(resetSearchAndDisplayFirstPage()),
   search: event => dispatch(institutionsSearch(event)),
 });
@@ -145,9 +154,15 @@ InstitutionContainer.propTypes = {
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
+  daughters: PropTypes.object,
+  daughtersIsLoading: PropTypes.bool,
+  getFollowers: PropTypes.func.isRequired,
+  getMothers: PropTypes.func.isRequired,
   getActiveInstitution: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
   isSearching: PropTypes.bool,
+  mothers: PropTypes.object,
+  mothersIsLoading: PropTypes.bool,
   resetSearch: PropTypes.func.isRequired,
   search: PropTypes.func.isRequired,
   searchValue: PropTypes.string,
@@ -157,6 +172,8 @@ InstitutionContainer.defaultProps = {
   activeInstitution: undefined,
   addContentHasErrored: false,
   addContentIsLoading: false,
+  daughtersIsLoading: false,
+  mothersIsLoading: false,
   isLoading: true,
   isSearching: false,
   searchValue: '',

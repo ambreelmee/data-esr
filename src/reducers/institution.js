@@ -1,10 +1,45 @@
 
 export default function activeInstitution(state = [], action) {
   switch (action.type) {
+    case 'CONNECTION_CATEGORIES_SUCCESS':
+      return { ...state, connectionCategories: action.categories };
+    case 'EVOLUTION_CATEGORIES_SUCCESS':
+      return { ...state, evolutionCategories: action.categories };
+    case 'MOTHERS_HAS_ERRORED':
+      return { ...state, mothersHasErrored: action.hasErrored };
+    case 'MOTHERS_IS_LOADING':
+      return { ...state, mothersIsLoading: action.isLoading };
+    case 'MOTHERS_FETCH_DATA_SUCCESS':
+      return { ...state, mothers: action.mothers };
+    case 'DAUGHTERS_HAS_ERRORED':
+      return { ...state, daughtersHasErrored: action.hasErrored };
+    case 'DAUGHTERS_IS_LOADING':
+      return { ...state, daughtersIsLoading: action.isLoading };
+    case 'DAUGHTERS_FETCH_DATA_SUCCESS':
+      return { ...state, daughters: action.daughters };
+    case 'PREDECESSORS_HAS_ERRORED':
+      return { ...state, predecessorsHasErrored: action.hasErrored };
+    case 'PREDECESSORS_IS_LOADING':
+      return { ...state, predecessorsIsLoading: action.isLoading };
+    case 'PREDECESSORS_FETCH_DATA_SUCCESS':
+      return { ...state, predecessors: action.predecessors };
+    case 'FOLLOWERS_HAS_ERRORED':
+      return { ...state, followersHasErrored: action.hasErrored };
+    case 'FOLLOWERS_IS_LOADING':
+      return { ...state, followersIsLoading: action.isLoading };
+    case 'FOLLOWERS_FETCH_DATA_SUCCESS':
+      return { ...state, followers: action.followers };
     case 'INSTITUTION_HAS_ERRORED':
       return { ...state, hasErrored: action.hasErrored };
     case 'INSTITUTION_IS_LOADING':
-      return { ...state, isLoading: action.isLoading };
+      return {
+        ...state,
+        isLoading: action.isLoading,
+        daughters: [],
+        followers: [],
+        mothers: [],
+        predecessors: [],
+      };
     case 'INSTITUTION_FETCH_DATA_SUCCESS':
       return {
         ...state,

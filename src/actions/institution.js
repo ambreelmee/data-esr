@@ -1,4 +1,245 @@
 
+export function evolutionCategoriesSuccess(categories) {
+  return {
+    type: 'EVOLUTION_CATEGORIES_SUCCESS',
+    categories,
+  };
+}
+export function getEvolutionCategories() {
+  const url = `${process.env.API_URL_STAGING}institution_evolution_categories`;
+  return (dispatch) => {
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((categories) => {
+        dispatch(evolutionCategoriesSuccess(categories));
+      });
+  };
+}
+
+export function connectionCategoriesSuccess(categories) {
+  return {
+    type: 'CONNECTION_CATEGORIES_SUCCESS',
+    categories,
+  };
+}
+export function getConnectionCategories() {
+  const url = `${process.env.API_URL_STAGING}institution_connection_categories`;
+  return (dispatch) => {
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((categories) => {
+        dispatch(connectionCategoriesSuccess(categories));
+      });
+  };
+}
+export function getMothersFetchDataSuccess(mothers) {
+  return {
+    type: 'MOTHERS_FETCH_DATA_SUCCESS',
+    mothers,
+  };
+}
+export function getMothersHasErrored(bool) {
+  return {
+    type: 'MOTHERS_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function getMothersIsLoading(bool) {
+  return {
+    type: 'MOTHERS_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function getMothers(institutionId) {
+  const url = `${process.env.API_URL_STAGING}institutions/${institutionId}/mothers`;
+  return (dispatch) => {
+    dispatch(getMothersIsLoading(true));
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((mothers) => {
+        dispatch(getMothersFetchDataSuccess(mothers.connections));
+        dispatch(getMothersIsLoading(false));
+      })
+      .catch(() => {
+        dispatch(getMothersHasErrored(true));
+        dispatch(getMothersIsLoading(false));
+      });
+  };
+}
+export function getDaughtersFetchDataSuccess(daughters) {
+  return {
+    type: 'DAUGHTERS_FETCH_DATA_SUCCESS',
+    daughters,
+  };
+}
+export function getDaughtersHasErrored(bool) {
+  return {
+    type: 'DAUGHTERS_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function getDaughtersIsLoading(bool) {
+  return {
+    type: 'DAUGHTERS_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function getDaughters(institutionId) {
+  const url = `${process.env.API_URL_STAGING}institutions/${institutionId}/daughters`;
+  return (dispatch) => {
+    dispatch(getDaughtersIsLoading(true));
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((daughters) => {
+        dispatch(getDaughtersFetchDataSuccess(daughters.connections));
+        dispatch(getDaughtersIsLoading(false));
+      })
+      .catch(() => {
+        dispatch(getDaughtersHasErrored(true));
+        dispatch(getDaughtersIsLoading(false));
+      });
+  };
+}
+export function getPredecessorsFetchDataSuccess(predecessors) {
+  return {
+    type: 'PREDECESSORS_FETCH_DATA_SUCCESS',
+    predecessors,
+  };
+}
+export function getPredecessorsHasErrored(bool) {
+  return {
+    type: 'PREDECESSORS_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function getPredecessorsIsLoading(bool) {
+  return {
+    type: 'PREDECESSORS_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function getPredecessors(institutionId) {
+  const url = `${process.env.API_URL_STAGING}institutions/${institutionId}/predecessors`;
+  return (dispatch) => {
+    dispatch(getPredecessorsIsLoading(true));
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((predecessors) => {
+        dispatch(getPredecessorsFetchDataSuccess(predecessors.evolutions));
+        dispatch(getPredecessorsIsLoading(false));
+      })
+      .catch(() => {
+        dispatch(getPredecessorsHasErrored(true));
+        dispatch(getPredecessorsIsLoading(false));
+      });
+  };
+}
+export function getFollowersFetchDataSuccess(followers) {
+  return {
+    type: 'FOLLOWERS_FETCH_DATA_SUCCESS',
+    followers,
+  };
+}
+export function getFollowersHasErrored(bool) {
+  return {
+    type: 'FOLLOWERS_HAS_ERRORED',
+    hasErrored: bool,
+  };
+}
+export function getFollowersIsLoading(bool) {
+  return {
+    type: 'FOLLOWERS_IS_LOADING',
+    isLoading: bool,
+  };
+}
+export function getFollowers(institutionId) {
+  const url = `${process.env.API_URL_STAGING}institutions/${institutionId}/followers`;
+  return (dispatch) => {
+    dispatch(getFollowersIsLoading(true));
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((followers) => {
+        dispatch(getFollowersFetchDataSuccess(followers.evolutions));
+        dispatch(getFollowersIsLoading(false));
+      })
+      .catch(() => {
+        dispatch(getFollowersHasErrored(true));
+        dispatch(getFollowersIsLoading(false));
+      });
+  };
+}
+export function institutionFetchDataSuccess(institution) {
+  return {
+    type: 'INSTITUTION_FETCH_DATA_SUCCESS',
+    institution,
+  };
+}
 export function institutionHasErrored(bool) {
   return {
     type: 'INSTITUTION_HAS_ERRORED',
@@ -9,12 +250,6 @@ export function institutionIsLoading(bool) {
   return {
     type: 'INSTITUTION_IS_LOADING',
     isLoading: bool,
-  };
-}
-export function institutionFetchDataSuccess(institution) {
-  return {
-    type: 'INSTITUTION_FETCH_DATA_SUCCESS',
-    institution,
   };
 }
 export function getActiveInstitution(institutionId) {
@@ -36,6 +271,18 @@ export function getActiveInstitution(institutionId) {
       .then(response => response.json())
       .then((institution) => {
         dispatch(institutionFetchDataSuccess(institution));
+        if (institution.institution.mothers.length > 0) {
+          dispatch(getMothers(institutionId))
+        }
+        if (institution.institution.daughters.length > 0) {
+          dispatch(getDaughters(institutionId))
+        }
+        if (institution.institution.predecessors.length > 0) {
+          dispatch(getPredecessors(institutionId))
+        }
+        if (institution.institution.followers.length > 0) {
+          dispatch(getFollowers(institutionId))
+        }
         dispatch(institutionIsLoading(false));
       })
       .catch(() => {
@@ -44,7 +291,6 @@ export function getActiveInstitution(institutionId) {
       });
   };
 }
-
 export function synonymHasErrored(bool) {
   return {
     type: 'SYNONYM_HAS_ERRORED',
@@ -55,12 +301,6 @@ export function synonymIsLoading(bool) {
   return {
     type: 'SYNONYM_IS_LOADING',
     isLoading: bool,
-  };
-}
-export function institutionFetchSuccess(data) {
-  return {
-    type: 'INSTITUTION_FETCH_SUCCESS',
-    data,
   };
 }
 export function updateSynonymList(url, synonym) {
@@ -84,8 +324,6 @@ export function updateSynonymList(url, synonym) {
       .then((data) => {
         if (data.institution) {
           dispatch(institutionFetchDataSuccess(data));
-        } else {
-          dispatch(institutionFetchSuccess(data))
         }
         dispatch(synonymIsLoading(false));
       })

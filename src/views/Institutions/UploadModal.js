@@ -4,7 +4,7 @@ import {
   Modal, ModalBody, ModalFooter, ModalHeader, Tooltip,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import InstitutionsColumnsDescription from './SubMenus/InstitutionsColumnsDescription';
+import InstitutionsColumnsDescription from './Admin/InstitutionsColumnsDescription';
 
 const triggerFileInputClick = () => {
   document.getElementById('import').click();

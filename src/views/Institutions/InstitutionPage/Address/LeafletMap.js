@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Button, Card } from 'reactstrap';
+import { Button, Card } from 'reactstrap';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import PropTypes from 'prop-types';
 
@@ -25,11 +25,11 @@ class LeafletMap extends Component {
       address: {
         latitude: this.state.latlng.lat || this.props.latitude,
         longitude: this.state.latlng.lng || this.props.longitude,
-      }
+      },
     });
     const url = `${process.env.API_URL_STAGING}addresses/${this.props.id}`;
     this.props.addContent(url, jsonBody, 'PUT', this.props.institutionId);
-    this.setState({ latlng: null })
+    this.setState({ latlng: null });
   }
 
 
@@ -43,7 +43,7 @@ class LeafletMap extends Component {
     ) : null;
     const position = [this.props.latitude, this.props.longitude];
     return (
-      <Card className="mt-2 mb-0">
+      <Card className="mt-2 mb-0 rounded">
         <Map
           center={position}
           zoom={this.state.zoom}

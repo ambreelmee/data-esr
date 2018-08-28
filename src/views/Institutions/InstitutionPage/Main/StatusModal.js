@@ -68,7 +68,7 @@ class StatusModal extends Component {
                   </Col>
                 </Row>
               </Form>
-              <p>Vous pouvez ajouter un prédécesseur ou un succésseur à cet établissement via la carte évolution</p>
+              <p>Vous pouvez ajouter un prédécesseur ou un successeur à cet établissement via la gestion des évolutions</p>
             </CardBody>
           </Card>
         </ModalBody>

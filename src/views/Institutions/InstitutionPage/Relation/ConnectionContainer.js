@@ -170,7 +170,7 @@ class ConnectionContainer extends Component {
             </ButtonDropdown>
           </ButtonGroup>
         </CardHeader>
-        {this.state.mothers.length > 0 || this.state.daughters.length > 0 ?
+        {this.props.mothers.length > 0 || this.props.daughters.length > 0 ?
           <CardBody className="py-0">
             <Row>
               <Col xs="3" className="mx-auto" />
@@ -184,7 +184,7 @@ class ConnectionContainer extends Component {
             {this.renderCategories()}
           </CardBody> :
           <CardBody>
-            <em>Aucun rattachement enregistré actuellement...</em>
+            <h4>0 rattachement...</em>
             <Button color="primary" size="sm" className="float-right rounded" onClick={this.toggleAddModal}>
               <i className="fa fa-plus mr-1" />
               Ajouter un rattachement
@@ -197,6 +197,8 @@ class ConnectionContainer extends Component {
 
 ConnectionContainer.propTypes = {
   etablissement_id: PropTypes.number.isRequired,
+  daughters: PropTypes.array.isRequired,
+  mothers: PropTypes.array.isRequired,
 };
 
 export default ConnectionContainer;

@@ -46,9 +46,6 @@ class SearchContainer extends Component {
     if (this.props.hasErrored) {
       return <p>Une erreur est survenue</p>;
     }
-    if (this.props.isLoading) {
-      return <p />;
-    }
     return (
       <div className="p-5">
         <SearchBar
@@ -57,28 +54,30 @@ class SearchContainer extends Component {
           search={this.props.search}
           searchValue={this.props.searchValue}
         />
-        <div className="d-flex justify-content-between">
-          {!this.props.isSearching && !this.props.isLoading ?
-            <DownloadButton
-              name="etablissements"
-              url={`${process.env.API_URL_STAGING}institutions/search?q=${encodeURI(this.props.searchValue)}&download=true`}
-            /> : <div />}
-          <div className="text-primary mt-3">{this.props.count > 0 ? `${this.props.count} établissements` : ''}</div>
-        </div>
-        {this.props.institutions.length === 0 ?
-          <p className="text-center"><em>aucun résultat</em></p> :
-          <Row> {this.renderInstitutionsCards()} </Row>}
-        <div className="mt-3 d-flex justify-content-center">
-          {this.props.institutions.length > 0 ?
-            <SearchPagination {...this.props.links} onClick={this.props.onPageClick} /> : <div />}
-        </div>
-        <AddInstitutionButtons
-          toggleModal={this.props.toggleModal}
-          createInstitution={this.props.createInstitution}
-          hasErrored={this.props.createInstitutionHasErrored}
-          isLoading={this.props.createInstitutionIsLoading}
-          modal={this.props.modal}
-        />
+        {!this.props.isSearching && !this.props.isLoading ?
+          <div>
+            <div className="d-flex justify-content-between">
+              <DownloadButton
+                name="etablissements"
+                url={`${process.env.API_URL_STAGING}institutions/search?q=${encodeURI(this.props.searchValue)}&download=true`}
+              />
+              <div className="text-primary mt-3">{this.props.count > 0 ? `${this.props.count} établissements` : ''}</div>
+            </div>
+            {this.props.institutions.length === 0 ?
+              <p className="text-center"><em>aucun résultat</em></p> :
+              <Row> {this.renderInstitutionsCards()} </Row>}
+            <div className="mt-3 d-flex justify-content-center">
+              {this.props.institutions.length > 0 ?
+                <SearchPagination {...this.props.links} onClick={this.props.onPageClick} /> : <div />}
+            </div>
+            <AddInstitutionButtons
+              toggleModal={this.props.toggleModal}
+              createInstitution={this.props.createInstitution}
+              hasErrored={this.props.createInstitutionHasErrored}
+              isLoading={this.props.createInstitutionIsLoading}
+              modal={this.props.modal}
+            />
+          </div> : <p className="text-center"><em>chargement</em></p>}
       </div>
     );
   }
@@ -91,8 +90,8 @@ const mapStateToProps = state => ({
   institutions: state.search.institutionsResults,
   links: state.search.linksResults,
   modal: state.search.addModal,
-  hasErrored: state.search.institutionsHasErrored,
-  isLoading: state.search.institutionsIsLoading,
+  hasErrored: state.search.hasErrored,
+  isLoading: state.search.isLoading,
   isSearching: state.search.isSearching,
   searchValue: state.search.searchValue,
 });
@@ -131,7 +130,7 @@ SearchContainer.defaultProps = {
   createInstitutionIsLoading: false,
   hasErrored: false,
   institutions: [],
-  isLoading: false,
+  isLoading: true,
   isSearching: false,
   links: {},
   modal: false,

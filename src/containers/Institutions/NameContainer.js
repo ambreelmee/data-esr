@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { addContent, setActiveItem, removeActiveItem, toggleDeleteModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import CustomSideBar from '../../views/Institutions/InstitutionPage/CustomSideBar';
-import NameForm from '../../views/Institutions/InstitutionPage/Name/NameForm';
+import NameForm from '../../views/Institutions/InstitutionPage/Main/NameForm';
 import DeleteModalContainer from './DeleteModalContainer';
 import NavBreadcrumb from '../../views/Institutions/InstitutionPage/NavBreadcrumb';
 
@@ -14,7 +14,11 @@ const Name = props => (
     <h4>{props.initials}</h4>
     <h5>{props.text}</h5>
   </div>
-)
+);
+Name.propTypes = {
+  initials: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+};
 
 
 class NameContainer extends Component {

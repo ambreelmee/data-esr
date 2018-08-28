@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row } from 'reactstrap';
-import { updateSynonymList, addContent, toggleDeleteModal, setDisplayedName } from '../../actions/institution';
+import {
+  updateSynonymList, addContent, toggleDeleteModal, setDisplayedName
+  , getFollowers, getPredecessors,
+} from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import StatusModal from '../../views/Institutions/InstitutionPage/Name/StatusModal';
-import SynonymsModal from '../../views/Institutions/InstitutionPage/Name/SynonymsModal';
-import NameCard from '../../views/Institutions/InstitutionPage/Name/NameCard';
+import StatusModal from '../../views/Institutions/InstitutionPage/Main/StatusModal';
+import SynonymsModal from '../../views/Institutions/InstitutionPage/Main/SynonymsModal';
+import MainCard from '../../views/Institutions/InstitutionPage/Main/MainCard';
 
 
-class NameMainContainer extends Component {
+class MainCardContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -55,13 +58,15 @@ class NameMainContainer extends Component {
       '' : ` - ${displayedName.text.toProperCase()}`}`);
     return (
       <Row>
-        <NameCard
+        <MainCard
           dateEnd={this.props.dateEnd}
           dateStart={this.props.dateStart}
           dropdown={this.state.dropdown}
           displayDropdown={this.displayDropdown}
+          followers={this.props.followers}
           initials={displayedName.initials}
           institutionId={this.props.institutionId}
+          predecessors={this.props.predecessors}
           synonym={this.props.synonym}
           text={displayedName.text}
           toggleStatusModal={this.toggleStatusModal}
@@ -102,7 +107,11 @@ const mapStateToProps = state => ({
   dateEnd: state.activeInstitution.institution.date_end,
   dateStart: state.activeInstitution.institution.date_start,
   deleteModal: state.activeInstitution.deleteModal,
+  followers: state.activeInstitution.followers,
+  followersIsLoading: state.activeInstitution.followersIsLoading,
   names: state.activeInstitution.institution.names,
+  predecessors: state.activeInstitution.predecessors,
+  predecessorsIsLoading: state.activeInstitution.predecessorsIsLoading,
   synonym: state.activeInstitution.institution.synonym,
   synonymHasErrored: state.activeInstitution.synonymHasErrored,
   synonymIsLoading: state.activeInstitution.synonymIsLoading,
@@ -110,13 +119,15 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
+  getFollowers: id => dispatch(getFollowers(id)),
+  getPredecessors: id => dispatch(getPredecessors(id)),
   setDisplayedName: name => dispatch(setDisplayedName(name)),
   toggleDeleteModal: () => dispatch(toggleDeleteModal()),
+  updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
 });
 
-NameMainContainer.propTypes = {
+MainCardContainer.propTypes = {
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
@@ -125,6 +136,11 @@ NameMainContainer.propTypes = {
   dateEnd: PropTypes.string,
   dateStart: PropTypes.string,
   deleteModal: PropTypes.bool,
+  followers: PropTypes.array,
+  followersIsLoading: PropTypes.bool,
+  getPredecessors: PropTypes.func.isRequired,
+  predecessors: PropTypes.array,
+  predecessorsIsLoading: PropTypes.bool,
   names: PropTypes.array.isRequired,
   setDisplayedName: PropTypes.func.isRequired,
   synonym: PropTypes.string,
@@ -135,16 +151,18 @@ NameMainContainer.propTypes = {
   updateSynonymList: PropTypes.func.isRequired,
 };
 
-NameMainContainer.defaultProps = {
+MainCardContainer.defaultProps = {
   addContentHasErrored: false,
   addContentIsLoading: false,
   dateEnd: '',
   dateStart: '',
   deleteModal: false,
+  followersIsLoading: false,
+  predecessorsIsLoading: false,
   synonym: '',
   synonymHasErrored: false,
   synonymIsLoading: false,
   uai: null,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NameMainContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(MainCardContainer);

@@ -9,7 +9,7 @@ import Address from './Address';
 
 
 const AddressCard = props => (
-  <Card className="mb-0 mt-2 w-100">
+  <Card className="mb-0 mt-2 w-100 rounded">
     <CardHeader>
       Adresse de l&#39;établissement
       <ButtonGroup className="float-right">
