@@ -6,6 +6,7 @@ const CustomSideBar = props => (
   <Col className="md-3 p-0">
     {props.content.length > 0 ? props.content.map(item => (
       <Button
+        key={item.id}
         color="light"
         className={`w-100 btn-m-0 py-3 px-2 border ${props.activeId === item.id ? 'active' : ''}`}
         style={{ whiteSpace: 'normal' }}
@@ -26,14 +27,17 @@ const CustomSideBar = props => (
 
 
 CustomSideBar.propTypes = {
-  activeId: PropTypes.number.isRequired,
+  activeId: PropTypes.number,
   buttonText: PropTypes.string.isRequired,
-  content: PropTypes.object.isRequired,
+  content: PropTypes.array.isRequired,
   component: PropTypes.object.isRequired,
   removeActiveItem: PropTypes.func.isRequired,
   setActiveItem: PropTypes.func.isRequired,
 };
 
+CustomSideBar.defaultProps = {
+  activeId: null,
+}
 
 
 export default CustomSideBar;

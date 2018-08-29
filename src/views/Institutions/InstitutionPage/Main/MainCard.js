@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, ButtonGroup, ButtonDropdown, Card, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { Alert, ButtonGroup, ButtonDropdown, Card, Col, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { NavLink } from 'react-router-dom';
@@ -10,29 +10,43 @@ const g = document.getElementsByTagName('body')[0];
 const width = window.innerWidth || e.clientWidth || g.clientWidth;
 
 const MainCard = props => (
-  <Card className="mb-0 mt-2 w-100 text-center rounded" style={{ height: '200px' }}>
-    <Alert color={props.dateEnd ? 'danger' : 'success'}>
-      {props.dateEnd ?
-        `Cet établissement est fermé depuis le ${moment(props.dateEnd).format('LL')}` :
-        `Cet établissement est ouvert depuis le ${moment(props.dateStart).format('LL')}`}<br />
-      {props.predecessors.length > 0 ?
+  <div className="w-100">
+    <Card className="mb-0 mt-2 rounded bg-transparent border-0" style={{ height: '250px' }}>
+      {width > 767 ?
+        <SynonymBox
+          initials={props.initials}
+          text={props.text}
+          synonym={props.synonym}
+        /> :
         <div>
-          <strong>Prédecesseur(s)</strong> :&nbsp;
-          {props.predecessors.map(predecessor => (
-            <NavLink key={predecessor.predecessor.id} to={`/etablissements/${predecessor.predecessor.id}`}>
-              {predecessor.predecessor.name}
-            </NavLink>))}
-            &nbsp;({props.predecessors[0].evolution.category})
-        </div> : <div />}
-      {props.followers.length > 0 ?
-        <div>
-          <strong>Successeur(s)</strong> :&nbsp;
-          {props.followers.map(follower => (
-            <NavLink key={follower.follower.id} to={`/etablissements/${follower.follower.id}`}>
-              {follower.follower.name}
-            </NavLink>))}
-           &nbsp;({props.followers[0].evolution.category})
-        </div> : <div />}
+          <h3>{props.initials}</h3>
+          <h4>{props.text}</h4>
+        </div>}
+    </Card>
+    <Alert className="rounded mb-0" color={props.dateEnd ? 'danger' : 'success'}>
+      <div className="text-center" >
+        {props.dateEnd ?
+          `Cet établissement est fermé depuis le ${moment(props.dateEnd).format('LL')}` :
+          `Cet établissement est ouvert depuis le ${moment(props.dateStart).format('LL')}`}<br />
+      </div>
+      <Row>
+        {props.predecessors.length > 0 ?
+          <Col md="6">
+            <strong>Prédecesseur(s) ({props.predecessors[0].evolution.category})</strong> :<br />
+            {props.predecessors.map(predecessor => (
+              <NavLink key={predecessor.predecessor.id} to={`/etablissements/${predecessor.predecessor.id}`}>
+                {predecessor.predecessor.name}<br />
+              </NavLink>))}
+          </Col> : <div />}
+        {props.followers.length > 0 ?
+          <Col md="6">
+            <strong>Successeur(s) ({props.followers[0].evolution.category})</strong> :<br />
+            {props.followers.map(follower => (
+              <NavLink key={follower.follower.id} to={`/etablissements/${follower.follower.id}`}>
+                {follower.follower.name}<br />
+              </NavLink>))}
+          </Col> : <div />}
+      </Row>
       <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
         <ButtonDropdown
           id="nameDropdown"
@@ -63,17 +77,7 @@ const MainCard = props => (
         </ButtonDropdown>
       </ButtonGroup>
     </Alert>
-    {width > 767 ?
-      <SynonymBox
-        initials={props.initials}
-        text={props.text}
-        synonym={props.synonym}
-      /> :
-      <div>
-        <h3>{props.initials}</h3>
-        <h4>{props.text}</h4>
-      </div>}
-  </Card>
+  </div>
 );
 
 MainCard.propTypes = {

@@ -56,7 +56,7 @@ export default function activeInstitution(state = [], action) {
     case 'DELETE_CONTENT_IS_LOADING':
       return { ...state, deleteContentIsLoading: action.isLoading };
     case 'DELETE_CONTENT_SUCCESS':
-      return { ...state, deleteModal: false, activeItem: {} };
+      return { ...state, deleteModal: false, activeItem: null };
     case 'TOGGLE_DELETE_MODAL':
       return {
         ...state,
@@ -97,7 +97,7 @@ export default function activeInstitution(state = [], action) {
     case 'REMOVE_ACTIVE_ITEM':
       return {
         ...state,
-        activeItem: {},
+        activeItem: null,
       };
     case 'SET_DISPLAYED_NAME':
       return {

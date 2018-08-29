@@ -1,4 +1,9 @@
 
+export function removeActiveInstitution() {
+  return {
+    type: 'REMOVE_ACTIVE_INSTITUTION',
+  };
+}
 export function evolutionCategoriesSuccess(categories) {
   return {
     type: 'EVOLUTION_CATEGORIES_SUCCESS',
@@ -256,6 +261,7 @@ export function getActiveInstitution(institutionId) {
   const url = `${process.env.API_URL_STAGING}institutions/${institutionId}`;
   return (dispatch) => {
     dispatch(institutionIsLoading(true));
+    dispatch(removeActiveItem())
     fetch(url, {
       method: 'GET',
       headers: new Headers({
@@ -356,11 +362,6 @@ export function deleteContentSuccess() {
     type: 'DELETE_CONTENT_SUCCESS',
   };
 }
-export function removeActiveInstitution() {
-  return {
-    type: 'REMOVE_ACTIVE_INSTITUTION',
-  };
-}
 export function deleteContent(url, institutionId) {
   return (dispatch) => {
     dispatch(deleteContentIsLoading(true));
@@ -436,6 +437,7 @@ export function addContent(url, jsonBody, method, institutionId) {
       .then(response => response.json())
       .then(() => {
         dispatch(addContentIsLoading(false));
+        dispatch(addContentHasErrored(false));
         dispatch(getActiveInstitution(institutionId));
       })
       .catch(() => {

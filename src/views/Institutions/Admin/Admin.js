@@ -28,54 +28,54 @@ class Admin extends Component {
     return (
       <div>
         <Nav tabs>
-          <NavItem className="rounded">
+          <NavItem>
             <NavLink
-              className={classnames({ active: this.state.activeTab === '1' })}
+              className={`${classnames({ active: this.state.activeTab === '1' })} rounded`}
               onClick={() => { this.toggle('1'); }}
             >
               <i className="fa fa-th mr-2 text-primary" />
               Identifiants
             </NavLink>
           </NavItem>
-          <NavItem className="rounded">
+          <NavItem>
             <NavLink
-              className={classnames({ active: this.state.activeTab === '2' })}
+              className={`${classnames({ active: this.state.activeTab === '2' })} rounded`}
               onClick={() => { this.toggle('2'); }}
             >
               <i className="fa fa-at mr-2 text-primary" />
               Liens
             </NavLink>
           </NavItem>
-          <NavItem className="rounded">
+          <NavItem>
             <NavLink
-              className={classnames({ active: this.state.activeTab === '3' })}
+              className={`${classnames({ active: this.state.activeTab === '3' })} rounded`}
               onClick={() => { this.toggle('3'); }}
             >
               <i className="fa fa-tag mr-2 text-primary" />
               Caractérisations
             </NavLink>
           </NavItem>
-          <NavItem className="rounded">
+          <NavItem>
             <NavLink
-              className={classnames({ active: this.state.activeTab === '4' })}
+              className={`${classnames({ active: this.state.activeTab === '4' })} rounded`}
               onClick={() => { this.toggle('4'); }}
             >
               <i className="fa fa-history mr-2 text-primary" />
               Evolutions
             </NavLink>
           </NavItem>
-          <NavItem className="rounded">
+          <NavItem>
             <NavLink
-              className={classnames({ active: this.state.activeTab === '5' })}
+              className={`${classnames({ active: this.state.activeTab === '5' })} rounded`}
               onClick={() => { this.toggle('5'); }}
             >
               <i className="fa fa-arrows-alt mr-2 text-primary" />
               Rattachement
             </NavLink>
           </NavItem>
-          <NavItem className="rounded">
+          <NavItem>
             <NavLink
-              className={classnames({ active: this.state.activeTab === '6' })}
+              className={`${classnames({ active: this.state.activeTab === '6' })} rounded`}
               onClick={() => { this.toggle('6'); }}
             >
               <i className="fa fa-map-marker mr-2 text-primary" />

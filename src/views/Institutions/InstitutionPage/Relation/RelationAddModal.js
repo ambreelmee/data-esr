@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import {
   Button, Col, FormGroup, Input,
-  InputGroup, InputGroupAddon, Label, Modal, ModalBody, ModalFooter, ModalHeader
+  InputGroup, InputGroupAddon, Label, Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
