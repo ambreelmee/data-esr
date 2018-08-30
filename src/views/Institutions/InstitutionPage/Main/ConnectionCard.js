@@ -42,21 +42,21 @@ class ConnectionCard extends Component {
         {this.props.mothers.length > 0 ?
           <div>
             <h4>{this.props.mothers.length === 1 ? <div><strong>1</strong> rattachement mère</div> :
-            <div><strong>{this.props.mothers.length}</strong>rattachements mères</div>}
+            <div><strong>{this.props.mothers.length}</strong> rattachements mères</div>}
             </h4>
             {this.props.mothers.map(mother => (
               <NavLink key={mother.mother.id} to={`/etablissements/${mother.mother.id}`}>
-                {mother.mother.name} ({mother.connection.category})
+                {mother.mother.name} ({mother.connection.category})<br />
               </NavLink>))}
           </div> : <div />}
         {this.props.daughters.length > 0 ?
           <div>
             <h4>{this.props.daughters.length === 1 ? <div><strong>1</strong> rattachement fille</div> :
-            <div><strong>{this.props.daughters.length}</strong>rattachements filles</div>}
+            <div><strong>{this.props.daughters.length}</strong> rattachements filles</div>}
             </h4>
             {this.props.daughters.map(daughter => (
               <NavLink key={daughter.daughter.id} to={`/etablissements/${daughter.daughter.id}`}>
-                {daughter.daughter.name} ({daughter.connection.category})
+                {daughter.daughter.name} ({daughter.connection.category})<br />
               </NavLink>))}
           </div> : <div />}
         {this.props.mothers.length === 0 && this.props.daughters.length === 0 ?

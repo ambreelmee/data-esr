@@ -6,7 +6,6 @@ import TagCategoryContainer from './Category/TagCategoryContainer';
 import ImportExport from './ImportExport';
 
 class Admin extends Component {
-
   constructor(props) {
     super(props);
 

@@ -8,11 +8,11 @@ import {
 } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import StatusModal from '../../views/Institutions/InstitutionPage/Main/StatusModal';
-import SynonymsModal from '../../views/Institutions/InstitutionPage/Main/SynonymsModal';
-import MainCard from '../../views/Institutions/InstitutionPage/Main/MainCard';
+import SynonymsModal from '../../views/Institutions/InstitutionPage/Main/Synonym/SynonymsModal';
+import EvolutionCard from '../../views/Institutions/InstitutionPage/Main/EvolutionCard';
 
 
-class MainCardContainer extends Component {
+class EvolutionCardContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -58,7 +58,7 @@ class MainCardContainer extends Component {
       '' : ` - ${displayedName.text.toProperCase()}`}`);
     return (
       <Row>
-        <MainCard
+        <EvolutionCard
           dateEnd={this.props.dateEnd}
           dateStart={this.props.dateStart}
           dropdown={this.state.dropdown}
@@ -127,7 +127,7 @@ const mapDispatchToProps = dispatch => ({
   updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
 });
 
-MainCardContainer.propTypes = {
+EvolutionCardContainer.propTypes = {
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
@@ -151,7 +151,7 @@ MainCardContainer.propTypes = {
   updateSynonymList: PropTypes.func.isRequired,
 };
 
-MainCardContainer.defaultProps = {
+EvolutionCardContainer.defaultProps = {
   addContentHasErrored: false,
   addContentIsLoading: false,
   dateEnd: '',
@@ -165,4 +165,4 @@ MainCardContainer.defaultProps = {
   uai: null,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainCardContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(EvolutionCardContainer);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { InputGroup, InputGroupAddon, Input, Button, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
-import DeleteModal from '../../DeleteModal';
+import DeleteModal from '../../../DeleteModal';
 
 class Synonym extends Component {
   constructor(props) {

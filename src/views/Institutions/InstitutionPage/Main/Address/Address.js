@@ -1,12 +1,8 @@
 import React from 'react';
-import { Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 const Address = props => (
   <div>
-    {props.status === 'active' ?
-      <Badge color="success" className="float-right ml-1">Active</Badge> :
-      <Badge color="danger" className="float-right ml-1">Archivé</Badge>}
     <span className="text-primary"><strong>{props.business_name}</strong></span>
     {props.business_name ? <br /> : <span />}
     <i className="fa fa-map-marker fa-lg mr-1" />

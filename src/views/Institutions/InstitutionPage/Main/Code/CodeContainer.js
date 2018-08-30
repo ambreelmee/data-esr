@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Card, CardBody, CardHeader, ButtonGroup, ButtonDropdown, DropdownItem,
-  DropdownMenu, DropdownToggle, Row
+  DropdownMenu, DropdownToggle
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';

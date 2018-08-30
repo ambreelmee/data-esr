@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Card, CardBody, CardFooter, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import UpdateFormButton from '../UpdateFormButton';
+import UpdateFormButton from './UpdateFormButton';
 
 
 class NameForm extends Component {
@@ -49,7 +49,6 @@ class NameForm extends Component {
       const url = `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}/institution_names`;
       this.props.addContent(url, jsonBody, 'POST', this.props.institutionId);
     }
-    this.props.setActiveItem(institution_name);
   }
 
 

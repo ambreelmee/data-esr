@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addContent, setActiveItem, removeActiveItem, toggleDeleteModal } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import CustomSideBar from '../../views/Institutions/InstitutionPage/CustomSideBar';
-import AddressForm from '../../views/Institutions/InstitutionPage/Address/AddressForm';
-import Address from '../../views/Institutions/InstitutionPage/Address/Address';
+import CustomSideBar from '../../views/Institutions/InstitutionPage/Details/CustomSideBar';
+import AddressForm from '../../views/Institutions/InstitutionPage/Details/AddressForm';
+import Address from '../../views/Institutions/InstitutionPage/Main/Address/Address';
 import DeleteModalContainer from './DeleteModalContainer';
-import NavBreadcrumb from '../../views/Institutions/InstitutionPage/NavBreadcrumb';
+import NavBreadcrumb from '../../views/Institutions/InstitutionPage/Details/NavBreadcrumb';
 
 class AddressContainer extends Component {
   componentWillMount() {

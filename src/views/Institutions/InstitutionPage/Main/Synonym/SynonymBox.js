@@ -30,7 +30,8 @@ const SynonymBox = props => (
       fontFamily: 'sans-serif',
       fontSize: 30,
       color: () => randomColor({
-        hue: 'blue',
+        hue: '4682B4',
+        luminosity: 'dark',
       }),
       padding: 5,
     }}

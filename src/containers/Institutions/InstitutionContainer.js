@@ -5,16 +5,16 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addContent, institutionsSearch, resetSearchAndDisplayFirstPage } from '../../actions/search';
-import { getActiveInstitution, getDaughters, getMothers } from '../../actions/institution';
+import { getActiveInstitution, getDaughters, getMothers, removeActiveItem } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
-import MainCardContainer from './MainCardContainer';
-import LinkContainer from '../../views/Institutions/InstitutionPage/Link/LinkContainer';
-import TagContainer from '../../views/Institutions/InstitutionPage/Tag/TagContainer';
+import EvolutionCardContainer from './EvolutionCardContainer';
+import LinkContainer from '../../views/Institutions/InstitutionPage/Main/Link/LinkContainer';
+import TagContainer from '../../views/Institutions/InstitutionPage/Main/Tag/TagContainer';
 import SearchBar from '../../views/Institutions/Search/SearchBar';
-import AddressCard from '../../views/Institutions/InstitutionPage/Address/AddressCard';
-import ConnectionCard from '../../views/Institutions/InstitutionPage/Relation/ConnectionCard';
-import CodeContainer from '../../views/Institutions/InstitutionPage/Code/CodeContainer';
-import LeafletMap from '../../views/Institutions/InstitutionPage/Address/LeafletMap';
+import AddressCard from '../../views/Institutions/InstitutionPage/Main/Address/AddressCard';
+import ConnectionCard from '../../views/Institutions/InstitutionPage/Main/ConnectionCard';
+import CodeContainer from '../../views/Institutions/InstitutionPage/Main/Code/CodeContainer';
+import LeafletMap from '../../views/Institutions/InstitutionPage/Main/Address/LeafletMap';
 
 
 class InstitutionContainer extends Component {
@@ -30,6 +30,7 @@ class InstitutionContainer extends Component {
 
   componentWillMount() {
     const institutionId = parseInt(this.props.match.params.number, 10);
+    this.props.removeActiveItem();
     if (!this.props.activeInstitution || this.props.activeInstitution.id !== institutionId) {
       this.props.getActiveInstitution(institutionId);
     }
@@ -74,7 +75,7 @@ class InstitutionContainer extends Component {
         />
         <Row>
           <Col md="8">
-            <MainCardContainer getActiveInstitution={this.props.getActiveInstitution} />
+            <EvolutionCardContainer getActiveInstitution={this.props.getActiveInstitution} />
             <Row>
               <Col md="6" className="pl-0">
                 <AddressCard
@@ -145,6 +146,7 @@ const mapDispatchToProps = dispatch => ({
   getActiveInstitution: id => dispatch(getActiveInstitution(id)),
   getDaughters: id => dispatch(getDaughters(id)),
   getMothers: id => dispatch(getMothers(id)),
+  removeActiveItem: () => dispatch(removeActiveItem()),
   resetSearch: () => dispatch(resetSearchAndDisplayFirstPage()),
   search: event => dispatch(institutionsSearch(event)),
 });
@@ -163,6 +165,7 @@ InstitutionContainer.propTypes = {
   isSearching: PropTypes.bool,
   mothers: PropTypes.array,
   mothersIsLoading: PropTypes.bool,
+  removeActiveItem: PropTypes.func.isRequired,
   resetSearch: PropTypes.func.isRequired,
   search: PropTypes.func.isRequired,
   searchValue: PropTypes.string,

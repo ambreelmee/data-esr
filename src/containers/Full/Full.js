@@ -8,13 +8,14 @@ import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
 import { getConnectionCategories, getEvolutionCategories } from '../../actions/institution';
-import SearchContainer from '../Institutions/SearchContainer';
-import InstitutionContainer from '../Institutions/InstitutionContainer';
 import AddressContainer from '../Institutions/AddressContainer';
-import EvolutionContainer from '../Institutions/EvolutionContainer';
-import NameContainer from '../Institutions/NameContainer';
-import UpdateContainer from '../../views/Institutions/Update/UpdateContainer';
 import Admin from '../../views/Institutions/Admin/Admin';
+import ConnectionContainer from '../Institutions/ConnectionContainer';
+import EvolutionContainer from '../Institutions/EvolutionContainer';
+import InstitutionContainer from '../Institutions/InstitutionContainer';
+import NameContainer from '../Institutions/NameContainer';
+import SearchContainer from '../Institutions/SearchContainer';
+import UpdateContainer from '../../views/Institutions/Update/UpdateContainer';
 
 class Full extends Component {
   componentWillMount() {
@@ -36,7 +37,7 @@ class Full extends Component {
                 <PrivateRoute path="/etablissements/:number/adresses" component={AddressContainer} />
                 <PrivateRoute path="/etablissements/:number/evolutions" component={EvolutionContainer} />
                 <PrivateRoute path="/etablissements/:number/noms" component={NameContainer} />
-                <PrivateRoute path="/etablissements/:number/rattachements" component={EvolutionContainer} />
+                <PrivateRoute path="/etablissements/:number/rattachements" component={ConnectionContainer} />
                 <PrivateRoute path="/admin" component={Admin} />
                 <PrivateRoute path="/mises-a-jour" component={UpdateContainer} />
                 <Redirect from="/" to="/etablissements" />

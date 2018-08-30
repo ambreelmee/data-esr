@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table, Tooltip } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import CodeHistoryModalRow from './CodeHistoryModalRow';

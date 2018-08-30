@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import {
-  Badge, Button, ButtonDropdown, ButtonGroup, Card, CardBody, CardHeader, Col, DropdownToggle,
+  Badge, Button, ButtonDropdown, ButtonGroup, Card, CardBody, CardHeader, DropdownToggle,
   DropdownItem, DropdownMenu, Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 import CodeAddModal from './CodeAddModal';
 import CodeEditModal from './CodeEditModal';

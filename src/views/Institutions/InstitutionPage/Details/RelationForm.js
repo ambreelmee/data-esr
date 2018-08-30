@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
-import UpdateFormButton from '../UpdateFormButton';
+import UpdateFormButton from './UpdateFormButton';
 
 
 class RelationForm extends Component {
@@ -63,8 +63,8 @@ class RelationForm extends Component {
       const editUrl = `${process.env.API_URL_STAGING}institutions/${this.props.institutionId}/${this.props.relationType}/${this.props.relationInstitutionId}`;
       const editEvolution = {};
       editEvolution[`${this.props.relationType.slice(0, -1)}`] = {
-        [`${this.props.relationType.slice(0, -1)}_id`]: this.state.relationInstitutionId,
-        [`institution_${this.props.type}_category_id`]: this.state.categoryId,
+        [`${this.props.relationType.slice(0, -1)}_id`]: this.props.relationInstitutionId,
+        [`institution_${this.props.type}_category_id`]: this.props.categoryId,
         date: this.state.date,
       };
       this.props.addContent(editUrl, JSON.stringify(editEvolution), 'PUT', this.props.institutionId);
@@ -77,7 +77,6 @@ class RelationForm extends Component {
         date: this.state.date,
       };
       this.props.addContent(url, JSON.stringify(newEvolution), 'POST', this.props.institutionId);
-      this.props.setActiveItem(newEvolution);
     }
   }
 
@@ -230,7 +229,7 @@ class RelationForm extends Component {
               hasErrored={this.props.addContentHasErrored}
               isLoading={this.props.addContentIsLoading}
               color={this.props.id ? 'secondary' : 'primary'}
-              message={this.props.id ? 'Modifier' : 'Ajouter'}
+              message={this.props.id ? 'Modifier la date' : 'Ajouter'}
               triggerAction={this.onClick}
             />
           </CardFooter>

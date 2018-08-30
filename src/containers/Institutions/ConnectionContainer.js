@@ -6,52 +6,52 @@ import classnames from 'classnames';
 import { addContent, setActiveItem, removeActiveItem, toggleDeleteModal } from '../../actions/institution';
 import { institutionsSearch } from '../../actions/search';
 import CustomSideBar from '../../views/Institutions/InstitutionPage/Details/CustomSideBar';
-import RelationForm from '../../views/Institutions/InstitutionPage/Details/RelationForm';
+import RelationForm from '../../views/Institutions/InstitutionPage/Details//RelationForm';
 import DeleteModalContainer from './DeleteModalContainer';
 import NavBreadcrumb from '../../views/Institutions/InstitutionPage/Details/NavBreadcrumb';
-import Relation from '../../views/Institutions/InstitutionPage/Details/Relation';
+import Relation from '../../views/Institutions/InstitutionPage/Details//Relation';
 
-const Predecessor = props => (
+const Mother = props => (
   <Relation
-    category={props.evolution.category}
-    date={props.evolution.date}
-    institutionEvolutionId={props.predecessor.id}
-    institutionEvolutionName={props.predecessor.name}
+    category={props.connection.category}
+    date={props.connection.date}
+    institutionEvolutionId={props.mother.id}
+    institutionEvolutionName={props.mother.name}
   />
 );
-Predecessor.propTypes = {
-  evolution: PropTypes.object.isRequired,
-  predecessor: PropTypes.object.isRequired,
+Mother.propTypes = {
+  connection: PropTypes.object.isRequired,
+  mother: PropTypes.object.isRequired,
 };
 
-const Follower = props => (
+const Daughter = props => (
   <Relation
-    category={props.evolution.category}
-    date={props.evolution.date}
-    institutionEvolutionId={props.follower.id}
-    institutionEvolutionName={props.follower.name}
+    category={props.connection.category}
+    date={props.connection.date}
+    institutionEvolutionId={props.daughter.id}
+    institutionEvolutionName={props.daughter.name}
   />
 );
-Follower.propTypes = {
-  evolution: PropTypes.object.isRequired,
-  follower: PropTypes.object.isRequired,
+Daughter.propTypes = {
+  connection: PropTypes.object.isRequired,
+  daughter: PropTypes.object.isRequired,
 };
 
-class EvolutionContainer extends Component {
+class ConnectionContainer extends Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
     this.state = {
-      activeTab: 'followers',
+      activeTab: 'daughters',
     };
   }
 
   componentWillMount() {
-    let initialItem = this.props.followers.length > 0 ? this.props.followers[0] : null;
-    if (this.props.predecessors.length > 0) {
-      initialItem = this.props.predecessors[0];
-      this.setState({ activeTab: 'predecessors' });
+    let initialItem = this.props.daughters.length > 0 ? this.props.daughters[0] : null;
+    if (this.props.mothers.length > 0) {
+      initialItem = this.props.mothers[0];
+      this.setState({ activeTab: 'mothers' });
     }
     this.props.setActiveItem(initialItem);
   }
@@ -71,66 +71,67 @@ class EvolutionContainer extends Component {
 
   render() {
     const currentCategory = this.props.activeItem ?
-      this.props.evolutionCategories.find(category => category.title === this.props.activeItem.evolution.category) : null;
+      this.props.connectionCategories.find(category => category.title === this.props.activeItem.connection.category) :
+      null;
     return (
       <div>
         <Row className="bg-light mt-3">
           <NavBreadcrumb
             displayedName={this.props.displayedName}
             institutionId={this.props.institutionId}
-            type="Evolutions"
+            type="Rattachements"
           />
         </Row>
         <Nav tabs>
           <NavItem>
             <NavLink
-              className={`${classnames({ active: this.state.activeTab === 'predecessors' })} rounded`}
-              onClick={() => { this.toggle('predecessors'); }}
+              className={`${classnames({ active: this.state.activeTab === 'mothers' })} rounded`}
+              onClick={() => { this.toggle('mothers'); }}
             >
-              Prédecesseurs
+              Mères
             </NavLink>
           </NavItem>
           <NavItem>
             <NavLink
-              className={`${classnames({ active: this.state.activeTab === 'followers' })} rounded`}
-              onClick={() => { this.toggle('followers'); }}
+              className={`${classnames({ active: this.state.activeTab === 'daughters' })} rounded`}
+              onClick={() => { this.toggle('daughters'); }}
             >
-              Successeurs
+              Filles
             </NavLink>
           </NavItem>
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
-          {this.state.activeTab === 'predecessors' ?
-            <TabPane tabId="predecessors">
+          {this.state.activeTab === 'mothers' ?
+            <TabPane tabId="mothers">
               <Row>
                 <CustomSideBar
                   activeId={this.props.activeItem ? this.props.activeItem.id : ''}
-                  component={<Predecessor />}
-                  content={this.props.predecessors}
+                  component={<Mother />}
+                  content={this.props.mothers}
                   removeActiveItem={this.props.removeActiveItem}
                   setActiveItem={this.props.setActiveItem}
-                  buttonText="Ajouter un prédecesseur"
+                  buttonText="Ajouter un rattachement mère"
                 />
                 <RelationForm
                   addContent={this.props.addContent}
                   addContentHasErrored={this.props.addContentHasErrored}
                   addContentIsLoading={this.props.addContentIsLoading}
                   categoryId={currentCategory ? currentCategory.id : ''}
-                  categories={this.props.evolutionCategories}
-                  date={this.props.activeItem ? this.props.activeItem.evolution.date : ''}
+                  categories={this.props.connectionCategories}
+                  date={this.props.activeItem ? this.props.activeItem.connection.date : ''}
                   deleteModal={this.props.deleteModal}
-                  id={this.props.activeItem ? this.props.activeItem.evolution.id : ''}
+                  id={this.props.activeItem ? this.props.activeItem.connection.id : ''}
                   institutionId={this.props.institutionId}
                   institutions={this.props.institutions}
-                  name={this.props.activeItem ? this.props.activeItem.predecessor.name : ''}
-                  relationInstitutionId={this.props.activeItem ? this.props.activeItem.predecessor.id : ''}
-                  relationType="predecessors"
+                  name={this.props.activeItem ? this.props.activeItem.mother.name : ''}
+                  relationInstitutionId={this.props.activeItem ? this.props.activeItem.mother.id : ''}
+                  relationType="mothers"
                   search={this.props.search}
                   searchHasErrored={this.props.searchHasErrored}
                   searchIsLoading={this.props.searchIsLoading}
                   setActiveItem={this.props.setActiveItem}
                   toggleDeleteModal={this.props.toggleDeleteModal}
-                  type="evolution"
+                  type="connection"
                 />
                 <DeleteModalContainer
                   institutionId={this.props.institutionId}
@@ -139,37 +140,37 @@ class EvolutionContainer extends Component {
                 />
               </Row>
             </TabPane> : <div />}
-          {this.state.activeTab === 'followers' ?
-            <TabPane tabId="followers">
+          {this.state.activeTab === 'daughters' ?
+            <TabPane tabId="daughters">
               <Row>
                 <CustomSideBar
                   activeId={this.props.activeItem ? this.props.activeItem.id : null}
-                  component={<Follower />}
-                  content={this.props.followers}
+                  component={<Daughter />}
+                  content={this.props.daughters}
                   removeActiveItem={this.props.removeActiveItem}
                   setActiveItem={this.props.setActiveItem}
-                  buttonText="Ajouter un successeur"
+                  buttonText="Ajouter un rattachement fille"
                 />
                 <RelationForm
                   addContent={this.props.addContent}
                   addContentHasErrored={this.props.addContentHasErrored}
                   addContentIsLoading={this.props.addContentIsLoading}
                   categoryId={currentCategory ? currentCategory.id : ''}
-                  categories={this.props.evolutionCategories}
-                  date={this.props.activeItem ? this.props.activeItem.evolution.date : ''}
+                  categories={this.props.connectionCategories}
+                  date={this.props.activeItem ? this.props.activeItem.connection.date : ''}
                   deleteModal={this.props.deleteModal}
-                  id={this.props.activeItem ? this.props.activeItem.evolution.id : ''}
+                  id={this.props.activeItem ? this.props.activeItem.connection.id : ''}
                   institutionId={this.props.institutionId}
                   institutions={this.props.institutions}
-                  name={this.props.activeItem ? this.props.activeItem.follower.name : ''}
-                  relationInstitutionId={this.props.activeItem ? this.props.activeItem.follower.id : ''}
-                  relationType="followers"
+                  name={this.props.activeItem ? this.props.activeItem.daughter.name : ''}
+                  relationInstitutionId={this.props.activeItem ? this.props.activeItem.daughter.id : ''}
+                  relationType="daughters"
                   search={this.props.search}
                   searchHasErrored={this.props.searchHasErrored}
                   searchIsLoading={this.props.searchIsLoading}
                   setActiveItem={this.props.setActiveItem}
                   toggleDeleteModal={this.props.toggleDeleteModal}
-                  type="evolution"
+                  type="connection"
                 />
                 <DeleteModalContainer
                   institutionId={this.props.institutionId}
@@ -190,11 +191,11 @@ const mapStateToProps = state => ({
   addContentIsLoading: state.activeInstitution.addContentIsLoading,
   deleteModal: state.activeInstitution.deleteModal,
   displayedName: state.activeInstitution.displayedName,
-  evolutionCategories: state.activeInstitution.evolutionCategories,
-  followers: state.activeInstitution.followers,
+  connectionCategories: state.activeInstitution.connectionCategories,
+  daughters: state.activeInstitution.daughters,
   institutions: state.search.institutionsResults,
   institutionId: state.activeInstitution.institution.id,
-  predecessors: state.activeInstitution.predecessors,
+  mothers: state.activeInstitution.mothers,
   searchHasErrored: state.search.hasErrored,
   searchIsLoading: state.search.isLoading,
 });
@@ -207,18 +208,18 @@ const mapDispatchToProps = dispatch => ({
   search: searchValue => dispatch(institutionsSearch(searchValue)),
 });
 
-EvolutionContainer.propTypes = {
+ConnectionContainer.propTypes = {
   activeItem: PropTypes.object,
   addContent: PropTypes.func.isRequired,
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
   deleteModal: PropTypes.bool,
   displayedName: PropTypes.string.isRequired,
-  evolutionCategories: PropTypes.array.isRequired,
+  connectionCategories: PropTypes.array.isRequired,
   institutions: PropTypes.array,
   institutionId: PropTypes.number.isRequired,
-  followers: PropTypes.array.isRequired,
-  predecessors: PropTypes.array.isRequired,
+  daughters: PropTypes.array.isRequired,
+  mothers: PropTypes.array.isRequired,
   removeActiveItem: PropTypes.func.isRequired,
   search: PropTypes.func.isRequired,
   searchHasErrored: PropTypes.bool,
@@ -227,7 +228,7 @@ EvolutionContainer.propTypes = {
   toggleDeleteModal: PropTypes.func.isRequired,
 };
 
-EvolutionContainer.defaultProps = {
+ConnectionContainer.defaultProps = {
   activeItem: null,
   addContentHasErrored: false,
   addContentIsLoading: false,
@@ -237,4 +238,4 @@ EvolutionContainer.defaultProps = {
   searchIsLoading: false,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EvolutionContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectionContainer);

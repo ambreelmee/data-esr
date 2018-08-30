@@ -1,15 +1,18 @@
 import React from 'react';
-import { Alert, ButtonGroup, ButtonDropdown, Card, Col, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
+import {
+  Alert, ButtonGroup, ButtonDropdown, Card, Col,
+  DropdownItem, DropdownMenu, DropdownToggle, Row,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { NavLink } from 'react-router-dom';
-import SynonymBox from './SynonymBox';
+import SynonymBox from './Synonym/SynonymBox';
 
 const e = document.documentElement;
 const g = document.getElementsByTagName('body')[0];
 const width = window.innerWidth || e.clientWidth || g.clientWidth;
 
-const MainCard = props => (
+const EvolutionCard = props => (
   <div className="w-100">
     <Card className="mb-0 mt-2 rounded bg-transparent border-0" style={{ height: '250px' }}>
       {width > 767 ?
@@ -24,11 +27,11 @@ const MainCard = props => (
         </div>}
     </Card>
     <Alert className="rounded mb-0" color={props.dateEnd ? 'danger' : 'success'}>
-      <div className="text-center" >
+      <h5 className="text-center" >
         {props.dateEnd ?
           `Cet établissement est fermé depuis le ${moment(props.dateEnd).format('LL')}` :
-          `Cet établissement est ouvert depuis le ${moment(props.dateStart).format('LL')}`}<br />
-      </div>
+          `Cet établissement est ouvert depuis le ${moment(props.dateStart).format('LL')}`}
+      </h5>
       <Row>
         {props.predecessors.length > 0 ?
           <Col md="6">
@@ -80,7 +83,7 @@ const MainCard = props => (
   </div>
 );
 
-MainCard.propTypes = {
+EvolutionCard.propTypes = {
   dateEnd: PropTypes.string,
   dateStart: PropTypes.string.isRequired,
   dropdown: PropTypes.bool.isRequired,
@@ -95,11 +98,11 @@ MainCard.propTypes = {
   toggleSynonymModal: PropTypes.func.isRequired,
 };
 
-MainCard.defaultProps = {
+EvolutionCard.defaultProps = {
   dateEnd: '',
   followers: [],
   predecessors: [],
 };
 
 
-export default MainCard;
+export default EvolutionCard;
