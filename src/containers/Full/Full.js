@@ -7,7 +7,7 @@ import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
-import { getConnectionCategories, getEvolutionCategories } from '../../actions/institution';
+import { getConnectionCategories, getEvolutionCategories, getCodeCategories } from '../../actions/institution';
 import AddressContainer from '../Institutions/AddressContainer';
 import Admin from '../../views/Institutions/Admin/Admin';
 import ConnectionContainer from '../Institutions/ConnectionContainer';
@@ -19,6 +19,7 @@ import UpdateContainer from '../../views/Institutions/Update/UpdateContainer';
 
 class Full extends Component {
   componentWillMount() {
+    this.props.getCodeCategories();
     this.props.getConnectionCategories();
     this.props.getEvolutionCategories();
   }
@@ -51,21 +52,18 @@ class Full extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  connectionCategories: state.connectionCategories,
-  evolutionCategories: state.evolutionCategories,
-});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => ({
+  getCodeCategories: () => dispatch(getCodeCategories()),
   getConnectionCategories: () => dispatch(getConnectionCategories()),
   getEvolutionCategories: () => dispatch(getEvolutionCategories()),
 });
 
 Full.propTypes = {
-  connectionCategories: PropTypes.array,
-  evolutionCategories: PropTypes.array,
-  getConnectionCategories: PropTypes.func,
-  getEvolutionCategories: PropTypes.func,
-}
+  getCodeCategories: PropTypes.func.isRequired,
+  getConnectionCategories: PropTypes.func.isRequired,
+  getEvolutionCategories: PropTypes.func.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Full);

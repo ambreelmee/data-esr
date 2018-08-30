@@ -1,6 +1,8 @@
 
 export default function activeInstitution(state = [], action) {
   switch (action.type) {
+    case 'CODE_CATEGORIES_SUCCESS':
+      return { ...state, codeCategories: action.categories };
     case 'CONNECTION_CATEGORIES_SUCCESS':
       return { ...state, connectionCategories: action.categories };
     case 'EVOLUTION_CATEGORIES_SUCCESS':

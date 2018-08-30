@@ -22,7 +22,7 @@ class ConnectionCard extends Component {
 
   render() {
     return (
-      <Alert color="info" className="mb-0 mt-2 w-100 bg-muted rounded">
+      <Alert color="info" className="w-100 rounded">
         <ButtonGroup className="float-right">
           <ButtonDropdown
             isOpen={this.state.displayDropdown}

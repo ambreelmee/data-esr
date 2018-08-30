@@ -57,7 +57,7 @@ class EvolutionCardContainer extends Component {
     this.props.setDisplayedName(`${displayedName.initials}${displayedName.initials === displayedName.text ?
       '' : ` - ${displayedName.text.toProperCase()}`}`);
     return (
-      <Row>
+      <div>
         <EvolutionCard
           dateEnd={this.props.dateEnd}
           dateStart={this.props.dateStart}
@@ -96,7 +96,7 @@ class EvolutionCardContainer extends Component {
           toggleModal={this.toggleStatusModal}
           uai={this.props.uai ? this.props.uai.content : 'X'}
         />
-      </Row>
+      </div>
     );
   }
 }

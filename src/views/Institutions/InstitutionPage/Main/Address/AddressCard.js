@@ -6,7 +6,7 @@ import Address from './Address';
 
 
 const AddressCard = props => (
-  <Alert color="secondary" className="mb-0 mt-2 w-100 rounded">
+  <Alert color="secondary" className="mb-0 w-100 rounded">
     <ButtonGroup className="float-right">
       <ButtonDropdown
         isOpen={props.dropdown}

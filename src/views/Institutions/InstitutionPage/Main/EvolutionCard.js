@@ -13,8 +13,8 @@ const g = document.getElementsByTagName('body')[0];
 const width = window.innerWidth || e.clientWidth || g.clientWidth;
 
 const EvolutionCard = props => (
-  <div className="w-100">
-    <Card className="mb-0 mt-2 rounded bg-transparent border-0" style={{ height: '250px' }}>
+  <Row>
+    <Card className="mb-0 bg-transparent border-0 col-md-8" style={{ height: '200px' }}>
       {width > 767 ?
         <SynonymBox
           initials={props.initials}
@@ -26,61 +26,63 @@ const EvolutionCard = props => (
           <h4>{props.text}</h4>
         </div>}
     </Card>
-    <Alert className="rounded mb-0" color={props.dateEnd ? 'danger' : 'success'}>
-      <h5 className="text-center" >
-        {props.dateEnd ?
-          `Cet établissement est fermé depuis le ${moment(props.dateEnd).format('LL')}` :
-          `Cet établissement est ouvert depuis le ${moment(props.dateStart).format('LL')}`}
-      </h5>
-      <Row>
-        {props.predecessors.length > 0 ?
-          <Col md="6">
-            <strong>Prédecesseur(s) ({props.predecessors[0].evolution.category})</strong> :<br />
-            {props.predecessors.map(predecessor => (
-              <NavLink key={predecessor.predecessor.id} to={`/etablissements/${predecessor.predecessor.id}`}>
-                {predecessor.predecessor.name}<br />
-              </NavLink>))}
-          </Col> : <div />}
-        {props.followers.length > 0 ?
-          <Col md="6">
-            <strong>Successeur(s) ({props.followers[0].evolution.category})</strong> :<br />
-            {props.followers.map(follower => (
-              <NavLink key={follower.follower.id} to={`/etablissements/${follower.follower.id}`}>
-                {follower.follower.name}<br />
-              </NavLink>))}
-          </Col> : <div />}
-      </Row>
-      <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
-        <ButtonDropdown
-          id="nameDropdown"
-          isOpen={props.dropdown}
-          toggle={props.displayDropdown}
-        >
-          <DropdownToggle caret className="p-0 text-dark" color="transparent">
-            <i className="icon-settings" />
-          </DropdownToggle>
-          <DropdownMenu>
-            <NavLink to={`/etablissements/${props.institutionId}/noms`} className="dropdown-item" >
-              <i className="fa fa-arrow-right text-info" />
-                Gérer les noms
-            </NavLink>
-            <NavLink to={`/etablissements/${props.institutionId}/evolutions`} className="dropdown-item" >
-              <i className="fa fa-arrow-right text-info" />
-                Gérer les évolutions
-            </NavLink>
-            <DropdownItem onClick={props.toggleSynonymModal}>
-              <i className="fa fa-edit text-warning" />
-                Modifier la liste des noms d&#39;usage
-            </DropdownItem>
-            <DropdownItem onClick={props.toggleStatusModal}>
-              <i className="fa fa-pencil text-danger" />
-                Modifier le statut de l&#39;établissement
-            </DropdownItem>
-          </DropdownMenu>
-        </ButtonDropdown>
-      </ButtonGroup>
-    </Alert>
-  </div>
+    <Col md="4" className="my-auto">
+      <Alert className="rounded mb-0 pt-4" color={props.dateEnd ? 'danger' : 'success'}>
+        <h5 className="text-center" >
+          {props.dateEnd ?
+            `Cet établissement est fermé depuis le ${moment(props.dateEnd).format('LL')}` :
+            `Cet établissement est ouvert depuis le ${moment(props.dateStart).format('LL')}`}
+        </h5>
+        <Row>
+          {props.predecessors.length > 0 ?
+            <Col md="12">
+              <strong>Prédecesseur(s) ({props.predecessors[0].evolution.category})</strong> :<br />
+              {props.predecessors.map(predecessor => (
+                <NavLink key={predecessor.predecessor.id} to={`/etablissements/${predecessor.predecessor.id}`}>
+                  {predecessor.predecessor.name}<br />
+                </NavLink>))}
+            </Col> : <div />}
+          {props.followers.length > 0 ?
+            <Col md="12">
+              <strong>Successeur(s) ({props.followers[0].evolution.category})</strong> :<br />
+              {props.followers.map(follower => (
+                <NavLink key={follower.follower.id} to={`/etablissements/${follower.follower.id}`}>
+                  {follower.follower.name}<br />
+                </NavLink>))}
+            </Col> : <div />}
+        </Row>
+        <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
+          <ButtonDropdown
+            id="nameDropdown"
+            isOpen={props.dropdown}
+            toggle={props.displayDropdown}
+          >
+            <DropdownToggle caret className="p-0 text-dark" color="transparent">
+              <i className="icon-settings" />
+            </DropdownToggle>
+            <DropdownMenu>
+              <NavLink to={`/etablissements/${props.institutionId}/noms`} className="dropdown-item" >
+                <i className="fa fa-arrow-right text-info" />
+                  Gérer les noms
+              </NavLink>
+              <NavLink to={`/etablissements/${props.institutionId}/evolutions`} className="dropdown-item" >
+                <i className="fa fa-arrow-right text-info" />
+                  Gérer les évolutions
+              </NavLink>
+              <DropdownItem onClick={props.toggleSynonymModal}>
+                <i className="fa fa-edit text-warning" />
+                  Modifier la liste des noms d&#39;usage
+              </DropdownItem>
+              <DropdownItem onClick={props.toggleStatusModal}>
+                <i className="fa fa-pencil text-danger" />
+                  Modifier le statut de l&#39;établissement
+              </DropdownItem>
+            </DropdownMenu>
+          </ButtonDropdown>
+        </ButtonGroup>
+      </Alert>
+    </Col>
+  </Row>
 );
 
 EvolutionCard.propTypes = {

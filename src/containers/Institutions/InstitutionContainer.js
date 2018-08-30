@@ -13,7 +13,7 @@ import TagContainer from '../../views/Institutions/InstitutionPage/Main/Tag/TagC
 import SearchBar from '../../views/Institutions/Search/SearchBar';
 import AddressCard from '../../views/Institutions/InstitutionPage/Main/Address/AddressCard';
 import ConnectionCard from '../../views/Institutions/InstitutionPage/Main/ConnectionCard';
-import CodeContainer from '../../views/Institutions/InstitutionPage/Main/Code/CodeContainer';
+import CodeCard from '../../views/Institutions/InstitutionPage/Main/Code/CodeCard';
 import LeafletMap from '../../views/Institutions/InstitutionPage/Main/Address/LeafletMap';
 
 
@@ -55,6 +55,16 @@ class InstitutionContainer extends Component {
     });
   }
 
+  renderCodes(institutionId) {
+    const activeCodes = this.props.activeInstitution.codes.filter(code => code.status === 'active');
+    return activeCodes.map(code => (
+      <CodeCard
+        category={code.category}
+        content={code.content}
+        institutionId={institutionId}
+      />));
+  }
+
   render() {
     moment.locale('fr');
     const institutionId = parseInt(this.props.match.params.number, 10);
@@ -73,54 +83,46 @@ class InstitutionContainer extends Component {
           searchPage={false}
           searchValue={this.props.searchValue}
         />
+        <EvolutionCardContainer getActiveInstitution={this.props.getActiveInstitution} />
         <Row>
-          <Col md="8">
-            <EvolutionCardContainer getActiveInstitution={this.props.getActiveInstitution} />
-            <Row>
-              <Col md="6" className="pl-0">
-                <AddressCard
-                  displayedAddress={displayedAddress}
-                  dropdown={this.state.addressDropdown}
-                  displayDropdown={this.displayDropdown}
-                  id={displayedAddress ? displayedAddress.id : null}
-                  institutionId={institutionId}
-                />
-                {displayedAddress && displayedAddress.latitude && displayedAddress.longitude ?
-                  <LeafletMap
-                    addContent={this.props.addContent}
-                    formattedAddress={
-                      <p>
-                        {displayedAddress.address_1}
-                        {displayedAddress.address_2 ? <br /> : <span />}
-                        {displayedAddress.address_2}<br />
-                        {`${displayedAddress.zip_code} ,${displayedAddress.city}`}<br />
-                        {displayedAddress.country}
-                      </p>}
-                    id={displayedAddress.id}
-                    institutionId={institutionId}
-                    isLoading={this.props.addContentIsLoading}
-                    latitude={displayedAddress.latitude}
-                    longitude={displayedAddress.longitude}
-                  /> : <div />}
-              </Col>
-              <Col md="6">
-                <Row>
-                  <CodeContainer etablissement_id={institutionId} />
-                </Row>
-              </Col>
-            </Row>
+          <Col md="5" className="pl-0 pr-1">
+            <AddressCard
+              displayedAddress={displayedAddress}
+              dropdown={this.state.addressDropdown}
+              displayDropdown={this.displayDropdown}
+              id={displayedAddress ? displayedAddress.id : null}
+              institutionId={institutionId}
+            />
+            {displayedAddress && displayedAddress.latitude && displayedAddress.longitude ?
+              <LeafletMap
+                addContent={this.props.addContent}
+                formattedAddress={
+                  <p>
+                    {displayedAddress.address_1}
+                    {displayedAddress.address_2 ? <br /> : <span />}
+                    {displayedAddress.address_2}<br />
+                    {`${displayedAddress.zip_code} ,${displayedAddress.city}`}<br />
+                    {displayedAddress.country}
+                  </p>}
+                id={displayedAddress.id}
+                institutionId={institutionId}
+                isLoading={this.props.addContentIsLoading}
+                latitude={displayedAddress.latitude}
+                longitude={displayedAddress.longitude}
+              /> : <div />}
+          </Col>
+          <Col md="3" className="pr-1">
+            {this.props.activeInstitution.codes.length > 0 ? this.renderCodes(institutionId) : ''}
+            <TagContainer etablissement_id={institutionId} />
           </Col>
           <Col md="4">
-            <Row className="mx-1">
-              {!this.props.mothersIsLoading && !this.props.daughtersIsLoading ?
-                <ConnectionCard
-                  mothers={this.props.mothers}
-                  daughters={this.props.daughters}
-                  institutionId={institutionId}
-                /> : <div />}
-              <TagContainer etablissement_id={institutionId} />
-              <LinkContainer etablissement_id={institutionId} />
-            </Row>
+            {!this.props.mothersIsLoading && !this.props.daughtersIsLoading ?
+              <ConnectionCard
+                mothers={this.props.mothers}
+                daughters={this.props.daughters}
+                institutionId={institutionId}
+              /> : <div />}
+            <LinkContainer etablissement_id={institutionId} />
           </Col>
         </Row>
       </div>

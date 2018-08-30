@@ -31,6 +31,33 @@ export function getEvolutionCategories() {
       });
   };
 }
+export function codeCategoriesSuccess(categories) {
+  return {
+    type: 'CODE_CATEGORIES_SUCCESS',
+    categories,
+  };
+}
+export function getCodeCategories() {
+  const url = `${process.env.API_URL_STAGING}code_categories`;
+  return (dispatch) => {
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((categories) => {
+        dispatch(codeCategoriesSuccess(categories));
+      });
+  };
+}
 
 export function connectionCategoriesSuccess(categories) {
   return {
