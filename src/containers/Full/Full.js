@@ -10,6 +10,7 @@ import PrivateRoute from '../../PrivateRoute';
 import { getConnectionCategories, getEvolutionCategories, getCodeCategories } from '../../actions/institution';
 import AddressContainer from '../Institutions/AddressContainer';
 import Admin from '../../views/Institutions/Admin/Admin';
+import CodeContainer from '../Institutions/CodeContainer';
 import ConnectionContainer from '../Institutions/ConnectionContainer';
 import EvolutionContainer from '../Institutions/EvolutionContainer';
 import InstitutionContainer from '../Institutions/InstitutionContainer';
@@ -36,6 +37,7 @@ class Full extends Component {
                 <PrivateRoute exact path="/etablissements"component={SearchContainer} />
                 <PrivateRoute exact path="/etablissements/:number" component={InstitutionContainer} />
                 <PrivateRoute path="/etablissements/:number/adresses" component={AddressContainer} />
+                <PrivateRoute path="/etablissements/:number/identifiants/:category" component={CodeContainer} />
                 <PrivateRoute path="/etablissements/:number/evolutions" component={EvolutionContainer} />
                 <PrivateRoute path="/etablissements/:number/noms" component={NameContainer} />
                 <PrivateRoute path="/etablissements/:number/rattachements" component={ConnectionContainer} />

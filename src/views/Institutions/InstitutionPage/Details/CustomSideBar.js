@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Button } from 'reactstrap';
+import { Badge, Col, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 const CustomSideBar = props => (
@@ -12,6 +12,9 @@ const CustomSideBar = props => (
         style={{ whiteSpace: 'normal' }}
         onClick={() => props.setActiveItem(item)}
       >
+        {item.status === 'active' ?
+          <Badge color="success" className="float-right ml-1">Active</Badge> :
+          <Badge color="danger" className="float-right ml-1">Archivé</Badge>}
         {React.cloneElement(
           props.component,
           { ...item },

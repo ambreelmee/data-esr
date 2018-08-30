@@ -276,7 +276,6 @@ AddressForm.propTypes = {
   hasErrored: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   phone: PropTypes.string,
-  setActiveItem: PropTypes.func.isRequired,
   status: PropTypes.string,
   toggleDeleteModal: PropTypes.func.isRequired,
   zip_code: PropTypes.string,

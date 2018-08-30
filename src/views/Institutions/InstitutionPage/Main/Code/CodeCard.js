@@ -32,7 +32,10 @@ class CodeCard extends Component {
               <i className="icon-settings" />
             </DropdownToggle>
             <DropdownMenu>
-              <NavLink to={`/etablissements/${this.props.institutionId}/identifiants`} className="dropdown-item" >
+              <NavLink
+                to={`/etablissements/${this.props.institutionId}/identifiants/${this.props.category}`}
+                className="dropdown-item"
+              >
                 <i className="fa fa-arrow-right text-info" />
                   Gérer les identifiants
               </NavLink>
