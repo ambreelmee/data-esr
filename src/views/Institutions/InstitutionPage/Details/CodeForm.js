@@ -22,6 +22,10 @@ class CodeForm extends Component {
     this.onRadioChange = this.onRadioChange.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ ...nextProps });
+  }
+
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
   }
@@ -77,7 +81,6 @@ class CodeForm extends Component {
                       type="date"
                       id="date_start"
                       value={this.state.date_start || ''}
-                      placeholder={this.state.date_start || ''}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -89,7 +92,6 @@ class CodeForm extends Component {
                       type="date"
                       id="date_end"
                       value={this.state.date_end || ''}
-                      placeholder={this.state.date_end || ''}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -105,7 +107,7 @@ class CodeForm extends Component {
                           id="active"
                           name="status"
                           value="active"
-                          defaultChecked={this.state.status === 'active'}
+                          checked={this.state.status === 'active'}
                           onChange={this.onRadioChange}
                         />
                         <Label className="form-check-label" check htmlFor="active">Actif</Label>
@@ -117,7 +119,7 @@ class CodeForm extends Component {
                           id="archived"
                           name="status"
                           value="archived"
-                          defaultChecked={this.state.status === 'archived'}
+                          checked={this.state.status === 'archived'}
                           onChange={this.onRadioChange}
                         />
                         <Label className="form-check-label" check htmlFor="archived">Archivé</Label>
@@ -127,14 +129,13 @@ class CodeForm extends Component {
                 </Col>
               </Row>
             </Form>
-            <p>Les champs colorés sont obligatoires</p>
           </CardBody>
           <CardFooter>
             {this.props.id ?
               <Button
                 className="float-left rounded mt-1"
                 color="danger"
-                onClick={() => this.props.toggleDeleteModal(`${process.env.API_URL_STAGING}addresses/${this.props.id}`)}
+                onClick={() => this.props.toggleDeleteModal(`${process.env.API_URL_STAGING}codes/${this.props.id}`)}
               >
                 Supprimer
               </Button> : <div />}
@@ -142,7 +143,7 @@ class CodeForm extends Component {
               hasErrored={this.props.hasErrored}
               isLoading={this.props.isLoading}
               color={this.props.id ? 'secondary' : 'primary'}
-              message={this.props.id ? "Modifier l'adresse" : 'Ajouter une adresse'}
+              message={this.props.id ? "Modifier l'identifiant" : 'Ajouter un identifiant'}
               triggerAction={this.triggerAction}
             />
           </CardFooter>
@@ -161,10 +162,10 @@ CodeForm.propTypes = {
   date_end: PropTypes.string,
   date_start: PropTypes.string,
   hasErrored: PropTypes.bool.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.number,
   institutionId: PropTypes.number.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  status: PropTypes.string.isRequired,
+  status: PropTypes.string,
   toggleDeleteModal: PropTypes.func.isRequired,
 };
 
@@ -172,6 +173,8 @@ CodeForm.defaultProps = {
   content: '',
   date_end: '',
   date_start: '',
+  id: null,
+  status: 'active',
 };
 
 export default CodeForm;

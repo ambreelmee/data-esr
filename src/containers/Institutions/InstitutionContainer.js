@@ -13,7 +13,7 @@ import TagContainer from '../../views/Institutions/InstitutionPage/Main/Tag/TagC
 import SearchBar from '../../views/Institutions/Search/SearchBar';
 import AddressCard from '../../views/Institutions/InstitutionPage/Main/Address/AddressCard';
 import ConnectionCard from '../../views/Institutions/InstitutionPage/Main/ConnectionCard';
-import CodeCard from '../../views/Institutions/InstitutionPage/Main/Code/CodeCard';
+import CodeCard from '../../views/Institutions/InstitutionPage/Main/CodeCard';
 import LeafletMap from '../../views/Institutions/InstitutionPage/Main/Address/LeafletMap';
 
 
