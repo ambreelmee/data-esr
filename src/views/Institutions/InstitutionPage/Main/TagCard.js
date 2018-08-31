@@ -22,7 +22,7 @@ class CodeCard extends Component {
 
   render() {
     return (
-      <Alert color="secondary" className="text-center w-100 rounded">
+      <Alert color="warning" className="text-center rounded ml-2">
         <ButtonGroup className="float-right">
           <ButtonDropdown
             isOpen={this.state.displayDropdown}
@@ -33,17 +33,17 @@ class CodeCard extends Component {
             </DropdownToggle>
             <DropdownMenu className="rounded">
               <NavLink
-                to={`/etablissements/${this.props.institutionId}/identifiants/${this.props.category}`}
-                className="dropdown-item rounded alert-secondary"
+                to={`/etablissements/${this.props.institutionId}/tags/${this.props.category}`}
+                className="dropdown-item alert-secondary rounded"
               >
                 <i className="fa fa-arrow-right text-info" />
-                  Gérer les identifiants
+                  Gérer les tags
               </NavLink>
             </DropdownMenu>
           </ButtonDropdown>
         </ButtonGroup>
-        <h5>{this.props.category}</h5>
-        <h3>{this.props.content}</h3>
+        <h6>{this.props.category.replace('_', ' ')}</h6>
+        <h5 className="mb-0">{this.props.long_label}</h5>
       </Alert>
     );
   }
@@ -51,7 +51,7 @@ class CodeCard extends Component {
 
 CodeCard.propTypes = {
   category: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
+  long_label: PropTypes.string.isRequired,
   institutionId: PropTypes.number.isRequired,
 };
 

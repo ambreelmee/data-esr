@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Row } from 'reactstrap';
 import {
   updateSynonymList, addContent, toggleDeleteModal, setDisplayedName
-  , getFollowers, getPredecessors,
+  , getFollowers, getPredecessors, getActiveInstitution,
 } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import StatusModal from '../../views/Institutions/InstitutionPage/Main/StatusModal';
@@ -120,6 +119,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
+  getActiveInstitution: () => dispatch(getActiveInstitution()),
   getFollowers: id => dispatch(getFollowers(id)),
   getPredecessors: id => dispatch(getPredecessors(id)),
   setDisplayedName: name => dispatch(setDisplayedName(name)),

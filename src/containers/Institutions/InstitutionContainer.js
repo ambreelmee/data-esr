@@ -9,11 +9,11 @@ import { getActiveInstitution, getDaughters, getMothers, removeActiveItem } from
 import { getActiveEntity } from '../../views/Institutions/methods';
 import EvolutionCardContainer from './EvolutionCardContainer';
 import LinkContainer from '../../views/Institutions/InstitutionPage/Main/Link/LinkContainer';
-import TagContainer from '../../views/Institutions/InstitutionPage/Main/Tag/TagContainer';
 import SearchBar from '../../views/Institutions/Search/SearchBar';
 import AddressCard from '../../views/Institutions/InstitutionPage/Main/Address/AddressCard';
 import ConnectionCard from '../../views/Institutions/InstitutionPage/Main/ConnectionCard';
 import CodeCard from '../../views/Institutions/InstitutionPage/Main/CodeCard';
+import TagCard from '../../views/Institutions/InstitutionPage/Main/TagCard';
 import LeafletMap from '../../views/Institutions/InstitutionPage/Main/Address/LeafletMap';
 
 
@@ -59,8 +59,19 @@ class InstitutionContainer extends Component {
     const activeCodes = this.props.activeInstitution.codes.filter(code => code.status === 'active');
     return activeCodes.map(code => (
       <CodeCard
+        key={code.id}
         category={code.category}
         content={code.content}
+        institutionId={institutionId}
+      />));
+  }
+
+  renderTags(institutionId) {
+    return this.props.activeInstitution.tags.map(tag => (
+      <TagCard
+        key={tag.id}
+        category={tag.category}
+        long_label={tag.long_label}
         institutionId={institutionId}
       />));
   }
@@ -83,7 +94,10 @@ class InstitutionContainer extends Component {
           searchPage={false}
           searchValue={this.props.searchValue}
         />
-        <EvolutionCardContainer getActiveInstitution={this.props.getActiveInstitution} />
+        <EvolutionCardContainer institutionId={institutionId} />
+        <div className="d-flex justify-content-between mt-2">
+          {this.props.activeInstitution.tags.length > 0 ? this.renderTags(institutionId) : ''}
+        </div>
         <Row>
           <Col md="5" className="pl-0 pr-1">
             <AddressCard
@@ -113,7 +127,6 @@ class InstitutionContainer extends Component {
           </Col>
           <Col md="3" className="pr-1">
             {this.props.activeInstitution.codes.length > 0 ? this.renderCodes(institutionId) : ''}
-            <TagContainer etablissement_id={institutionId} />
           </Col>
           <Col md="4">
             {!this.props.mothersIsLoading && !this.props.daughtersIsLoading ?
@@ -160,7 +173,6 @@ InstitutionContainer.propTypes = {
   addContentIsLoading: PropTypes.bool,
   daughters: PropTypes.array,
   daughtersIsLoading: PropTypes.bool,
-  getFollowers: PropTypes.func.isRequired,
   getMothers: PropTypes.func.isRequired,
   getActiveInstitution: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,

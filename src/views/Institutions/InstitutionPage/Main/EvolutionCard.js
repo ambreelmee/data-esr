@@ -60,20 +60,20 @@ const EvolutionCard = props => (
             <DropdownToggle caret className="p-0 text-dark" color="transparent">
               <i className="icon-settings" />
             </DropdownToggle>
-            <DropdownMenu>
-              <NavLink to={`/etablissements/${props.institutionId}/noms`} className="dropdown-item" >
+            <DropdownMenu className="rounded">
+              <NavLink to={`/etablissements/${props.institutionId}/noms`} className="dropdown-item text-muted" >
                 <i className="fa fa-arrow-right text-info" />
                   Gérer les noms
               </NavLink>
-              <NavLink to={`/etablissements/${props.institutionId}/evolutions`} className="dropdown-item" >
+              <NavLink to={`/etablissements/${props.institutionId}/evolutions`} className="dropdown-item text-muted" >
                 <i className="fa fa-arrow-right text-info" />
                   Gérer les évolutions
               </NavLink>
-              <DropdownItem onClick={props.toggleSynonymModal}>
+              <DropdownItem onClick={props.toggleSynonymModal} className="text-muted">
                 <i className="fa fa-edit text-warning" />
                   Modifier la liste des noms d&#39;usage
               </DropdownItem>
-              <DropdownItem onClick={props.toggleStatusModal}>
+              <DropdownItem onClick={props.toggleStatusModal} className="text-muted">
                 <i className="fa fa-pencil text-danger" />
                   Modifier le statut de l&#39;établissement
               </DropdownItem>

@@ -15,8 +15,8 @@ const AddressCard = props => (
         <DropdownToggle id="addressDropdown" caret className="p-0" color="light">
           <i id="addressDropdown" className="icon-settings" />
         </DropdownToggle>
-        <DropdownMenu>
-          <NavLink to={`/etablissements/${props.institutionId}/adresses`} className="dropdown-item" >
+        <DropdownMenu className="rounded">
+          <NavLink to={`/etablissements/${props.institutionId}/adresses`} className="dropdown-item rounded alert-secondary" >
             <i className="fa fa-arrow-right text-info" />
               Gérer les adresses
           </NavLink>
@@ -51,7 +51,6 @@ AddressCard.propTypes = {
   displayDropdown: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   institutionId: PropTypes.number.isRequired,
-  toggleAddModal: PropTypes.func.isRequired,
 };
 
 

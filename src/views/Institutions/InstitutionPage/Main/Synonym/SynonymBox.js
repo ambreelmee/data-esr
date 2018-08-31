@@ -18,7 +18,7 @@ const styles = {
 const renderSynonyms = (synonymList) => {
   if (synonymList) {
     return synonymList.split(', ').map(synonym => (
-      <div key={synonym} style={styles.small}>{synonym}</div>
+      <div id={synonym} style={styles.small}>{synonym}</div>
     ));
   } return <div />;
 };

@@ -12,9 +12,8 @@ const CustomSideBar = props => (
         style={{ whiteSpace: 'normal' }}
         onClick={() => props.setActiveItem(item)}
       >
-        {item.status === 'active' ?
-          <Badge color="success" className="float-right ml-1">Active</Badge> :
-          <Badge color="danger" className="float-right ml-1">Archivé</Badge>}
+        {item.status === 'active' ? <Badge color="success" className="float-right ml-1">Active</Badge> :
+          item.status === 'archived' ? <Badge color="danger" className="float-right ml-1">Archivé</Badge> : <div />}
         {React.cloneElement(
           props.component,
           { ...item },

@@ -4,6 +4,60 @@ export function removeActiveInstitution() {
     type: 'REMOVE_ACTIVE_INSTITUTION',
   };
 }
+export function tagCategoriesSuccess(categories) {
+  return {
+    type: 'TAG_CATEGORIES_SUCCESS',
+    categories,
+  };
+}
+export function getTagCategories() {
+  const url = `${process.env.API_URL_STAGING}institution_tag_categories`;
+  return (dispatch) => {
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((categories) => {
+        dispatch(tagCategoriesSuccess(categories));
+      });
+  };
+}
+export function tagsSuccess(categories) {
+  return {
+    type: 'TAGS_SUCCESS',
+    categories,
+  };
+}
+export function getTags() {
+  const url = `${process.env.API_URL_STAGING}institution_tags`;
+  return (dispatch) => {
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((tags) => {
+        dispatch(tagsSuccess(tags));
+      });
+  };
+}
 export function evolutionCategoriesSuccess(categories) {
   return {
     type: 'EVOLUTION_CATEGORIES_SUCCESS',
