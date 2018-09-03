@@ -8,8 +8,8 @@ import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
 import {
-  getConnectionCategories, getEvolutionCategories,
-  getCodeCategories, getTagCategories, getTags,
+  getCodeCategories, getConnectionCategories, getEvolutionCategories,
+  getLinkCategories, getTagCategories, getTags,
 } from '../../actions/institution';
 import AddressContainer from '../Institutions/AddressContainer';
 import Admin from '../../views/Institutions/Admin/Admin';
@@ -17,6 +17,7 @@ import CodeContainer from '../Institutions/CodeContainer';
 import ConnectionContainer from '../Institutions/ConnectionContainer';
 import EvolutionContainer from '../Institutions/EvolutionContainer';
 import InstitutionContainer from '../Institutions/InstitutionContainer';
+import LinkContainer from '../Institutions/LinkContainer';
 import NameContainer from '../Institutions/NameContainer';
 import SearchContainer from '../Institutions/SearchContainer';
 import TagContainer from '../Institutions/TagContainer';
@@ -27,6 +28,7 @@ class Full extends Component {
     this.props.getCodeCategories();
     this.props.getConnectionCategories();
     this.props.getEvolutionCategories();
+    this.props.getLinkCategories();
     this.props.getTagCategories();
     this.props.getTags();
   }
@@ -38,13 +40,14 @@ class Full extends Component {
         <div className="app-body">
           <Sidebar {...this.props} />
           <main className="main">
-            <Container fluid className="bckgnd-img h-100 pb-3">
+            <Container fluid>
               <Switch>
                 <PrivateRoute exact path="/etablissements"component={SearchContainer} />
                 <PrivateRoute exact path="/etablissements/:number" component={InstitutionContainer} />
                 <PrivateRoute path="/etablissements/:number/adresses" component={AddressContainer} />
                 <PrivateRoute path="/etablissements/:number/identifiants/:category" component={CodeContainer} />
                 <PrivateRoute path="/etablissements/:number/evolutions" component={EvolutionContainer} />
+                <PrivateRoute path="/etablissements/:number/liens" component={LinkContainer} />
                 <PrivateRoute path="/etablissements/:number/noms" component={NameContainer} />
                 <PrivateRoute path="/etablissements/:number/rattachements" component={ConnectionContainer} />
                 <PrivateRoute path="/etablissements/:number/tags/:category" component={TagContainer} />
@@ -67,6 +70,7 @@ const mapDispatchToProps = dispatch => ({
   getCodeCategories: () => dispatch(getCodeCategories()),
   getConnectionCategories: () => dispatch(getConnectionCategories()),
   getEvolutionCategories: () => dispatch(getEvolutionCategories()),
+  getLinkCategories: () => dispatch(getLinkCategories()),
   getTagCategories: () => dispatch(getTagCategories()),
   getTags: () => dispatch(getTags()),
 });
@@ -75,6 +79,7 @@ Full.propTypes = {
   getCodeCategories: PropTypes.func.isRequired,
   getConnectionCategories: PropTypes.func.isRequired,
   getEvolutionCategories: PropTypes.func.isRequired,
+  getLinkCategories: PropTypes.func.isRequired,
   getTagCategories: PropTypes.func.isRequired,
   getTags: PropTypes.func.isRequired,
 };

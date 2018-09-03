@@ -7,12 +7,25 @@
 }
 
 // app-dashboard and app-root are Angular2+ selectors. You can add here your own selectors if you need.
+@font-face {
+font-family: "Roboto-light";
+// src: url('./geo_sans_light/Roboto-light.ttf');
+src: url('./roboto/Roboto-Light.ttf');
+}
+
+@font-face {
+	font-family: "Roboto-light";
+	font-style: italic;
+	src: url('./roboto/Roboto-LightItalic.ttf');
+}
+
 .app,
 app-dashboard,
 app-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: Roboto-light;
 }
 
 .app-header {
@@ -443,7 +456,7 @@ app-root {
 // Institution page
 
 .leaflet-container {
-  height: 350px;
+  height: 330px;
   width: 100%;
   margin: 0 auto;
 }

@@ -14,7 +14,7 @@ const width = window.innerWidth || e.clientWidth || g.clientWidth;
 
 const EvolutionCard = props => (
   <Row>
-    <Card className="mb-0 bg-transparent border-0 col-md-8" style={{ height: '200px' }}>
+    <Card className="mb-0 border-0 col-md-8" style={{ height: '200px' }}>
       {width > 767 ?
         <SynonymBox
           initials={props.initials}
@@ -57,24 +57,20 @@ const EvolutionCard = props => (
             isOpen={props.dropdown}
             toggle={props.displayDropdown}
           >
-            <DropdownToggle caret className="p-0 text-dark" color="transparent">
-              <i className="icon-settings" />
+            <DropdownToggle className={`p-0 text-${props.dateEnd ? 'danger' : 'success'}`} color="transparent">
+              <i className="fa fa-pencil" />
             </DropdownToggle>
             <DropdownMenu className="rounded">
               <NavLink to={`/etablissements/${props.institutionId}/noms`} className="dropdown-item text-muted" >
-                <i className="fa fa-arrow-right text-info" />
                   Gérer les noms
               </NavLink>
               <NavLink to={`/etablissements/${props.institutionId}/evolutions`} className="dropdown-item text-muted" >
-                <i className="fa fa-arrow-right text-info" />
                   Gérer les évolutions
               </NavLink>
               <DropdownItem onClick={props.toggleSynonymModal} className="text-muted">
-                <i className="fa fa-edit text-warning" />
                   Modifier la liste des noms d&#39;usage
               </DropdownItem>
               <DropdownItem onClick={props.toggleStatusModal} className="text-muted">
-                <i className="fa fa-pencil text-danger" />
                   Modifier le statut de l&#39;établissement
               </DropdownItem>
             </DropdownMenu>

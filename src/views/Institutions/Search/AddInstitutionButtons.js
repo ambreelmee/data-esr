@@ -50,7 +50,7 @@ class AddInstitutionButtons extends Component {
       >
         <Button
           className="float-add"
-          color="primary"
+          color="info"
           id="search-page-add-button"
           onClick={this.props.toggleModal}
           type="button"

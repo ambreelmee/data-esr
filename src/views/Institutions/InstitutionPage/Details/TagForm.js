@@ -93,7 +93,6 @@ class TagForm extends Component {
                 >
                   <option value="0">Catégorie</option>
                   {this.renderCategories()}
-                  <option value="redirect">Gérer les catégories...</option>
                 </select>
               </Col>
               <Col xs="6">

@@ -4,6 +4,33 @@ export function removeActiveInstitution() {
     type: 'REMOVE_ACTIVE_INSTITUTION',
   };
 }
+export function linkCategoriesSuccess(categories) {
+  return {
+    type: 'LINK_CATEGORIES_SUCCESS',
+    categories,
+  };
+}
+export function getLinkCategories() {
+  const url = `${process.env.API_URL_STAGING}link_categories`;
+  return (dispatch) => {
+    fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then((categories) => {
+        dispatch(linkCategoriesSuccess(categories));
+      });
+  };
+}
 export function tagCategoriesSuccess(categories) {
   return {
     type: 'TAG_CATEGORIES_SUCCESS',

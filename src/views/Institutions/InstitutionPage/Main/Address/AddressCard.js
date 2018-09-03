@@ -12,12 +12,11 @@ const AddressCard = props => (
         isOpen={props.dropdown}
         toggle={props.displayDropdown}
       >
-        <DropdownToggle id="addressDropdown" caret className="p-0" color="light">
-          <i id="addressDropdown" className="icon-settings" />
+        <DropdownToggle id="addressDropdown" className="p-0 text-muted" color="light">
+          <i id="addressDropdown" className="fa fa-pencil" />
         </DropdownToggle>
         <DropdownMenu className="rounded">
           <NavLink to={`/etablissements/${props.institutionId}/adresses`} className="dropdown-item rounded alert-secondary" >
-            <i className="fa fa-arrow-right text-info" />
               Gérer les adresses
           </NavLink>
         </DropdownMenu>

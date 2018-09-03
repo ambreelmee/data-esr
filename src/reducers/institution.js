@@ -7,6 +7,8 @@ export default function activeInstitution(state = [], action) {
       return { ...state, connectionCategories: action.categories };
     case 'EVOLUTION_CATEGORIES_SUCCESS':
       return { ...state, evolutionCategories: action.categories };
+    case 'LINK_CATEGORIES_SUCCESS':
+      return { ...state, linkCategories: action.categories };
     case 'TAG_CATEGORIES_SUCCESS':
       return { ...state, tagCategories: action.categories };
     case 'TAGS_SUCCESS':

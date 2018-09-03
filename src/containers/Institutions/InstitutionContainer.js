@@ -8,7 +8,7 @@ import { addContent, institutionsSearch, resetSearchAndDisplayFirstPage } from '
 import { getActiveInstitution, getDaughters, getMothers, removeActiveItem } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import EvolutionCardContainer from './EvolutionCardContainer';
-import LinkContainer from '../../views/Institutions/InstitutionPage/Main/Link/LinkContainer';
+import LinkCard from '../../views/Institutions/InstitutionPage/Main/LinkCard';
 import SearchBar from '../../views/Institutions/Search/SearchBar';
 import AddressCard from '../../views/Institutions/InstitutionPage/Main/Address/AddressCard';
 import ConnectionCard from '../../views/Institutions/InstitutionPage/Main/ConnectionCard';
@@ -66,6 +66,7 @@ class InstitutionContainer extends Component {
       />));
   }
 
+
   renderTags(institutionId) {
     return this.props.activeInstitution.tags.map(tag => (
       <TagCard
@@ -95,11 +96,11 @@ class InstitutionContainer extends Component {
           searchValue={this.props.searchValue}
         />
         <EvolutionCardContainer institutionId={institutionId} />
-        <div className="d-flex justify-content-between mt-2">
+        <div className="d-flex flex-wrap align-content-start justify-content-center m-2">
           {this.props.activeInstitution.tags.length > 0 ? this.renderTags(institutionId) : ''}
         </div>
         <Row>
-          <Col md="5" className="pl-0 pr-1">
+          <Col md="5" className="pl-3 pr-1">
             <AddressCard
               displayedAddress={displayedAddress}
               dropdown={this.state.addressDropdown}
@@ -135,7 +136,7 @@ class InstitutionContainer extends Component {
                 daughters={this.props.daughters}
                 institutionId={institutionId}
               /> : <div />}
-            <LinkContainer etablissement_id={institutionId} />
+            <LinkCard institutionId={institutionId} links={this.props.activeInstitution.links} />
           </Col>
         </Row>
       </div>

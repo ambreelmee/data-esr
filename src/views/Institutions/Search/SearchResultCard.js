@@ -33,16 +33,17 @@ class SearchResultCard extends Component {
       return <Redirect to={`/etablissements/${this.props.id}`} />;
     }
     return (
-      <Card className={`mb-2 rounded my-shadow w-100 h-100 card-accent-${!this.props.date_end ? 'primary' : 'danger'}`}>
+      <Card className={`mb-2 rounded my-shadow w-100 h-100 bg-${!this.props.date_end ? 'primary' : 'danger'}`}>
         <CardBody className="px-3 py-1 d-flex flex-column justify-content-center">
           <Button
             color="transparent"
-            className={!this.props.date_end ? 'text-primary' : 'text-danger'}
             style={{ whiteSpace: 'normal', textAlign: 'left' }}
             onClick={this.displayInstitutionPage}
           >
-            <h4 className="mb-0">{this.props.name.initials}
-              {this.props.name.initials === this.props.name.text ? '' : ` - ${this.props.name.text.toProperCase()}`}
+            <h4 className="mb-0">
+              <strong>{this.props.name.initials}
+                {this.props.name.initials === this.props.name.text ? '' : ` - ${this.props.name.text.toProperCase()}`}
+              </strong>
             </h4>
           </Button><br />
           {this.props.codeUAI ?

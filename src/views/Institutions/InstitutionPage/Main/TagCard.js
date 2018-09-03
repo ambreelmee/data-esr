@@ -22,28 +22,26 @@ class CodeCard extends Component {
 
   render() {
     return (
-      <Alert color="warning" className="text-center rounded ml-2">
+      <Alert className="text-center text-light rounded ml-2 mb-1 p-1" style={{ 'background-color': '#5C66FF' }}>
         <ButtonGroup className="float-right">
           <ButtonDropdown
             isOpen={this.state.displayDropdown}
             toggle={this.displayDropdown}
           >
-            <DropdownToggle caret className="p-0 text-dark" color="transparent">
-              <i className="icon-settings" />
+            <DropdownToggle className="p-0 text-light" color="transparent">
+              <i className="fa fa-pencil" />
             </DropdownToggle>
             <DropdownMenu className="rounded">
               <NavLink
                 to={`/etablissements/${this.props.institutionId}/tags/${this.props.category}`}
                 className="dropdown-item alert-secondary rounded"
               >
-                <i className="fa fa-arrow-right text-info" />
                   Gérer les tags
               </NavLink>
             </DropdownMenu>
           </ButtonDropdown>
         </ButtonGroup>
-        <h6>{this.props.category.replace('_', ' ')}</h6>
-        <h5 className="mb-0">{this.props.long_label}</h5>
+        <h6 className="mb-0">{this.props.long_label}</h6>
       </Alert>
     );
   }

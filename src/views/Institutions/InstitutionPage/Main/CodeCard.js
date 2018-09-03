@@ -22,21 +22,20 @@ class CodeCard extends Component {
 
   render() {
     return (
-      <Alert color="secondary" className="text-center w-100 rounded">
+      <Alert className="text-center bg-primary w-100 rounded text-light">
         <ButtonGroup className="float-right">
           <ButtonDropdown
             isOpen={this.state.displayDropdown}
             toggle={this.displayDropdown}
           >
-            <DropdownToggle caret className="p-0 text-dark" color="transparent">
-              <i className="icon-settings" />
+            <DropdownToggle className="p-0" color="transparent">
+              <i className="fa fa-pencil" />
             </DropdownToggle>
             <DropdownMenu className="rounded">
               <NavLink
                 to={`/etablissements/${this.props.institutionId}/identifiants/${this.props.category}`}
                 className="dropdown-item rounded alert-secondary"
               >
-                <i className="fa fa-arrow-right text-info" />
                   Gérer les identifiants
               </NavLink>
             </DropdownMenu>

@@ -28,15 +28,14 @@ class ConnectionCard extends Component {
             isOpen={this.state.displayDropdown}
             toggle={this.displayDropdown}
           >
-            <DropdownToggle caret className="p-0 text-dark" color="transparent">
-              <i className="icon-settings" />
+            <DropdownToggle className="p-0 text-info" color="transparent">
+              <i className="fa fa-pencil" />
             </DropdownToggle>
             <DropdownMenu className="rounded">
               <NavLink
                 to={`/etablissements/${this.props.institutionId}/rattachements`}
                 className="dropdown-item alert-secondary rounded"
               >
-                <i className="fa fa-arrow-right text-info" />
                   Gérer les rattachements
               </NavLink>
             </DropdownMenu>
