@@ -100,9 +100,9 @@ class LinkCard extends Component {
         <Col md="6" className="pr-1">
           <NavLink
             to={`/etablissements/${this.props.institutionId}/liens/`}
-            className="mb-0 p-2 text-center w-100 h-100 rounded card bg-primary"
+            className="text-dark"
           >
-            <CardBody>
+            <CardBody className="mb-0 p-2 text-center w-100 h-100 rounded" style={{ 'background-color': '#BFCFFF' }}>
               <i className="mb-1 fa fa-mouse-pointer fa-2x" />
               <h5>Ajouter un site web</h5>
             </CardBody>

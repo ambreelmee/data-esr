@@ -22,7 +22,7 @@ class CodeCard extends Component {
 
   render() {
     return (
-      <Alert className="text-center bg-primary w-100 rounded text-light">
+      <Alert className="text-center bg-primary w-100 rounded text-light" style={{ 'word-break': 'break-all' }}>
         <ButtonGroup className="float-right">
           <ButtonDropdown
             isOpen={this.state.displayDropdown}

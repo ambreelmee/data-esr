@@ -7,12 +7,9 @@ import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
-import {
-  getCodeCategories, getConnectionCategories, getEvolutionCategories,
-  getLinkCategories, getTagCategories, getTags,
-} from '../../actions/institution';
+import { getAllCategories } from '../../actions/institution';
 import AddressContainer from '../Institutions/AddressContainer';
-import Admin from '../../views/Institutions/Admin/Admin';
+import Admin from '../Institutions//Admin';
 import CodeContainer from '../Institutions/CodeContainer';
 import ConnectionContainer from '../Institutions/ConnectionContainer';
 import EvolutionContainer from '../Institutions/EvolutionContainer';
@@ -25,12 +22,7 @@ import UpdateContainer from '../../views/Institutions/Update/UpdateContainer';
 
 class Full extends Component {
   componentWillMount() {
-    this.props.getCodeCategories();
-    this.props.getConnectionCategories();
-    this.props.getEvolutionCategories();
-    this.props.getLinkCategories();
-    this.props.getTagCategories();
-    this.props.getTags();
+    this.props.getAllCategories();
   }
 
   render() {
@@ -67,21 +59,11 @@ class Full extends Component {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => ({
-  getCodeCategories: () => dispatch(getCodeCategories()),
-  getConnectionCategories: () => dispatch(getConnectionCategories()),
-  getEvolutionCategories: () => dispatch(getEvolutionCategories()),
-  getLinkCategories: () => dispatch(getLinkCategories()),
-  getTagCategories: () => dispatch(getTagCategories()),
-  getTags: () => dispatch(getTags()),
+  getAllCategories: () => dispatch(getAllCategories()),
 });
 
 Full.propTypes = {
-  getCodeCategories: PropTypes.func.isRequired,
-  getConnectionCategories: PropTypes.func.isRequired,
-  getEvolutionCategories: PropTypes.func.isRequired,
-  getLinkCategories: PropTypes.func.isRequired,
-  getTagCategories: PropTypes.func.isRequired,
-  getTags: PropTypes.func.isRequired,
+  getAllCategories: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Full);

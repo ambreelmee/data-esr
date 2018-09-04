@@ -167,6 +167,16 @@ export function getConnectionCategories() {
       });
   };
 }
+export function getAllCategories() {
+  return (dispatch) => {
+    dispatch(getCodeCategories());
+    dispatch(getConnectionCategories());
+    dispatch(getLinkCategories());
+    dispatch(getEvolutionCategories());
+    dispatch(getTagCategories());
+    dispatch(getTags());
+  };
+}
 export function getMothersFetchDataSuccess(mothers) {
   return {
     type: 'MOTHERS_FETCH_DATA_SUCCESS',
@@ -493,13 +503,14 @@ export function deleteContent(url, institutionId) {
         if (institutionId) {
           dispatch(getActiveInstitution(institutionId));
         } else {
-          dispatch(removeActiveInstitution())
+          dispatch(removeActiveInstitution());
+          dispatch(getAllCategories());
         }
       })
       .catch(() => {
         dispatch(deleteContentHasErrored(true));
         dispatch(deleteContentIsLoading(false));
-      })
+      });
   };
 }
 export function addContentIsLoading(bool) {
@@ -546,7 +557,11 @@ export function addContent(url, jsonBody, method, institutionId) {
       .then(() => {
         dispatch(addContentIsLoading(false));
         dispatch(addContentHasErrored(false));
-        dispatch(getActiveInstitution(institutionId));
+        if (institutionId) {
+          dispatch(getActiveInstitution(institutionId));
+        } else {
+          dispatch(getAllCategories())
+        }
       })
       .catch(() => {
         dispatch(addContentHasErrored(true));

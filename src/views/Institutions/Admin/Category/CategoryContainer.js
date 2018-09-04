@@ -2,48 +2,16 @@ import React, { Component } from 'react';
 import { Button, Col, Card, CardHeader, CardFooter } from 'reactstrap';
 import PropTypes from 'prop-types';
 import CategoryModal from './CategoryModal';
-import CategoryCardBody from './CategoryCardBody';
+import CategoryBox from './CategoryBox';
 
 class CategoryContainer extends Component {
   constructor(props) {
     super(props);
 
     this.toggleModal = this.toggleModal.bind(this);
-    this.getCategories = this.getCategories.bind(this);
     this.state = {
-      isLoading: false,
-      categories: [],
       modal: false,
     };
-  }
-
-  componentWillMount() {
-    this.getCategories(this.props.categoryType);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.getCategories(nextProps.categoryType);
-  }
-
-  getCategories(categoryType) {
-    const categories = `${categoryType}_categories`;
-    this.setState({
-      isLoading: true,
-      modal: false,
-    });
-    fetch(`${process.env.API_URL_STAGING}${categories}`, {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          categories: data,
-          isLoading: false,
-        });
-      });
   }
 
   toggleModal() {
@@ -53,29 +21,37 @@ class CategoryContainer extends Component {
   }
 
   render() {
-    if (this.state.isLoading) {
-      return <p />;
-    }
     return (
       <Col xs="12" md="6">
         <Card className="mt-4">
           <CardHeader>
-            <h5>Types de {this.props.name}</h5>
+            <h5>Catégories</h5>
           </CardHeader>
-          <CategoryCardBody
-            categories={this.state.categories}
+          {this.props.categoryType === 'institution_tag' ?
+            <div>
+              Les tags qui peuvent être associés à un établissement sont répartis en différent catégories.
+              Cliquer sur le menu déroulant pour faire apparaître l&#39;ensemble des tags associés à une catégorie.
+            </div> : ''}
+          <CategoryBox
+            categories={this.props.categories}
             categoryType={this.props.categoryType}
-            getCategories={this.getCategories}
+            addContent={this.props.addContent}
+            hasErrored={this.props.hasErrored}
+            isLoading={this.props.isLoading}
+            tags={this.props.tags}
+            toggleDeleteModal={this.props.toggleDeleteModal}
           />
           <CardFooter>
-            <Button color="primary" className="float-right" onClick={this.toggleModal}>
+            <Button color="primary" className="float-right rounded" onClick={this.toggleModal}>
               <i className="fa fa-plus mr-1" /> Ajouter une catégorie
             </Button>
             {this.state.modal ?
               <CategoryModal
                 categoryType={this.props.categoryType}
-                getCategories={this.getCategories}
                 toggleModal={this.toggleModal}
+                addContent={this.props.addContent}
+                hasErrored={this.props.hasErrored}
+                isLoading={this.props.isLoading}
               /> : <div /> }
           </CardFooter>
         </Card>
@@ -85,8 +61,17 @@ class CategoryContainer extends Component {
 }
 
 CategoryContainer.propTypes = {
+  addContent: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
   categoryType: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  tags: PropTypes.array,
+  toggleDeleteModal: PropTypes.func.isRequired,
 };
+
+CategoryContainer.defaultProps = {
+  tags: [],
+}
 
 export default CategoryContainer;

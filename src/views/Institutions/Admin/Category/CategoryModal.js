@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, InputGroup, Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, Col, InputGroup, Input, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 
@@ -9,9 +9,8 @@ class CategoryModal extends Component {
 
     this.state = {
       title: '',
+      origin: '',
       modal: true,
-      errorMessage: '',
-      isLoading: false,
     };
     this.addCategory = this.addCategory.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -29,30 +28,13 @@ class CategoryModal extends Component {
   }
 
   addCategory() {
-    this.setState({ isLoading: true });
     const newCategory = {};
     newCategory[`${this.props.categoryType}_category`] = {
       title: this.state.title,
+      origin: this.state.origin,
     };
-    fetch(`${process.env.API_URL_STAGING}${this.props.categoryType}_categories`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-      body: JSON.stringify(newCategory),
-    })
-      .then((res) => {
-        if (res.ok) {
-          this.setState({ modal: false });
-          this.props.getCategories(this.props.categoryType);
-        } else {
-          this.setState({
-            errorMessage: 'Formulaire vide ou incomplet',
-            isLoading: false,
-          });
-        }
-      });
+    const url = `${process.env.API_URL_STAGING}${this.props.categoryType}_categories`;
+    this.props.addContent(url, JSON.stringify(newCategory), 'POST');
   }
 
 
@@ -63,26 +45,42 @@ class CategoryModal extends Component {
           Ajouter une catégorie
         </ModalHeader>
         <ModalBody>
-          <InputGroup className="mb-3">
-            <Input
-              id="title"
-              type="text"
-              value={this.state.title}
-              onChange={this.onChange}
-              placeholder="Nom de la catégorie"
-              onKeyPress={this.onKeyPress}
-            />
-          </InputGroup>
+          <Row>
+            {this.props.categoryType === 'institution_tag' ?
+              <Col xs="4">
+                <Input
+                  id="origin"
+                  type="text"
+                  value={this.state.origin}
+                  onChange={this.onChange}
+                  placeholder="Source"
+                />
+              </Col> : ''}
+            <Col>
+              <InputGroup className="mb-3">
+                <Input
+                  id="title"
+                  type="text"
+                  value={this.state.title}
+                  onChange={this.onChange}
+                  placeholder="Nom de la catégorie"
+                  onKeyPress={this.onKeyPress}
+                />
+              </InputGroup>
+            </Col>
+          </Row>
         </ModalBody>
         <ModalFooter>
-          <p className="mt-2 text-danger">{this.state.errorMessage}</p>
+          <p className="mt-2 text-danger">
+            {this.props.hasErrored ? "une erreur est survenue lors de l'envoi du formulaire" : ''}
+          </p>
           <Button
             className="m-1 float-right"
             color="primary"
-            disabled={this.state.isLoading}
-            onClick={!this.state.isLoading ? this.addCategory : null}
+            disabled={this.props.isLoading}
+            onClick={!this.props.isLoading ? this.addCategory : null}
           >
-            {this.state.isLoading ?
+            {this.props.isLoading ?
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Ajout </span>
@@ -97,8 +95,10 @@ class CategoryModal extends Component {
 }
 
 CategoryModal.propTypes = {
+  addContent: PropTypes.func.isRequired,
   categoryType: PropTypes.string.isRequired,
-  getCategories: PropTypes.func.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 

@@ -4,10 +4,9 @@ import ReactDOM from 'react-dom';
 import reactDragula from 'react-dragula';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
-
 import Category from './Category';
 
-class CategoryCardBody extends Component {
+class CategoryBox extends Component {
   constructor(props) {
     super(props);
 
@@ -47,14 +46,25 @@ class CategoryCardBody extends Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      orderedCategories: nextProps.categories,
+    });
+  }
+
   renderCategories() {
     return this.props.categories.map(category =>
       (<Category
         key={`${this.props.categoryType}-${category.id}`}
+        addContent={this.props.addContent}
         categoryType={this.props.categoryType}
-        getCategories={this.props.getCategories}
+        hasErrored={this.props.hasErrored}
         id={category.id}
+        isLoading={this.props.isLoading}
+        origin={category.origin}
         title={category.title}
+        tags={this.props.tags.filter(tag => tag.category === category.title)}
+        toggleDeleteModal={this.props.toggleDeleteModal}
       />));
   }
 
@@ -71,10 +81,18 @@ class CategoryCardBody extends Component {
   }
 }
 
-CategoryCardBody.propTypes = {
-  categoryType: PropTypes.string.isRequired,
+CategoryBox.propTypes = {
+  addContent: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
-  getCategories: PropTypes.func.isRequired,
+  categoryType: PropTypes.string.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  tags: PropTypes.array,
+  toggleDeleteModal: PropTypes.func.isRequired,
 };
 
-export default CategoryCardBody;
+CategoryBox.defaultProps = {
+  tags: [],
+}
+
+export default CategoryBox;

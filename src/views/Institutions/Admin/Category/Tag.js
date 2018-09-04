@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Button, Col, Input, InputGroup, InputGroupAddon, Modal, ModalBody,
-  ModalHeader, ModalFooter, Tooltip,
-} from 'reactstrap';
+import { Button, Col, Input, InputGroup, InputGroupAddon, Tooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 class Tag extends Component {
@@ -14,20 +11,15 @@ class Tag extends Component {
       deleteTooltip: false,
       displayEditButton: false,
       editTooltip: false,
-      isDeleting: false,
-      isEditing: false,
       longLabel: this.props.longLabel,
-      modal: false,
       shortLabel: this.props.shortLabel,
     };
     this.cancelEdition = this.cancelEdition.bind(this);
-    this.deleteCategory = this.deleteCategory.bind(this);
     this.onChange = this.onChange.bind(this);
     this.modifyCurrentCategory = this.modifyCurrentCategory.bind(this);
     this.toggleCancelToolTip = this.toggleCancelToolTip.bind(this);
     this.toggleDeleteToolTip = this.toggleDeleteToolTip.bind(this);
     this.toggleEditToolTip = this.toggleEditToolTip.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
   }
 
   onChange(event) {
@@ -37,56 +29,14 @@ class Tag extends Component {
     });
   }
 
-
-  deleteCategory() {
-    this.setState({ isDeleting: true });
-    fetch(
-      `${process.env.API_URL_STAGING}/institution_tags/${this.props.id}`,
-      {
-        method: 'DELETE',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')})`,
-        }),
-      },
-    )
-      .then(res => res.json())
-      .then(() => {
-        this.setState({
-          isDeleting: false,
-        });
-        this.props.getTag('institution_tags');
-      });
-  }
-
   modifyCurrentCategory() {
-    this.setState({ isEditing: true });
     const institution_tag = {
       id: this.props.id,
       long_label: this.state.longLabel,
       short_label: this.state.shortLabel,
     };
-    fetch(
-      `${process.env.API_URL_STAGING}/institution_tags/${this.props.id}`,
-      {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }),
-        body: JSON.stringify({ institution_tag }),
-      },
-    )
-      .then(res => res.json())
-      .then((data) => {
-        this.setState({
-          isEditing: false,
-          displayEditButton: false,
-          editTooltip: false,
-          longLabel: data.longLabel,
-          shortLabel: data.shortLabel,
-        });
-      });
+    const url = `${process.env.API_URL_STAGING}institution_tags/${this.props.id}`;
+    this.props.addContent(url, JSON.stringify({ institution_tag }), 'PUT');
   }
 
   cancelEdition() {
@@ -115,33 +65,25 @@ class Tag extends Component {
     });
   }
 
-  toggleModal() {
-    this.setState({
-      modal: !this.state.modal,
-    });
-  }
-
-
   render() {
     return (
       <InputGroup className="mt-3 justify-content-end">
-        <div className="btn btn-outline-secondary plus-drag px-2">
-          <i className="fa fa-arrows-v plus-drag" />
-        </div>
         <Col xs="3" className="p-0">
           <Input
             id="shortLabel"
             type="text"
+            className="rounded"
             value={this.state.shortLabel}
             onChange={this.onChange}
             placeholder={this.state.shortLabel}
           />
         </Col>
-        <Col xs="8" className="pl-0">
+        <Col xs="9" className="pl-0">
           <InputGroup>
             <Input
               id="longLabel"
               type="text"
+              className="rounded"
               value={this.state.longLabel}
               onChange={this.onChange}
               placeholder={this.state.longLabel}
@@ -152,10 +94,10 @@ class Tag extends Component {
                   id={`labels-edit-button-${this.props.id}`}
                   color="transparent"
                   size="sm"
-                  disabled={this.state.isEditing}
+                  disabled={this.props.isLoading}
                   onClick={this.modifyCurrentCategory}
                 >
-                  {this.state.isEditing ?
+                  {this.props.isLoading ?
                     <i className="fa fa-spinner text-success fa-spin " /> :
                     <i className="fa fa-check text-success" />}
                 </Button>
@@ -184,12 +126,12 @@ class Tag extends Component {
               </InputGroupAddon> : <div />}
             <Button
               id={`labels-delete-button-${this.props.id}`}
-              color="danger"
-              outline
+              color="secondary"
+              className="border-0 rounded"
               size="sm"
-              onClick={this.toggleModal}
+              onClick={() => this.props.toggleDeleteModal(`${process.env.API_URL_STAGING}institution_tags/${this.props.id}`)}
             >
-              <i className="fa fa-close" />
+              <i className="fa fa-trash fa-lg" />
             </Button>
             <Tooltip
               isOpen={this.state.deleteTooltip}
@@ -198,33 +140,6 @@ class Tag extends Component {
             >
               Supprimer la catégorie
             </Tooltip>
-            <Modal isOpen={this.state.modal} toggle={this.toggleModal} color="danger">
-              <ModalHeader toggle={this.toggleModal}>
-                Suppression du champ
-              </ModalHeader>
-              <ModalBody>
-                <i className="fa fa-warning text-danger pr-1" />
-                Attention! Toutes les données liées à la catégorie seront perdues.<br />
-                Etes-vous sûr de vouloir supprimer ce champ ?
-              </ModalBody>
-              <ModalFooter>
-                <p className="mt-2 text-danger">{this.state.errorMessage}</p>
-                <Button
-                  className="m-1 float-right"
-                  color="danger"
-                  disabled={this.state.isDeleting}
-                  onClick={!this.state.isDeleting ? this.deleteCategory : null}
-                >
-                  {this.state.isDeleting ?
-                    <div>
-                      <i className="fa fa-spinner fa-spin " />
-                      <span className="mx-1"> Suppression </span>
-                    </div> : <div />}
-                  Supprimer
-                </Button>
-                <Button color="secondary" onClick={this.toggleModal}>Annuler</Button>
-              </ModalFooter>
-            </Modal>
           </InputGroup>
         </Col>
       </InputGroup>
@@ -233,10 +148,13 @@ class Tag extends Component {
 }
 
 Tag.propTypes = {
-  getTag: PropTypes.func.isRequired,
+  addContent: PropTypes.func.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   id: PropTypes.number.isRequired,
   longLabel: PropTypes.string.isRequired,
   shortLabel: PropTypes.string,
+  toggleDeleteModal: PropTypes.func.isRequired,
 };
 
 Tag.defaultProps = {

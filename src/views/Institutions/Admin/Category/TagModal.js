@@ -10,61 +10,31 @@ class TagModal extends Component {
     this.state = {
       longLabel: '',
       shortLabel: '',
-      modal: true,
-      errorMessage: '',
-      isLoading: false,
     };
     this.addCategory = this.addCategory.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.toggle = this.toggle.bind(this);
   }
 
   onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
   }
 
-  toggle() {
-    this.setState({
-      modal: !this.state.modal,
-      errorMessage: '',
-    });
-  }
 
   addCategory() {
-    this.setState({ isLoading: true });
+    const url = `${process.env.API_URL_STAGING}institution_tags`;
     const institution_tag = {
       short_label: this.state.shortLabel,
       long_label: this.state.longLabel,
-      institution_tag_category_id: this.props.categoryId
-    }
-    fetch(`${process.env.API_URL_STAGING}institution_tags`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }),
-      body: JSON.stringify({ institution_tag }),
-    })
-      .then(res => res.json())
-      .then((data) => {
-        if (data === 'Record not found') {
-          this.setState({
-            errorMessage: 'Formulaire vide ou incomplet',
-            isLoading: false,
-          });
-        } else {
-          this.toggle()
-          this.setState({ isLoading: false });
-          this.props.getCategories('institution_tags');
-        }
-      });
+      institution_tag_category_id: this.props.categoryId,
+    };
+    this.props.addContent(url, JSON.stringify({ institution_tag }), 'POST');
   }
 
 
   render() {
     return (
-      <Modal isOpen={this.state.modal} toggle={this.toggle}>
-        <ModalHeader toggle={this.toggle}>
+      <Modal isOpen={this.props.modal} toggle={this.props.toggleModal}>
+        <ModalHeader toggle={this.props.toggleModal}>
           Ajouter une catégorie
         </ModalHeader>
         <ModalBody>
@@ -90,20 +60,22 @@ class TagModal extends Component {
           </InputGroup>
         </ModalBody>
         <ModalFooter>
-          <p className="mt-2 text-danger">{this.state.errorMessage}</p>
+          <p className="mt-2 text-danger">
+            {this.props.hasErrored ? "Une erreur est survenue lors de l'envoi du formulaire" : ''}
+          </p>
           <Button
             className="m-1 float-right"
             color="primary"
-            disabled={this.state.isLoading}
-            onClick={!this.state.isLoading ? this.addCategory : null}
+            disabled={this.props.isLoading}
+            onClick={!this.props.isLoading ? this.addCategory : null}
           >
-            {this.state.isLoading ?
+            {this.props.isLoading ?
               <div>
                 <i className="fa fa-spinner fa-spin " />
                 <span className="mx-1"> Ajout </span>
               </div> : <div>Ajouter une catégorie </div>}
           </Button>
-          <Button color="secondary" onClick={this.toggle}>Annuler</Button>
+          <Button color="secondary" onClick={this.props.toggleModal}>Annuler</Button>
         </ModalFooter>
       </Modal>
 
@@ -112,9 +84,12 @@ class TagModal extends Component {
 }
 
 TagModal.propTypes = {
-  getCategories: PropTypes.func.isRequired,
+  addContent: PropTypes.func.isRequired,
+  categoryId: PropTypes.number.isRequired,
+  hasErrored: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  modal: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
-  categoryId: PropTypes.number.isRequired
 };
 
 
