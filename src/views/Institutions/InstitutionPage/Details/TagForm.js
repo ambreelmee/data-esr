@@ -104,7 +104,6 @@ class TagForm extends Component {
                 >
                   <option value="0">Caractérisation</option>
                   {this.renderTags()}
-                  <option value="redirect">Gérer les catégories...</option>
                 </select>
               </Col>
             </Row>

@@ -128,7 +128,11 @@ export function institutionsSearch(value) {
       .catch(() => dispatch(searchHasErrored(true)));
   };
 }
-
+export function removeDownloadFile() {
+  return {
+    type: 'REMOVE_DOWNLOAD_FILE',
+  }
+}
 export function downloadHasErrored(bool) {
   return {
     type: 'DOWNLOAD_HAS_ERRORED',

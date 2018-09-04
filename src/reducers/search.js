@@ -40,6 +40,8 @@ export default function search(state = [], action) {
       };
     case 'SEARCH_VALUE':
       return { ...state, searchValue: action.searchValue };
+    case 'REMOVE_DOWNLOAD_FILE':
+      return { ...state, downloadFile: null };
     case 'DOWNLOAD_HAS_ERRORED':
       return { ...state, downloadHasErrored: action.hasErrored };
     case 'DOWNLOAD_IS_LOADING':

@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addContent, toggleDeleteModal } from '../../actions/institution';
+import { removeDownloadFile } from '../../actions/search';
 import CategoryContainer from '../../views/Institutions/Admin/Category/CategoryContainer';
 import ImportExport from '../../views/Institutions/Admin/ImportExport';
 import DeleteModalContainer from './DeleteModalContainer';
@@ -48,6 +49,7 @@ class Admin extends Component {
 
   toggle(tab) {
     if (this.state.activeTab !== tab) {
+      this.props.removeDownloadFile()
       this.setState({
         activeTab: tab,
       });
@@ -120,6 +122,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addContent: (url, jsonBody, method, institutionId) => dispatch(addContent(url, jsonBody, method, institutionId)),
+  removeDownloadFile: () => dispatch(removeDownloadFile()),
   toggleDeleteModal: url => dispatch(toggleDeleteModal(url)),
 });
 
@@ -132,6 +135,7 @@ Admin.propTypes = {
   deleteModal: PropTypes.bool,
   evolutionCategories: PropTypes.array,
   linkCategories: PropTypes.array,
+  removeDownloadFile: PropTypes.func.isRequired,
   tagCategories: PropTypes.array,
   tags: PropTypes.array,
   toggleDeleteModal: PropTypes.func.isRequired,

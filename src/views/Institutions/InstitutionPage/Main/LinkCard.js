@@ -38,7 +38,11 @@ class LinkCard extends Component {
       }
       const className = getCategoryClass(link.category);
       return (
-        <Card className="mb-1 ml-1 p-3 text-center rounded" style={{ 'background-color': '#BFCFFF' }}>
+        <Card
+          key={link.category}
+          className="mb-1 ml-1 p-3 text-center rounded"
+          style={{ backgroundColor: '#BFCFFF' }}
+        >
           <a
             href={link.content.substring(0, 4) === 'http' ? link.content : `//${link.content}`}
             target="blank"
@@ -58,7 +62,7 @@ class LinkCard extends Component {
       return (
         <Row>
           <Col md="5" className="pr-0 pb-1">
-            <Card className="mb-1 text-center w-100 h-100 rounded" style={{ 'background-color': '#BFCFFF' }}>
+            <Card className="mb-1 text-center w-100 h-100 rounded" style={{ backgroundColor: '#BFCFFF' }}>
               <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
                 <ButtonDropdown
                   isOpen={this.state.displayDropdown}
@@ -102,7 +106,7 @@ class LinkCard extends Component {
             to={`/etablissements/${this.props.institutionId}/liens/`}
             className="text-dark"
           >
-            <CardBody className="mb-0 p-2 text-center w-100 h-100 rounded" style={{ 'background-color': '#BFCFFF' }}>
+            <CardBody className="mb-0 p-2 text-center w-100 h-100 rounded" style={{ backgroundColor: '#BFCFFF' }}>
               <i className="mb-1 fa fa-mouse-pointer fa-2x" />
               <h5>Ajouter un site web</h5>
             </CardBody>
@@ -116,7 +120,7 @@ class LinkCard extends Component {
 }
 
 LinkCard.propTypes = {
-  links: PropTypes.string.isRequired,
+  links: PropTypes.array.isRequired,
   institutionId: PropTypes.number.isRequired,
 };
 

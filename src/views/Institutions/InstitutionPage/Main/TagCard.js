@@ -22,7 +22,7 @@ class CodeCard extends Component {
 
   render() {
     return (
-      <Alert className="text-center text-light rounded ml-2 mb-1 p-1" style={{ 'background-color': '#5C66FF' }}>
+      <Alert className="text-center text-light rounded ml-2 mb-1 p-1" style={{ backgroundColor: '#5C66FF' }}>
         <ButtonGroup className="float-right">
           <ButtonDropdown
             isOpen={this.state.displayDropdown}
