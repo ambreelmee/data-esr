@@ -9,7 +9,7 @@ import Category from './Category';
 class CategoryBox extends Component {
   constructor(props) {
     super(props);
-
+    this.modifyOrder = this.modifyOrder.bind(this);
     this.state = {
       orderedCategories: this.props.categories,
       modifiedCategories: [],
@@ -52,6 +52,22 @@ class CategoryBox extends Component {
     });
   }
 
+  modifyOrder() {
+    this.state.orderedCategories.map((category, index) => {
+      if (category.position !== index) {
+        const url = `${process.env.API_URL_STAGING}/${this.props.categoryType}_categories/${category.id}`;
+        const modifiedCategory = {};
+        modifiedCategory[`${this.props.categoryType}_category`] = {
+          id: category.id,
+          title: category.title,
+          position: index,
+        };
+        return this.props.addContent(url, JSON.stringify(modifiedCategory), 'PUT');
+      }
+      return '';
+    });
+  }
+
   renderCategories() {
     return this.props.categories.map(category =>
       (<Category
@@ -73,7 +89,9 @@ class CategoryBox extends Component {
       <CardBody>
         {this.renderCategories()}
         {isEqual(this.state.orderedCategories, this.props.categories) ? <div /> :
-        <Button color="secondary" className="pl-2 rounded">
+        <Button color="secondary" className="pl-2 rounded" onClick={this.modifyOrder}>
+          {this.props.isLoading ?
+            <i className="fa fa-spinner text-success fa-spin " /> : ''}
           Modifier l&#39;ordre
         </Button>}
       </CardBody>

@@ -84,7 +84,7 @@ class Admin extends Component {
                   addContent={this.props.addContent}
                   hasErrored={this.props.addContentHasErrored}
                   isLoading={this.props.addContentIsLoading}
-                  categories={this.props[activeTabInfo.list]}
+                  categories={this.props[activeTabInfo.list].sort((a, b) => a.position >= b.position)}
                   categoryType={activeTabInfo.categoryType}
                   tags={this.props.tags}
                   toggleDeleteModal={this.props.toggleDeleteModal}
