@@ -57,6 +57,10 @@ class InstitutionContainer extends Component {
 
   renderCodes(institutionId) {
     const activeCodes = this.props.activeInstitution.codes.filter(code => code.status === 'active');
+    if (activeCodes.length === 0) {
+      return (
+        <CodeCard institutionId={institutionId} />);
+    }
     return activeCodes.map(code => (
       <CodeCard
         key={code.id}
@@ -68,6 +72,10 @@ class InstitutionContainer extends Component {
 
 
   renderTags(institutionId) {
+    if (this.props.activeInstitution.tags.length === 0) {
+      return (
+        <TagCard institutionId={institutionId} />);
+    }
     return this.props.activeInstitution.tags.map(tag => (
       <TagCard
         key={tag.id}
@@ -83,7 +91,8 @@ class InstitutionContainer extends Component {
     if (this.props.isLoading) {
       return <p />;
     }
-    const replacementAddress = this.props.activeInstitution.addresses ? this.props.activeInstitution.addresses[0] : null;
+    const replacementAddress = this.props.activeInstitution.addresses ?
+      this.props.activeInstitution.addresses[0] : null;
     const displayedAddress = getActiveEntity(this.props.activeInstitution.addresses) ?
       getActiveEntity(this.props.activeInstitution.addresses) : replacementAddress;
     return (
@@ -97,7 +106,7 @@ class InstitutionContainer extends Component {
         />
         <EvolutionCardContainer institutionId={institutionId} />
         <div className="d-flex flex-wrap align-content-start justify-content-center m-2">
-          {this.props.activeInstitution.tags.length > 0 ? this.renderTags(institutionId) : ''}
+          {this.renderTags(institutionId)}
         </div>
         <Row>
           <Col md="5" className="pl-3 pr-1">

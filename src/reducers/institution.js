@@ -101,11 +101,13 @@ export default function activeInstitution(state = [], action) {
       return {
         ...state,
         activeItem: action.item,
+        hasErrored: false,
       };
     case 'REMOVE_ACTIVE_ITEM':
       return {
         ...state,
         activeItem: null,
+        hasErrored: false,
       };
     case 'SET_DISPLAYED_NAME':
       return {

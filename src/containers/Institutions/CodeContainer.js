@@ -38,13 +38,19 @@ class CodeContainer extends Component {
 
   componentWillMount() {
     const { category } = this.props.match.params;
-    const activeItem = this.props.codes
-      .filter(code => code.status === 'active')
-      .find(code => code.category === category);
-    this.props.setActiveItem(activeItem);
-    this.setState({
-      activeTab: activeItem.category,
-    });
+    if (category !== '0') {
+      const activeItem = this.props.codes
+        .filter(code => code.status === 'active')
+        .find(code => code.category === category);
+      this.props.setActiveItem(activeItem);
+      this.setState({
+        activeTab: activeItem.category,
+      });
+    } else {
+      this.setState({
+        activeTab: 'uai',
+      });
+    }
   }
 
   toggle(tab) {
@@ -62,16 +68,17 @@ class CodeContainer extends Component {
   }
 
   renderNavItem() {
-    return this.props.codeCategories.map(category => (
-      <NavItem key={category.id}>
-        <NavLink
-          className={`${classnames({ active: this.state.activeTab === category.title })} rounded text-muted`}
-          onClick={() => { this.toggle(category.title); }}
-        >
-          {category.title.replace('_', ' ').toProperCase()}
-        </NavLink>
-      </NavItem>
-    ));
+    return this.props.codeCategories.sort((a, b) => a.position >= b.position)
+      .map(category => (
+        <NavItem key={category.id}>
+          <NavLink
+            className={`${classnames({ active: this.state.activeTab === category.title })} rounded text-muted`}
+            onClick={() => { this.toggle(category.title); }}
+          >
+            {category.title.replace('_', ' ').toProperCase()}
+          </NavLink>
+        </NavItem>
+      ));
   }
 
   renderTabPane() {
