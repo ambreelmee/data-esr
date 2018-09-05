@@ -45,7 +45,7 @@ class CodeCard extends Component {
           <div>
             <NavLink
               to={`/etablissements/${this.props.institutionId}/identifiants/0`}
-              className="text-light"
+              className="text-light nav-link"
               style={{ wordBreak: 'normal' }}
             >
               <i className="fa fa-plus fa-2x ml-1" />

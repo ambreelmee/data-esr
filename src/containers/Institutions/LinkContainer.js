@@ -38,12 +38,12 @@ class LinkContainer extends Component {
           />
           <LinkForm
             addContent={this.props.addContent}
+            deleteModal={this.props.deleteModal}
             hasErrored={this.props.addContentHasErrored}
             institutionId={this.props.institutionId}
             isLoading={this.props.addContentIsLoading}
-            deleteModal={this.props.deleteModal}
-            setActiveItem={this.props.setActiveItem}
             linkCategories={this.props.linkCategories}
+            setActiveItem={this.props.setActiveItem}
             toggleDeleteModal={this.props.toggleDeleteModal}
             {...this.props.activeItem}
           />

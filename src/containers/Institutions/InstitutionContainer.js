@@ -9,7 +9,7 @@ import { getActiveInstitution, getDaughters, getMothers, removeActiveItem } from
 import { getActiveEntity } from '../../views/Institutions/methods';
 import EvolutionCardContainer from './EvolutionCardContainer';
 import LinkCard from '../../views/Institutions/InstitutionPage/Main/LinkCard';
-import SearchBar from '../../views/Institutions/Search/SearchBar';
+import SearchBar from '../../views/Search/SearchBar';
 import AddressCard from '../../views/Institutions/InstitutionPage/Main/Address/AddressCard';
 import ConnectionCard from '../../views/Institutions/InstitutionPage/Main/ConnectionCard';
 import CodeCard from '../../views/Institutions/InstitutionPage/Main/CodeCard';

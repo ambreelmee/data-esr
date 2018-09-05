@@ -40,8 +40,7 @@ class LinkCard extends Component {
       return (
         <Card
           key={link.category}
-          className="mb-1 ml-1 p-3 text-center rounded"
-          style={{ backgroundColor: '#BFCFFF' }}
+          className="mb-1 ml-1 p-3 text-center rounded light-violet"
         >
           <a
             href={link.content.substring(0, 4) === 'http' ? link.content : `//${link.content}`}
@@ -62,8 +61,8 @@ class LinkCard extends Component {
       return (
         <Row>
           <Col md="5" className="pr-0 pb-1">
-            <Card className="mb-1 text-center w-100 h-100 rounded" style={{ backgroundColor: '#BFCFFF' }}>
-              <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
+            <Card className="mb-1 text-center w-100 h-100 rounded light-violet">
+              <ButtonGroup className="top-right-edit-icon">
                 <ButtonDropdown
                   isOpen={this.state.displayDropdown}
                   toggle={this.displayDropdown}
@@ -104,9 +103,9 @@ class LinkCard extends Component {
         <Col md="6" className="pr-1">
           <NavLink
             to={`/etablissements/${this.props.institutionId}/liens/`}
-            className="text-dark"
+            className="text-dark nav-link"
           >
-            <CardBody className="mb-0 p-2 text-center w-100 h-100 rounded" style={{ backgroundColor: '#BFCFFF' }}>
+            <CardBody className="mb-0 p-2 text-center w-100 h-100 rounded light-violet">
               <i className="mb-1 fa fa-mouse-pointer fa-2x" />
               <h5>Ajouter un site web</h5>
             </CardBody>

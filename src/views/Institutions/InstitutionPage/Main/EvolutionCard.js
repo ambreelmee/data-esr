@@ -51,7 +51,7 @@ const EvolutionCard = props => (
                 </NavLink>))}
             </Col> : <div />}
         </Row>
-        <ButtonGroup style={{ position: 'absolute', right: '10px', top: '5px' }}>
+        <ButtonGroup className="top-right-edit-icon">
           <ButtonDropdown
             id="nameDropdown"
             isOpen={props.dropdown}

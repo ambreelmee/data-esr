@@ -8,7 +8,7 @@ import SidebarForm from './../SidebarForm';
 import SidebarHeader from './../SidebarHeader';
 import SidebarMinimizer from './../SidebarMinimizer';
 
-const conflictToSolve = 15;
+const conflictToSolve = null;
 
 class Sidebar extends Component {
   constructor(props) {

@@ -69,7 +69,7 @@ class Header extends Component {
           href="https://docs.google.com/forms/d/e/1FAIpQLSesa0p2LTZ8amElLyJezwKII-eCVzJ4UGTtd9EwekvyHMzc5g/viewform?usp=sf_link"
           target="blank"
           id="user-comment"
-          style={{ position: 'absolute', right: '30px' }}
+          className="header-icon"
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
         >

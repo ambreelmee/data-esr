@@ -3,6 +3,16 @@ import { Button, Card, CardBody, CardFooter, Col, FormGroup, Input, Label, Row }
 import PropTypes from 'prop-types';
 import UpdateFormButton from './UpdateFormButton';
 
+const icons = [
+  { category: 'youtube' , prefix: 'https://www.youtube.com/user/' },
+  { category: 'facebook', prefix: 'https://www.facebook.com/' },
+  { category: 'wikipedia', prefix: 'https://fr.wikipedia.org/wiki/' },
+  { category: 'twitter', prefix: 'https://twitter.com/' },
+  { category: 'tumblr' },
+  { category: 'linkedin', prefix: 'https://www.linkedin.com/school/' },
+  { category: 'instagram', prefix: 'https://www.instagram.com/' },
+];
+
 class LinkForm extends Component {
   constructor(props) {
     super(props);
@@ -10,7 +20,6 @@ class LinkForm extends Component {
     this.state = {
       categoryId: null,
       content: this.props.content,
-      id: this.props.id,
     };
     this.onChange = this.onChange.bind(this);
     this.onSelectorChange = this.onSelectorChange.bind(this);
@@ -31,8 +40,13 @@ class LinkForm extends Component {
   }
 
   onSelectorChange(event) {
+    const categoryId = document.getElementById(`${event.target.id}`).value
+    const categoryName = this.props.linkCategories.find(category => category.id.toString() === categoryId)
+    const categoryPrefix = icons.find(icon => icon.category === categoryName.title)
+    const prefix = categoryPrefix && categoryPrefix.prefix ? categoryPrefix.prefix : 'http://'
     this.setState({
       [event.target.id]: document.getElementById(`${event.target.id}`).value,
+      content: prefix,
     });
   }
 
@@ -117,6 +131,7 @@ LinkForm.propTypes = {
   id: PropTypes.number,
   institutionId: PropTypes.number.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  prefix: PropTypes.string.isRequired,
   linkCategories: PropTypes.array.isRequired,
   toggleDeleteModal: PropTypes.func.isRequired,
 };

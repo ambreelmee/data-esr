@@ -8,13 +8,13 @@ import {
   resetSearchAndDisplayFirstPage, createInstitution, toggleAddModal,
 } from '../../actions/search';
 import { getActiveEntity, getFormattedAddress } from '../../views/Institutions/methods';
-import SearchResultCard from '../../views/Institutions/Search/SearchResultCard';
+import SearchResultCard from '../../views/Search/SearchResultCard';
 import DownloadButton from '../../views/Institutions/DownloadButton';
-import SearchPagination from '../../views/Institutions/Search/SearchPagination';
-import AddInstitutionButtons from '../../views/Institutions/Search/AddInstitutionButtons';
-import SearchBar from '../../views/Institutions/Search/SearchBar';
+import SearchPagination from '../../views/Search/SearchPagination';
+import AddInstitutionButtons from '../../views/Search/AddInstitutionButtons';
+import SearchBar from '../../views/Search/SearchBar';
 
-class SearchContainer extends Component {
+class InstitutionSearchContainer extends Component {
   componentWillMount() {
     if (!this.props.searchValue) {
       this.props.fetchData(`${process.env.API_URL_STAGING}institutions?page_size=18`);
@@ -24,17 +24,24 @@ class SearchContainer extends Component {
   renderInstitutionsCards() {
     return this.props.institutions.map((institution) => {
       const codeUAI = institution.codes.find(code => code.category === 'uai');
+      const activeAdress = getActiveEntity(institution.addresses) ?
+        getFormattedAddress(getActiveEntity(institution.addresses)) : ' ';
+      const activeName = getActiveEntity(institution.names) ?
+        getActiveEntity(institution.names) : institution.names[0];
+      const displayedName = `${activeName.initials}
+        ${activeName.initials === activeName.text ?
+          '' : ` - ${activeName.text.toProperCase()}`}`
       return (
         <Col xs="12" md="6" lg="4" className="my-1 px-1" key={`institution-${institution.id}`}>
           <SearchResultCard
-            address={getActiveEntity(institution.addresses) ?
-              getFormattedAddress(getActiveEntity(institution.addresses)) : ' '}
-            codeUAI={codeUAI ? codeUAI.content : ''}
+            address={activeAdress.toProperCase()}
+            mainCode={codeUAI ? codeUAI.content : ''}
             date_start={institution.date_start}
             date_end={institution.date_end}
             id={institution.id}
-            name={getActiveEntity(institution.names) ? getActiveEntity(institution.names) : institution.names[0]}
+            name={displayedName}
             tags={institution.tags}
+            type="etablissements"
           />
         </Col>
       );
@@ -105,7 +112,7 @@ const mapDispatchToProps = dispatch => ({
   search: event => dispatch(institutionsSearch(event)),
 });
 
-SearchContainer.propTypes = {
+InstitutionSearchContainer.propTypes = {
   count: PropTypes.string,
   createInstitution: PropTypes.func.isRequired,
   createInstitutionHasErrored: PropTypes.bool,
@@ -124,7 +131,7 @@ SearchContainer.propTypes = {
   searchValue: PropTypes.string,
 };
 
-SearchContainer.defaultProps = {
+InstitutionSearchContainer.defaultProps = {
   count: '0',
   createInstitutionHasErrored: false,
   createInstitutionIsLoading: false,
@@ -137,4 +144,4 @@ SearchContainer.defaultProps = {
   searchValue: '',
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(InstitutionSearchContainer);
