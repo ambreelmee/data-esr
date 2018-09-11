@@ -15,7 +15,7 @@ import AddInstitutionButtons from '../../views/Search/AddInstitutionButtons';
 import SearchBar from '../../views/Search/SearchBar';
 
 class InstitutionSearchContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.searchValue) {
       this.props.fetchData(`${process.env.API_URL_STAGING}institutions?page_size=18`);
     }
@@ -26,8 +26,7 @@ class InstitutionSearchContainer extends Component {
       const codeUAI = institution.codes.find(code => code.category === 'uai');
       const activeAdress = getActiveEntity(institution.addresses) ?
         getFormattedAddress(getActiveEntity(institution.addresses)) : ' ';
-      const activeName = getActiveEntity(institution.names) ?
-        getActiveEntity(institution.names) : institution.names[0];
+      const activeName = getActiveEntity(institution.names) || institution.names[0];
       const displayedName = `${activeName.initials}
         ${activeName.initials === activeName.text ?
           '' : ` - ${activeName.text.toProperCase()}`}`

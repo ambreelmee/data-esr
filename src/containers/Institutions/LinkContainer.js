@@ -12,7 +12,7 @@ const LinkComponent = props => (
   <h4>{props.category}</h4>);
 
 class LinkContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const activeItem = this.props.links.find(link => link.category === 'website');
     this.props.setActiveItem(activeItem);
   }

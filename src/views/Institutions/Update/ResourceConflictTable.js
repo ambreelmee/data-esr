@@ -76,7 +76,7 @@ class ResourceConflictTable extends Component {
               className="text-success"
               onChange={this.onChange}
               type="text"
-              value={this.state[id] ? this.state[id] : this.props.conflict[0].new_value}
+              value={this.state[id] || this.props.conflict[0].new_value}
             />
           </td>
           {this.props.conflict[0].current_value === this.props.current ||
@@ -100,7 +100,7 @@ class ResourceConflictTable extends Component {
                 id={id}
                 type="text"
                 className="text-success"
-                value={this.state[id] ? this.state[id] : conflictValue.new_value}
+                value={this.state[id] || conflictValue.new_value}
                 onChange={this.onChange}
               />
             </td>
@@ -128,7 +128,7 @@ class ResourceConflictTable extends Component {
               id={id}
               onChange={this.onChange}
               type="text"
-              value={this.state[id] ? this.state[id] : conflictValue ? conflictValue.new_value : ''}
+              value={this.state[id] || conflictValue ? conflictValue.new_value : ''}
             />
           </td>
           {!conflictValue || conflictValue.current_value === currentValue ? <div /> :

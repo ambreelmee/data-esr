@@ -18,7 +18,7 @@ class InstitutionConflictContainer extends Component {
     this.redirectToInstitution = this.redirectToInstitution.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getInstitution();
   }
 

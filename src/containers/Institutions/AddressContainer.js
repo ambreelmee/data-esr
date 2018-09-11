@@ -11,7 +11,7 @@ import DeleteModalContainer from './DeleteModalContainer';
 import NavBreadcrumb from '../../views/Institutions/InstitutionPage/Details/NavBreadcrumb';
 
 class AddressContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.setActiveItem(getActiveEntity(this.props.addresses));
   }
 
@@ -79,7 +79,7 @@ AddressContainer.propTypes = {
   addContentIsLoading: PropTypes.bool,
   addresses: PropTypes.array.isRequired,
   deleteModal: PropTypes.bool,
-  displayedName: PropTypes.string.isRequired,
+  displayedName: PropTypes.string,
   institutionId: PropTypes.number.isRequired,
   removeActiveItem: PropTypes.func.isRequired,
   setActiveItem: PropTypes.func.isRequired,
@@ -91,6 +91,7 @@ AddressContainer.defaultProps = {
   addContentHasErrored: false,
   addContentIsLoading: false,
   deleteModal: false,
+  displayedName: '',
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddressContainer);

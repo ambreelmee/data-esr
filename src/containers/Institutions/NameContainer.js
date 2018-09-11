@@ -16,13 +16,18 @@ const Name = props => (
   </div>
 );
 Name.propTypes = {
-  initials: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
+  initials: PropTypes.string,
+  text: PropTypes.string,
+};
+
+Name.defaultProps = {
+  initials: '',
+  text: '',
 };
 
 
 class NameContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.setActiveItem(getActiveEntity(this.props.names));
   }
 

@@ -12,7 +12,7 @@ class NameForm extends Component {
     this.state = {
       initials: this.props.initials,
       text: this.props.text,
-      date_start: this.props.date_start ? this.props.date_start : moment().format('YYYY-MM-DD'),
+      date_start: this.props.date_start || moment().format('YYYY-MM-DD'),
       date_end: this.props.date_end,
       status: this.props.status,
     };
@@ -68,8 +68,8 @@ class NameForm extends Component {
                     className="form-control-warning"
                     required
                     type="text"
-                    value={this.state.initials ? this.state.initials : ''}
-                    placeholder={this.state.initials ? this.state.initials : "Sigle de l'établissement"}
+                    value={this.state.initials || ''}
+                    placeholder={this.state.initials || "Sigle de l'établissement"}
                     onChange={this.onChange}
                   />
                 </Col>
@@ -81,8 +81,8 @@ class NameForm extends Component {
                   type="text"
                   className="form-control-warning"
                   required
-                  value={this.state.text ? this.state.text : ''}
-                  placeholder={this.state.text ? this.state.text : "Nom complet de l'établissement"}
+                  value={this.state.text || ''}
+                  placeholder={this.state.text || "Nom complet de l'établissement"}
                   onChange={this.onChange}
                 />
               </FormGroup>
@@ -93,8 +93,8 @@ class NameForm extends Component {
                     <Input
                       type="date"
                       id="date_start"
-                      value={this.state.date_start ? this.state.date_start : ''}
-                      placeholder={this.state.date_start ? this.state.date_start : ''}
+                      value={this.state.date_start || ''}
+                      placeholder={this.state.date_start || ''}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -105,8 +105,8 @@ class NameForm extends Component {
                     <Input
                       type="date"
                       id="date_end"
-                      value={this.state.date_end ? this.state.date_end : ''}
-                      placeholder={this.state.date_end ? this.state.date_end : ''}
+                      value={this.state.date_end || ''}
+                      placeholder={this.state.date_end || ''}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -178,10 +178,9 @@ NameForm.propTypes = {
   date_start: PropTypes.string,
   date_end: PropTypes.string,
   institutionId: PropTypes.number,
-  setActiveItem: PropTypes.func.isRequired,
   status: PropTypes.string,
   text: PropTypes.string,
-  toggleDeleteModal: PropTypes.string.isRequired,
+  toggleDeleteModal: PropTypes.func.isRequired,
 };
 
 NameForm.defaultProps = {

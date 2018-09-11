@@ -15,7 +15,7 @@ import AddInstitutionButtons from '../../views/Search/AddInstitutionButtons';
 import SearchBar from '../../views/Search/SearchBar';
 
 class InstitutionSearchContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.searchValue) {
       this.props.fetchData(`${process.env.API_URL_STAGING}companies?page_size=18`);
     }
@@ -50,7 +50,7 @@ class InstitutionSearchContainer extends Component {
             date_start={company.creation_date.$date}
             date_end={null}
             id={company._id}
-            name={getActiveEntity(institution.names) ? getActiveEntity(institution.names) : institution.names[0]}
+            name={getActiveEntity(institution.names) || institution.names[0]}
             status={company.status}
             tags={institution.tags}
           />

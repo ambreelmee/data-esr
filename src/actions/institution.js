@@ -1,4 +1,6 @@
 
+import { getActiveEntity } from '../views/Institutions/methods';
+
 export function removeActiveInstitution() {
   return {
     type: 'REMOVE_ACTIVE_INSTITUTION',
@@ -395,6 +397,11 @@ export function getActiveInstitution(institutionId) {
       .then(response => response.json())
       .then((institution) => {
         dispatch(institutionFetchDataSuccess(institution));
+        const replacementName = institution.institution.names ? institution.institution.names[0] : null;
+        const displayedName = getActiveEntity(institution.institution.names) ?
+          getActiveEntity(institution.institution.names) : replacementName;
+        dispatch(setDisplayedName(`${displayedName.initials}${displayedName.initials === displayedName.text ?
+          '' : ` - ${displayedName.text.toProperCase()}`}`))
         if (institution.institution.mothers.length > 0) {
           dispatch(getMothers(institutionId))
         }
@@ -407,11 +414,9 @@ export function getActiveInstitution(institutionId) {
         if (institution.institution.followers.length > 0) {
           dispatch(getFollowers(institutionId))
         }
-        dispatch(institutionIsLoading(false));
       })
       .catch(() => {
         dispatch(institutionHasErrored(true));
-        dispatch(institutionIsLoading(false));
       });
   };
 }

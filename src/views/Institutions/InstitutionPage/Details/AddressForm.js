@@ -74,8 +74,8 @@ class AddressForm extends Component {
                 <Input
                   id="business_name"
                   type="text"
-                  value={this.state.business_name ? this.state.business_name : ''}
-                  placeholder={this.state.business_name ? this.state.business_name : 'Nom ou raison sociale'}
+                  value={this.state.business_name || ''}
+                  placeholder={this.state.business_name || 'Nom ou raison sociale'}
                   onChange={this.onChange}
                 />
               </FormGroup>
@@ -86,8 +86,8 @@ class AddressForm extends Component {
                   type="text"
                   className="form-control-warning"
                   required
-                  value={this.state.address_1 ? this.state.address_1 : ''}
-                  placeholder={this.state.address_1 ? this.state.address_1 : 'Numéro et voie postale'}
+                  value={this.state.address_1 || ''}
+                  placeholder={this.state.address_1 || 'Numéro et voie postale'}
                   onChange={this.onChange}
                 />
               </FormGroup>
@@ -96,8 +96,8 @@ class AddressForm extends Component {
                 <Input
                   id="address_2"
                   type="text"
-                  value={this.state.address_2 ? this.state.address_2 : ''}
-                  placeholder={this.state.address_2 ? this.state.address_2 : 'Batiment, étage, ...'}
+                  value={this.state.address_2 || ''}
+                  placeholder={this.state.address_2 || 'Batiment, étage, ...'}
                   onChange={this.onChange}
                 />
               </FormGroup>
@@ -110,8 +110,8 @@ class AddressForm extends Component {
                       type="text"
                       className="form-control-warning"
                       required
-                      value={this.state.zip_code ? this.state.zip_code : ''}
-                      placeholder={this.state.zip_code ? this.state.zip_code : 'Code postal'}
+                      value={this.state.zip_code || ''}
+                      placeholder={this.state.zip_code || 'Code postal'}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -124,8 +124,8 @@ class AddressForm extends Component {
                       type="text"
                       className="form-control-warning"
                       required
-                      value={this.state.city ? this.state.city : ''}
-                      placeholder={this.state.city ? this.state.city : 'Ville'}
+                      value={this.state.city || ''}
+                      placeholder={this.state.city || 'Ville'}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -139,8 +139,8 @@ class AddressForm extends Component {
                       id="city_code"
                       type="text"
                       required
-                      value={this.state.city_code ? this.state.city_code : ''}
-                      placeholder={this.state.city_code ? this.state.city_code : 'Commune'}
+                      value={this.state.city_code || ''}
+                      placeholder={this.state.city_code || 'Commune'}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -153,8 +153,8 @@ class AddressForm extends Component {
                       type="text"
                       className="form-control-warning"
                       required
-                      value={this.state.country ? this.state.country : ''}
-                      placeholder={this.state.country ? this.state.country : 'France'}
+                      value={this.state.country || ''}
+                      placeholder={this.state.country || 'France'}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -170,8 +170,8 @@ class AddressForm extends Component {
                       <Input
                         id="phone"
                         type="tel"
-                        value={this.state.phone ? this.state.phone : ''}
-                        placeholder={this.state.phone ? this.state.phone : '06...'}
+                        value={this.state.phone || ''}
+                        placeholder={this.state.phone || '06...'}
                         onChange={this.onChange}
                       />
                     </Col>
@@ -185,8 +185,8 @@ class AddressForm extends Component {
                     <Input
                       type="date"
                       id="date_start"
-                      value={this.state.date_start ? this.state.date_start : ''}
-                      placeholder={this.state.date_start ? this.state.date_start : ''}
+                      value={this.state.date_start || ''}
+                      placeholder={this.state.date_start || ''}
                       onChange={this.onChange}
                     />
                   </FormGroup>
@@ -197,8 +197,8 @@ class AddressForm extends Component {
                     <Input
                       type="date"
                       id="date_end"
-                      value={this.state.date_end ? this.state.date_end : ''}
-                      placeholder={this.state.date_end ? this.state.date_end : ''}
+                      value={this.state.date_end || ''}
+                      placeholder={this.state.date_end || ''}
                       onChange={this.onChange}
                     />
                   </FormGroup>

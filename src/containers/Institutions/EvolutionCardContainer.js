@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  updateSynonymList, addContent, toggleDeleteModal, setDisplayedName
-  , getFollowers, getPredecessors, getActiveInstitution,
+  updateSynonymList, addContent, toggleDeleteModal,
+  getFollowers, getPredecessors, getActiveInstitution,
 } from '../../actions/institution';
 import { getActiveEntity } from '../../views/Institutions/methods';
 import StatusModal from '../../views/Institutions/InstitutionPage/Main/StatusModal';
@@ -28,6 +28,7 @@ class EvolutionCardContainer extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.institutionId !== this.props.institutionId) {
+      console.log("evolution")
       this.props.getActiveInstitution(nextProps.institutionId);
     }
   }
@@ -52,9 +53,7 @@ class EvolutionCardContainer extends Component {
 
   render() {
     const replacementName = this.props.names ? this.props.names[0] : null;
-    const displayedName = getActiveEntity(this.props.names) ? getActiveEntity(this.props.names) : replacementName;
-    this.props.setDisplayedName(`${displayedName.initials}${displayedName.initials === displayedName.text ?
-      '' : ` - ${displayedName.text.toProperCase()}`}`);
+    const displayedName = getActiveEntity(this.props.names) || replacementName;
     return (
       <div>
         <EvolutionCard
@@ -106,6 +105,7 @@ const mapStateToProps = state => ({
   dateEnd: state.activeInstitution.institution.date_end,
   dateStart: state.activeInstitution.institution.date_start,
   deleteModal: state.activeInstitution.deleteModal,
+  displayedName: state.activeInstitution.displayedName,
   followers: state.activeInstitution.followers,
   followersIsLoading: state.activeInstitution.followersIsLoading,
   names: state.activeInstitution.institution.names,
@@ -122,7 +122,6 @@ const mapDispatchToProps = dispatch => ({
   getActiveInstitution: () => dispatch(getActiveInstitution()),
   getFollowers: id => dispatch(getFollowers(id)),
   getPredecessors: id => dispatch(getPredecessors(id)),
-  setDisplayedName: name => dispatch(setDisplayedName(name)),
   toggleDeleteModal: () => dispatch(toggleDeleteModal()),
   updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
 });
@@ -142,7 +141,6 @@ EvolutionCardContainer.propTypes = {
   predecessors: PropTypes.array,
   predecessorsIsLoading: PropTypes.bool,
   names: PropTypes.array.isRequired,
-  setDisplayedName: PropTypes.func.isRequired,
   synonym: PropTypes.string,
   synonymHasErrored: PropTypes.bool,
   synonymIsLoading: PropTypes.bool,

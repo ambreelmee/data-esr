@@ -7,7 +7,7 @@ import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Footer from '../../components/Footer/';
 import PrivateRoute from '../../PrivateRoute';
-import { getAllCategories, getActiveInstitution } from '../../actions/institution';
+import { getAllCategories, getActiveInstitution, removeActiveItem } from '../../actions/institution';
 import AddressContainer from '../Institutions/AddressContainer';
 import Admin from '../Institutions//Admin';
 import CodeContainer from '../Institutions/CodeContainer';
@@ -21,25 +21,65 @@ import TagContainer from '../Institutions/TagContainer';
 import UpdateContainer from '../../views/Institutions/Update/UpdateContainer';
 import CompaniesSearchContainer from '../Companies/CompaniesSearchContainer';
 
+const getIdFromPath = props => props.location.pathname.split('/')[2] || null;
+const getParamFromPath = props => props.location.pathname.split('/')[3] || null;
+
+const getIdfromActiveInstitution = (props) => {
+  const activeInstitution = props.activeInstitution || null;
+  return activeInstitution ? activeInstitution.id.toString() : null;
+};
+
 class Full extends Component {
-  componentWillMount() {
+
+  componentDidMount() {
     this.props.getAllCategories();
-    const institutionId = this.props.location.pathname.split('/')[2];
-    if (institutionId) {
+    const institutionId = getIdFromPath(this.props);
+    const activeInstitutionId = getIdfromActiveInstitution(this.props)
+    if (institutionId && activeInstitutionId !== institutionId) {
       this.props.getActiveInstitution(parseInt(institutionId, 10))
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    const institutionId = nextProps.location.pathname.split('/')[2];
-    if (!(this.props.activeInstitution && this.props.activeInstitution.id.toString() === institutionId)) {
+  // componentWillReceiveProps(nextProps) {
+  //   const institutionId = getIdFromPath(nextProps);
+  //   const activeInstitutionId = getIdfromActiveInstitution(nextProps)
+  //   if (!nextProps.isLoading && !this.props.isLoading && institutionId && activeInstitutionId !== institutionId) {
+  //     this.props.getActiveInstitution(parseInt(institutionId, 10))
+  //   }
+  //   if (getParamFromPath(nextProps) !== getParamFromPath(this.props)) {
+  //     this.props.removeActiveItem()
+  //   }
+  // }
+  componentDidUpdate(prevProps) {
+    const institutionId = getIdFromPath(this.props);
+    const activeInstitutionId = getIdfromActiveInstitution(this.props)
+    if (!prevProps.isLoading && !this.props.isLoading && institutionId && activeInstitutionId !== institutionId) {
       this.props.getActiveInstitution(parseInt(institutionId, 10))
+    }
+    if (getParamFromPath(prevProps) !== getParamFromPath(this.props)) {
+      this.props.removeActiveItem()
     }
   }
 
   render() {
-    if (this.props.location.pathname.split('/')[2] && (!this.props.activeInstitution || !this.props.activeInstitution.id)) {
-      return <p>Loading</p>;
+    const institutionId = getIdFromPath(this.props);
+    const activeInstitutionId = getIdfromActiveInstitution(this.props)
+    if (institutionId && institutionId !== activeInstitutionId) {
+      return (
+        <div className="app">
+          <Header />
+          <div className="app-body">
+            <Sidebar {...this.props} />
+            <main className="main">
+              <Container fluid className="text center p-5 m-5">
+                <i className="fa fa-spinner fa-spin ml-1" />
+                Chargement
+              </Container>
+            </main>
+          </div>
+          <Footer />
+        </div>
+      );
     }
     return (
       <div className="app">
@@ -76,17 +116,25 @@ class Full extends Component {
 
 const mapStateToProps = state => ({
   activeInstitution: state.activeInstitution.institution,
+  isLoading: state.activeInstitution.isLoading,
 });
 
 const mapDispatchToProps = dispatch => ({
   getAllCategories: () => dispatch(getAllCategories()),
   getActiveInstitution: id => dispatch(getActiveInstitution(id)),
+  removeActiveItem: () => dispatch(removeActiveItem()),
 });
 
 Full.propTypes = {
   activeInstitution: PropTypes.object,
   getAllCategories: PropTypes.func.isRequired,
   getActiveInstitution: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+  removeActiveItem: PropTypes.func.isRequired,
 };
+
+Full.defaultProps = {
+  isLoading: false,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Full);

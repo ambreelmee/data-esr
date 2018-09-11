@@ -13,21 +13,23 @@ const Address = props => (
   </div>);
 
 Address.propTypes = {
-  address_1: PropTypes.string.isRequired,
+  address_1: PropTypes.string,
   address_2: PropTypes.string,
   business_name: PropTypes.string,
-  city: PropTypes.string.isRequired,
+  city: PropTypes.string,
   city_code: PropTypes.number,
   phone: PropTypes.string,
-  status: PropTypes.string.isRequired,
-  zip_code: PropTypes.string.isRequired,
+  zip_code: PropTypes.string,
 };
 
 Address.defaultProps = {
+  address_1: null,
   address_2: null,
   business_name: null,
+  city: null,
   city_code: null,
   phone: null,
+  zip_code: null,
 };
 
 export default Address;

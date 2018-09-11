@@ -31,7 +31,6 @@ class LinkForm extends Component {
     this.setState({
       categoryId: nextCategory ? nextCategory.id.toString() : 0,
       ...nextProps,
-      id: nextProps.id ? nextProps.id : 0,
     });
   }
 

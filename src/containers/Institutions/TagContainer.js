@@ -29,7 +29,7 @@ Tag.defaultProps = {
 };
 
 class TagContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const { category } = this.props.match.params;
     const activeItem = this.props.institutionTags.find(tag => tag.category === category);
     this.props.setActiveItem(activeItem);

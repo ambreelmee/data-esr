@@ -24,9 +24,12 @@ const NavBreadcrumb = props => (
 
 NavBreadcrumb.propTypes = {
   institutionId: PropTypes.number.isRequired,
-  displayedName: PropTypes.string.isRequired,
+  displayedName: PropTypes.string,
   type: PropTypes.string.isRequired,
 };
 
+NavBreadcrumb.defaultProps = {
+  displayedName: '',
+};
 
 export default NavBreadcrumb;

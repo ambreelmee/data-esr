@@ -20,8 +20,13 @@ const Mother = props => (
   />
 );
 Mother.propTypes = {
-  connection: PropTypes.object.isRequired,
-  mother: PropTypes.object.isRequired,
+  connection: PropTypes.object,
+  mother: PropTypes.object,
+};
+
+Mother.defaultProps = {
+  connection: {},
+  mother: {},
 };
 
 const Daughter = props => (
@@ -33,8 +38,13 @@ const Daughter = props => (
   />
 );
 Daughter.propTypes = {
-  connection: PropTypes.object.isRequired,
-  daughter: PropTypes.object.isRequired,
+  connection: PropTypes.object,
+  daughter: PropTypes.object,
+};
+
+Daughter.defaultProps = {
+  connection: {},
+  daughter: {},
 };
 
 class ConnectionContainer extends Component {
@@ -73,6 +83,7 @@ class ConnectionContainer extends Component {
     const currentCategory = this.props.activeItem ?
       this.props.connectionCategories.find(category => category.title === this.props.activeItem.connection.category) :
       null;
+    const date = this.props.activeItem || '';
     return (
       <div>
         <Row className="bg-light mt-3">
@@ -118,7 +129,7 @@ class ConnectionContainer extends Component {
                   addContentIsLoading={this.props.addContentIsLoading}
                   categoryId={currentCategory ? currentCategory.id : ''}
                   categories={this.props.connectionCategories}
-                  date={this.props.activeItem ? this.props.activeItem.connection.date : ''}
+                  date={date || ''}
                   deleteModal={this.props.deleteModal}
                   id={this.props.activeItem ? this.props.activeItem.connection.id : ''}
                   institutionId={this.props.institutionId}
@@ -157,7 +168,7 @@ class ConnectionContainer extends Component {
                   addContentIsLoading={this.props.addContentIsLoading}
                   categoryId={currentCategory ? currentCategory.id : ''}
                   categories={this.props.connectionCategories}
-                  date={this.props.activeItem ? this.props.activeItem.connection.date : ''}
+                  date={this.props.activeItem ? this.props.activeItem.connection.date || '' : ''}
                   deleteModal={this.props.deleteModal}
                   id={this.props.activeItem ? this.props.activeItem.connection.id : ''}
                   institutionId={this.props.institutionId}
@@ -214,12 +225,12 @@ ConnectionContainer.propTypes = {
   addContentHasErrored: PropTypes.bool,
   addContentIsLoading: PropTypes.bool,
   deleteModal: PropTypes.bool,
-  displayedName: PropTypes.string.isRequired,
+  displayedName: PropTypes.string,
   connectionCategories: PropTypes.array.isRequired,
   institutions: PropTypes.array,
   institutionId: PropTypes.number.isRequired,
-  daughters: PropTypes.array.isRequired,
-  mothers: PropTypes.array.isRequired,
+  daughters: PropTypes.array,
+  mothers: PropTypes.array,
   removeActiveItem: PropTypes.func.isRequired,
   search: PropTypes.func.isRequired,
   searchHasErrored: PropTypes.bool,
@@ -232,8 +243,11 @@ ConnectionContainer.defaultProps = {
   activeItem: null,
   addContentHasErrored: false,
   addContentIsLoading: false,
+  daughters: [],
   deleteModal: false,
+  displayedName: '',
   institutions: [],
+  mothers: [],
   searchHasErrored: false,
   searchIsLoading: false,
 };

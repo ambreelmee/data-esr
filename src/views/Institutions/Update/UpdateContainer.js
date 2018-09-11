@@ -105,7 +105,7 @@ class UpdateContainer extends Component {
     };
     this.onDismiss = this.onDismiss.bind(this);
   }
-  componentWillMount() {
+  componentDidMount() {
     // this.getAllConflicts();
   }
 

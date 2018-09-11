@@ -167,8 +167,7 @@ class RelationForm extends Component {
                       id="relationInstitutionId"
                       className="form-control"
                       onChange={this.onSelectorChange}
-                      value={this.state.relationInstitutionId ?
-                        this.state.relationInstitutionId : this.props.relationInstitutionId}
+                      value={this.state.relationInstitutionId || this.props.relationInstitutionId}
                     >
                       <option>{this.props.name}</option>
                       {this.renderInstitutionNameSuggestions()}
@@ -183,7 +182,7 @@ class RelationForm extends Component {
                     id="categoryId"
                     className="form-control"
                     onChange={this.onSelectorChange}
-                    value={this.state.categoryId ? this.state.categoryId : this.props.categoryId}
+                    value={this.state.categoryId || this.props.categoryId}
                   >
                     {this.renderCategories()}
                     <option value="redirect">
@@ -196,7 +195,7 @@ class RelationForm extends Component {
                   <Input
                     type="date"
                     id="date"
-                    value={this.state.date ? this.state.date : this.props.date}
+                    value={this.state.date || this.props.date || ''}
                     onChange={this.onChange}
                   />
                 </Col>
@@ -245,14 +244,14 @@ RelationForm.propTypes = {
   addContentHasErrored: PropTypes.bool.isRequired,
   addContentIsLoading: PropTypes.bool.isRequired,
   categories: PropTypes.array.isRequired,
-  categoryId: PropTypes.number,
+  categoryId: PropTypes.string,
   date: PropTypes.string,
   deleteModal: PropTypes.bool.isRequired,
-  id: PropTypes.number,
+  id: PropTypes.string,
   institutions: PropTypes.array.isRequired,
   institutionId: PropTypes.number.isRequired,
   name: PropTypes.string,
-  relationInstitutionId: PropTypes.number,
+  relationInstitutionId: PropTypes.string,
   relationType: PropTypes.string.isRequired,
   search: PropTypes.func.isRequired,
   searchHasErrored: PropTypes.bool.isRequired,

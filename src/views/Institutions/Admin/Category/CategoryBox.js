@@ -17,7 +17,7 @@ class CategoryBox extends Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const myContainer = ReactDOM.findDOMNode(this);
     const drake = reactDragula([myContainer], {
       moves(el, container, handle) {

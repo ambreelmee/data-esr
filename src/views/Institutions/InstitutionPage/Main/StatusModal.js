@@ -48,8 +48,8 @@ class StatusModal extends Component {
                       <Input
                         type="date"
                         id="date_start"
-                        value={this.state.date_start ? this.state.date_start : ''}
-                        placeholder={this.state.date_start ? this.state.date_start : ''}
+                        value={this.state.date_start || ''}
+                        placeholder={this.state.date_start || ''}
                         onChange={this.onChange}
                       />
                     </FormGroup>
@@ -60,8 +60,8 @@ class StatusModal extends Component {
                       <Input
                         type="date"
                         id="date_end"
-                        value={this.state.date_end ? this.state.date_end : ''}
-                        placeholder={this.state.date_end ? this.state.date_end : ''}
+                        value={this.state.date_end || ''}
+                        placeholder={this.state.date_end || ''}
                         onChange={this.onChange}
                       />
                     </FormGroup>

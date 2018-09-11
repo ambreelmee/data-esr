@@ -28,25 +28,8 @@ class InstitutionContainer extends Component {
   }
 
 
-  componentWillMount() {
-    const institutionId = parseInt(this.props.match.params.number, 10);
-    this.props.removeActiveItem();
-    if (!this.props.activeInstitution || this.props.activeInstitution.id !== institutionId) {
-      this.props.getActiveInstitution(institutionId);
-    }
-  }
-
   componentDidMount() {
     window.onpopstate = this.onBackButtonEvent;
-  }
-
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.match.params.number && nextProps.match.params.number !== this.props.match.params.number) {
-      this.props.match.params.number = nextProps.match.params.number;
-      const institutionId = parseInt(this.props.match.params.number, 10);
-      this.props.getActiveInstitution(institutionId);
-    }
   }
 
   displayDropdown(event) {

@@ -126,7 +126,7 @@ class TagForm extends Component {
                   <Input
                     type="date"
                     id="date_end"
-                    value={this.state.date_end ? this.state.date_end : ''}
+                    value={this.state.date_end || ''}
                     placeholder=""
                     onChange={this.onChange}
                   />

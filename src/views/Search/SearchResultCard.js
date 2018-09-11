@@ -8,7 +8,7 @@ import moment from 'moment';
 class SearchResultCard extends Component {
   renderTags() {
     return this.props.tags.map(tag => (
-      <Badge key={`${this.props.name.initials}-tag-${tag.id}`} pill className="mx-1 p-2 violet">
+      <Badge key={`${this.props.name.initials}-tag-${tag.id}`} pill className="m-1 p-2 violet">
         {tag.short_label}
       </Badge>));
   }
@@ -16,8 +16,8 @@ class SearchResultCard extends Component {
   render() {
     return (
       <Card className={`mb-2 rounded my-shadow w-100 h-100 card-accent-${!this.props.date_end ? 'primary' : 'danger'}`}>
-        <NavLink className="nav-link text-muted" to={`${this.props.type}/${this.props.id}`}>
-          <CardBody className="px-3 py-1 d-flex flex-column justify-content-center">
+        <NavLink className="nav-link text-muted p-1" to={`${this.props.type}/${this.props.id}`}>
+          <CardBody className="px-3 pt-1 pb-0 d-flex flex-column justify-content-center">
             <div>
               <h4 className="mb-0 text-primary">
                 <strong>{this.props.name}

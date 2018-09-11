@@ -54,6 +54,7 @@ export default function activeInstitution(state = [], action) {
         institution: action.institution.institution,
         addModal: false,
         editModal: false,
+        isLoading: false,
       };
     case 'SYNONYM_HAS_ERRORED':
       return { ...state, synonymHasErrored: action.hasErrored };
