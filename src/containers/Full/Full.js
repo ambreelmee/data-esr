@@ -21,49 +21,38 @@ import TagContainer from '../Institutions/TagContainer';
 import UpdateContainer from '../../views/Institutions/Update/UpdateContainer';
 import CompaniesSearchContainer from '../Companies/CompaniesSearchContainer';
 
-const getIdFromPath = props => props.location.pathname.split('/')[2] || null;
+const getIdFromPath = props => parseInt(props.location.pathname.split('/')[2], 10) || null;
 const getParamFromPath = props => props.location.pathname.split('/')[3] || null;
 
 const getIdfromActiveInstitution = (props) => {
   const activeInstitution = props.activeInstitution || null;
-  return activeInstitution ? activeInstitution.id.toString() : null;
+  return activeInstitution ? activeInstitution.id : null;
 };
 
 class Full extends Component {
-
   componentDidMount() {
     this.props.getAllCategories();
     const institutionId = getIdFromPath(this.props);
-    const activeInstitutionId = getIdfromActiveInstitution(this.props)
+    const activeInstitutionId = getIdfromActiveInstitution(this.props);
     if (institutionId && activeInstitutionId !== institutionId) {
-      this.props.getActiveInstitution(parseInt(institutionId, 10))
+      this.props.getActiveInstitution(parseInt(institutionId, 10));
     }
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const institutionId = getIdFromPath(nextProps);
-  //   const activeInstitutionId = getIdfromActiveInstitution(nextProps)
-  //   if (!nextProps.isLoading && !this.props.isLoading && institutionId && activeInstitutionId !== institutionId) {
-  //     this.props.getActiveInstitution(parseInt(institutionId, 10))
-  //   }
-  //   if (getParamFromPath(nextProps) !== getParamFromPath(this.props)) {
-  //     this.props.removeActiveItem()
-  //   }
-  // }
   componentDidUpdate(prevProps) {
     const institutionId = getIdFromPath(this.props);
-    const activeInstitutionId = getIdfromActiveInstitution(this.props)
+    const activeInstitutionId = getIdfromActiveInstitution(this.props);
     if (!prevProps.isLoading && !this.props.isLoading && institutionId && activeInstitutionId !== institutionId) {
-      this.props.getActiveInstitution(parseInt(institutionId, 10))
+      this.props.getActiveInstitution(parseInt(institutionId, 10));
     }
     if (getParamFromPath(prevProps) !== getParamFromPath(this.props)) {
-      this.props.removeActiveItem()
+      this.props.removeActiveItem();
     }
   }
 
   render() {
     const institutionId = getIdFromPath(this.props);
-    const activeInstitutionId = getIdfromActiveInstitution(this.props)
+    const activeInstitutionId = getIdfromActiveInstitution(this.props);
     if (institutionId && institutionId !== activeInstitutionId) {
       return (
         <div className="app">
@@ -90,6 +79,8 @@ class Full extends Component {
             <Container fluid>
               <Switch>
                 <PrivateRoute exact path="/etablissements"component={InstitutionSearchContainer} />
+                <PrivateRoute path="/etablissements/mises-a-jour" component={UpdateContainer} />
+                <PrivateRoute path="/etablissements/admin" component={Admin} />
                 <PrivateRoute exact path="/etablissements/:number" component={InstitutionContainer} />
                 <PrivateRoute path="/etablissements/:number/adresses" component={AddressContainer} />
                 <PrivateRoute path="/etablissements/:number/identifiants/:category" component={CodeContainer} />
@@ -98,10 +89,8 @@ class Full extends Component {
                 <PrivateRoute path="/etablissements/:number/noms" component={NameContainer} />
                 <PrivateRoute path="/etablissements/:number/rattachements" component={ConnectionContainer} />
                 <PrivateRoute path="/etablissements/:number/tags/:category" component={TagContainer} />
-                <PrivateRoute path="/etablissements/admin" component={Admin} />
-                <PrivateRoute path="/etablissements/mises-a-jour" component={UpdateContainer} />
                 <PrivateRoute exact path="/entreprises"component={CompaniesSearchContainer} />
-                <PrivateRoute path="/entreprises/mises-a-jour" component={UpdateContainer} />
+                <PrivateRoute exact path="/entreprises/mises-a-jour" component={UpdateContainer} />
                 <PrivateRoute path="/entreprises/admin" component={Admin} />
                 <Redirect from="/" to="/etablissements" />
               </Switch>

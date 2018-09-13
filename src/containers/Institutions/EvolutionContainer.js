@@ -42,16 +42,16 @@ class EvolutionContainer extends Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
-    this.state = {
-      activeTab: 'followers',
-    };
-  }
-
-  componentWillMount() {
     let initialItem = this.props.followers.length > 0 ? this.props.followers[0] : null;
     if (this.props.predecessors.length > 0) {
       initialItem = this.props.predecessors[0];
-      this.setState({ activeTab: 'predecessors' });
+      this.state = {
+        activeTab: 'predecessors',
+      };
+    } else {
+      this.state = {
+        activeTab: 'followers',
+      };
     }
     this.props.setActiveItem(initialItem);
   }

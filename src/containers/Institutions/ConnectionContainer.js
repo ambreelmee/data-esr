@@ -52,16 +52,16 @@ class ConnectionContainer extends Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
-    this.state = {
-      activeTab: 'daughters',
-    };
-  }
-
-  componentWillMount() {
     let initialItem = this.props.daughters.length > 0 ? this.props.daughters[0] : null;
     if (this.props.mothers.length > 0) {
       initialItem = this.props.mothers[0];
-      this.setState({ activeTab: 'mothers' });
+      this.state = {
+        activeTab: 'mothers',
+      };
+    } else {
+      this.state = {
+        activeTab: 'daughters',
+      };
     }
     this.props.setActiveItem(initialItem);
   }

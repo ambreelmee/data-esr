@@ -122,7 +122,7 @@ const mapDispatchToProps = dispatch => ({
   getActiveInstitution: () => dispatch(getActiveInstitution()),
   getFollowers: id => dispatch(getFollowers(id)),
   getPredecessors: id => dispatch(getPredecessors(id)),
-  toggleDeleteModal: () => dispatch(toggleDeleteModal()),
+  toggleDeleteModal: url => dispatch(toggleDeleteModal(url)),
   updateSynonymList: (url, synonym) => dispatch(updateSynonymList(url, synonym)),
 });
 

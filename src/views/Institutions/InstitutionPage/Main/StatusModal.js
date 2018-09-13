@@ -73,13 +73,14 @@ class StatusModal extends Component {
           </Card>
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" onClick={this.props.toggleDeleteModal} >
+          <Button
+            color="danger"
+            onClick={() => this.props.toggleDeleteModal(`${process.env.API_URL_STAGING}institutions/${this.props.institutionId}`)}
+          >
             Supprimer défintivement
           </Button>
           <DeleteModalContainer
-            deleteUrl={`${process.env.API_BCE_URL}institutions/${this.props.uai}`}
             modal={this.props.deleteModal}
-            toggleModal={this.props.toggleDeleteModal}
             message={
               <div>
                 <p className="text-danger">Etes-vous sûr de vouloir supprimer cet établissement ?</p><br />

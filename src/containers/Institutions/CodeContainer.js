@@ -29,28 +29,21 @@ Code.defaultProps = {
 class CodeContainer extends Component {
   constructor(props) {
     super(props);
-
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      activeTab: 'mothers',
-    };
-  }
-
-  componentWillMount() {
     const { category } = this.props.match.params;
     if (category !== '0') {
       const activeItem = this.props.codes
         .filter(code => code.status === 'active')
         .find(code => code.category === category);
       this.props.setActiveItem(activeItem);
-      this.setState({
+      this.state = {
         activeTab: activeItem.category,
-      });
+      };
     } else {
-      this.setState({
+      this.state = {
         activeTab: 'uai',
-      });
+      };
     }
+    this.toggle = this.toggle.bind(this);
   }
 
   toggle(tab) {

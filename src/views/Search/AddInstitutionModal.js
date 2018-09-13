@@ -83,11 +83,13 @@ class AddInstitutionModal extends Component {
                 </FormGroup>
                 <Row>
                   <Col>
-                    <FormGroup>
+                    <FormGroup className="was-validated">
                       <Label>Date de début d&#39;activité</Label>
                       <Input
                         type="date"
                         id="date_start"
+                        className="form-control-warning"
+                        required
                         value={this.state.date_start}
                         onChange={this.onChange}
                       />

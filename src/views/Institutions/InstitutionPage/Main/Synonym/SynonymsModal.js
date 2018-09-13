@@ -32,6 +32,7 @@ class SynonymsModal extends Component {
   addSynonym() {
     const synonym = this.props.synonyms ? `${this.props.synonyms}, ${this.state.content}` : this.state.content;
     this.props.updateSynonymList(this.props.url, synonym);
+    this.setState({ content: '' });
   }
 
   renderSynonyms() {
